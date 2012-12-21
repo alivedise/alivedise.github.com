@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ubuntu | Ascheriit]]></title>
+  <link href="http://alivedise.github.com/blog/categories/ubuntu/atom.xml" rel="self"/>
+  <link href="http://alivedise.github.com/"/>
+  <updated>2012-12-22T00:53:56+08:00</updated>
+  <id>http://alivedise.github.com/</id>
+  <author>
+    <name><![CDATA[Alive Kuo]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[[Octopress] 重來懶人包]]></title>
+    <link href="http://alivedise.github.com/blog/2012/02/10/octopress-on-ubuntu-lazy/"/>
+    <updated>2012-02-10T15:36:00+08:00</updated>
+    <id>http://alivedise.github.com/blog/2012/02/10/octopress-on-ubuntu-lazy</id>
+    <content type="html"><![CDATA[<p>在ubuntu上架設octopress環境的懶人包：</p>
+
+<h1>Git</h1>
+
+<p>略過</p>
+
+<h1>rvm/ruby系列</h1>
+
+<h2>事前準備</h2>
+
+<pre><code>apt-get install libssl-dev
+apt-get install libtool
+sudo apt-get install libyaml-0-2 libyaml-dev
+</code></pre>
+
+<h2>開始</h2>
+
+<p>bash -s stable &lt; &lt;(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)
+echo '[[ -s "$HOME/.rvm/scripts/rvm" ]] &amp;&amp; . "$HOME/.rvm/scripts/rvm" # Load RVM function' >> ~/.bash_profile
+source ~/.bash_profile
+rvm pkg install openssl
+rvm pkg install iconv
+rvm install 1.9.2 -C --with-openssl-dir=$HOME/.rvm/usr,--with-iconv-dir=$HOME/.rvm/usr
+rvm rubygems latest
+rvm use 1.9.2 --default
+rvm reload
+gem install bundler</p>
+
+<h1>Octopress</h1>
+
+<p>git clone git://github.com/imathis/octopress.git octopress
+cd octopress
+yes
+bundle install
+rake setup_github_pages
+git@github.com:alivedise/alivedise.github.com.git
+git pull</p>
+
+<p>完成！</p>
+
+<h1>讓vim支援octopress語法</h1>
+
+<h2>安裝pathogen</h2>
+
+<p>(https://github.com/tpope/vim-pathogen)</p>
+
+<h2>安裝vim-octopress</h2>
+
+<p>(https://github.com/vim-scripts/vim-octopress)</p>
+]]></content>
+  </entry>
+  
+</feed>

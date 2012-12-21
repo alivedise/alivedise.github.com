@@ -1,0 +1,405 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>[FF13-2] Eimorhc - Timeline Puzzle Creator 以及一些心得 - Ascheriit</title>
+	<meta name="author" content="Alive Kuo">
+
+	
+	<meta name="description" content="簡介 既然都做解題程式了，乾脆連出題程式也作一下吧 命名 Eimorhc是Chromie的倒字。（本人極愛倒字）
+Chromie是解題者，出題者當然是要倒過來囉。 實作細節 Canvas圖形變換 第一個碰到的問題是要旋轉指針&#8230;而且要旋轉兩根。網路上有不少使用canvas實現時鐘的作品， &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Ascheriit" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Ascheriit</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:alivedise.github.com">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		<a class="twitter" href="http://twitter.com/alivedise" title="Twitter">Twitter</a>
+		
+		
+		<a class="github" href="https://github.com/alivedise" title="GitHub">GitHub</a>
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:alivedise.github.com">
+	</form>
+</nav>
+
+</header>
+	
+		
+<div id="banner" class="inner">
+	<div class="container">
+		<ul class="feed"></ul>
+	</div>
+	<small><a href="http://twitter.com/alivedise">alivedise</a> @ <a href="http://twitter.com">Twitter</a></small>
+	<div class="loading">Loading...</div>
+</div>
+<script src="/javascripts/twitter.js"></script>
+<script type="text/javascript">
+	(function($){
+		$('#banner').getTwitterFeed('alivedise', 4, false);
+	})(jQuery);
+</script>
+
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">[FF13-2] Eimorhc - Timeline Puzzle Creator 以及一些心得</h2>
+	<div class="entry-content"><h3>簡介</h3>
+
+<p>既然都做解題程式了，乾脆連出題程式也作一下吧</p>
+
+<h4>命名</h4>
+
+<p>Eimorhc是Chromie的倒字。（本人極愛倒字）
+Chromie是解題者，出題者當然是要倒過來囉。</p>
+
+<h3>實作細節</h3>
+
+<h4>Canvas圖形變換</h4>
+
+<ol>
+<li>第一個碰到的問題是要旋轉指針&#8230;而且要旋轉兩根。網路上有不少使用canvas實現時鐘的作品，不過我大致看了一下決定自己用canvas刻。
+
+<h5>參考網頁</h5>
+
+一樣是MDN的<a href="https://developer.mozilla.org/zh_tw/Canvas_%E6%95%99%E5%AD%B8">Canvas教學</a>
+
+<h5>Canvas的save/restore</h5>
+
+<p>在這邊卡了一下，
+以我的理解restore跟save要成對使用，是用來區隔不同座標變換組合的起點跟終點。
+以下用畫這個時鐘的函式當範例：</p></li>
+</ol>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>renderClock: function(){
+</span><span class='line'>  var canvas = this.element.find('#canvas canvas')[0], self = this;
+</span><span class='line'>  var ctx = canvas.getContext("2d");
+</span><span class='line'>  var options = self.constructor.defaults.canvas;
+</span><span class='line'>  ctx.clearRect(0, 0, canvas.width, canvas.height);
+</span><span class='line'>
+</span><span class='line'>  ctx.beginPath();
+</span><span class='line'>  ctx.arc(options.x,options.y,options.C,0,Math.PI*2,true); // 外圈
+</span><span class='line'>  ctx.fillStyle = 'black';
+</span><span class='line'>  ctx.font= 'bold 18px sans-serif';
+</span><span class='line'>  ctx.fill();
+</span><span class='line'>  $.each(self.puzzle, function(index, value){
+</span><span class='line'>          var slice = index/self.puzzle.length;
+</span><span class='line'>          if(self.available[index] && !self.steped[index])
+</span><span class='line'>          {
+</span><span class='line'>              ctx.beginPath();
+</span><span class='line'>              ctx.fillStyle = "#0186d1";
+</span><span class='line'>              ctx.strokeStyle = "#0186d1";
+</span><span class='line'>              ctx.arc(options.x+options.r*Math.sin(2*Math.PI*slice), options.y-options.r*Math.cos(2*Math.PI*slice), 10, 0, Math.PI*2, true);   
+</span><span class='line'>              ctx.fill();
+</span><span class='line'>              ctx.closePath();
+</span><span class='line'>          }
+</span><span class='line'>          if(!self.steped[index])
+</span><span class='line'>          {
+</span><span class='line'>              ctx.fillStyle = self.constructor.defaults.color[value];
+</span><span class='line'>              ctx.fillText(value, options.x-6+options.r*Math.sin(2*Math.PI*slice), options.y+6-options.r*Math.cos(2*Math.PI*slice));   
+</span><span class='line'>          }
+</span><span class='line'>      });
+</span><span class='line'>  ctx.save();</span></code></pre></td></tr></table></div></figure>
+
+
+<p>到這裡為止是畫時鐘大圓跟刻度，不需要用到座標變換。
+這裡將畫布作第一次乾淨的存檔。
+也就是說，平移跟旋轉量都是0。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>       <span class="nx">ctx</span><span class="p">.</span><span class="nx">translate</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span><span class="nx">options</span><span class="p">.</span><span class="nx">y</span><span class="p">);</span>
+</span><span class='line'>      <span class="nx">ctx</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span><span class="o">*</span><span class="p">((</span><span class="k">this</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">plus</span><span class="o">+</span><span class="k">this</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">angle</span><span class="p">)</span><span class="o">/</span><span class="k">this</span><span class="p">.</span><span class="nx">puzzle</span><span class="p">.</span><span class="nx">length</span><span class="p">));</span>
+</span><span class='line'>      <span class="nx">ctx</span><span class="p">.</span><span class="nx">drawImage</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">img</span><span class="p">,</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="o">-</span><span class="nx">options</span><span class="p">.</span><span class="nx">y</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">37</span><span class="p">);</span>
+</span><span class='line'>      <span class="nx">ctx</span><span class="p">.</span><span class="nx">restore</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>開始畫第一根指針，需要旋轉<code>angle+plus</code>角度。
+畫完之後就呼叫<code>restore()</code>回到旋轉量是0的時候。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>   <span class="nx">ctx</span><span class="p">.</span><span class="nx">save</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>這裡還要再存一次乾淨的狀態給後面的畫布用。
+因為剛剛save過得狀態已經被restore用掉了！</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>   <span class="nx">ctx</span><span class="p">.</span><span class="nx">translate</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span><span class="nx">options</span><span class="p">.</span><span class="nx">y</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">ctx</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span><span class="o">*</span><span class="p">((</span><span class="k">this</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">angle</span><span class="o">+</span><span class="k">this</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">minus</span><span class="p">)</span><span class="o">/</span><span class="k">this</span><span class="p">.</span><span class="nx">puzzle</span><span class="p">.</span><span class="nx">length</span><span class="p">));</span>
+</span><span class='line'>  <span class="nx">ctx</span><span class="p">.</span><span class="nx">drawImage</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">img</span><span class="p">,</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="o">-</span><span class="nx">options</span><span class="p">.</span><span class="nx">y</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">37</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">ctx</span><span class="p">.</span><span class="nx">restore</span><span class="p">();</span>
+</span><span class='line'>  <span class="nx">ctx</span><span class="p">.</span><span class="nx">save</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>全部做完。</p>
+
+<h5>利用$.animate的動畫來控制Canvas</h5>
+
+<p>這邊參考了<a href="http://acko.net/blog/abusing-jquery-animate-for-fun-and-profit-and-bacon/">http://acko.net/blog/abusing-jquery-animate-for-fun-and-profit-and-bacon/</a>, 主要的技巧是</p>
+
+<h6>1. 對$.fx進行改寫，讓$.animate可以接受自訂的屬性</h6>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>   <span class="kd">var</span> <span class="nx">$_fx_step_default</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">fx</span><span class="p">.</span><span class="nx">step</span><span class="p">.</span><span class="nx">_default</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">$</span><span class="p">.</span><span class="nx">fx</span><span class="p">.</span><span class="nx">step</span><span class="p">.</span><span class="nx">_default</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">fx</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">fx</span><span class="p">.</span><span class="nx">elem</span><span class="p">.</span><span class="nx">customAnimate</span><span class="p">)</span> <span class="k">return</span> <span class="nx">$_fx_step_default</span><span class="p">(</span><span class="nx">fx</span><span class="p">);</span>
+</span><span class='line'>      <span class="nx">fx</span><span class="p">.</span><span class="nx">elem</span><span class="p">[</span><span class="nx">fx</span><span class="p">.</span><span class="nx">prop</span><span class="p">]</span> <span class="o">=</span> <span class="nx">fx</span><span class="p">.</span><span class="nx">now</span><span class="p">;</span>
+</span><span class='line'>      <span class="nx">fx</span><span class="p">.</span><span class="nx">elem</span><span class="p">.</span><span class="nx">updated</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h6>2. 利用一個中介div DOM，讓$.animate去動態改變自訂屬性。</h6>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>   <span class="k">this</span><span class="p">.</span><span class="nx">vars</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;&lt;div&gt;&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">angle</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">plus</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">minus</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">end</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">customAnimate</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">updated</span><span class="o">:</span> <span class="kc">true</span>
+</span><span class='line'>  <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h6>3. Canvas的繪圖函式中，直接拿中介DOM的屬性來繪圖。</h6>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">ctx</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span><span class="o">*</span><span class="p">((</span><span class="k">this</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">plus</span><span class="o">+</span><span class="k">this</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">angle</span><span class="p">)</span><span class="o">/</span><span class="k">this</span><span class="p">.</span><span class="nx">puzzle</span><span class="p">.</span><span class="nx">length</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h6>4. 任何時候想要讓Canvas有動畫只要直接對中介DIV作animate</h6>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>   <span class="nx">$</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">vars</span><span class="p">).</span><span class="nx">animate</span><span class="p">({</span> <span class="nx">angle</span><span class="o">:</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">plus</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">minus</span><span class="o">:</span> <span class="mi">0</span> <span class="p">},</span> <span class="p">{</span> <span class="nx">duration</span><span class="o">:</span> <span class="mi">2000</span><span class="p">}).</span><span class="nx">queue</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span> 
+</span><span class='line'>      <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">dequeue</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">}).</span><span class="nx">animate</span><span class="p">({</span> <span class="nx">angle</span><span class="o">:</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">plus</span><span class="o">:</span> <span class="nx">value</span><span class="p">,</span> <span class="nx">minus</span><span class="o">:</span> <span class="o">-</span><span class="nx">value</span> <span class="p">},</span> <span class="p">{</span> <span class="nx">duration</span><span class="o">:</span> <span class="mi">2000</span><span class="p">}).</span><span class="nx">queue</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>      <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">dequeue</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h6>5.建立一個定時函數檢查update的值</h6>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>   <span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">self</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">updated</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>      <span class="nx">self</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">updated</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>                  
+</span><span class='line'>      <span class="nx">self</span><span class="p">.</span><span class="nx">renderClock</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">},</span> <span class="mi">30</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Screenshot &amp; Github demo pages</h3>
+
+<p><img src="http://i.imgur.com/29wCE.jpg">
+<a href="http://alivedise.github.com/Eimorhc/">http://alivedise.github.com/Eimorhc/</a></p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-03-01T19:47:00+08:00" pubdate data-updated="true">Mar 1<span>st</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/javascriptmvc/'>javascriptmvc</a>, <a class='category' href='/blog/categories/jquery/'>jquery</a>
+
+
+</div>
+	
+</div></article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2012
+
+    Alive Kuo
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'ascheriit';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://alivedise.github.com/blog/2012/03/01/eimorhc/';
+        var disqus_url = 'http://alivedise.github.com/blog/2012/03/01/eimorhc/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-29151691-2']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

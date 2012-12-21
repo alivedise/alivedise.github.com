@@ -1,0 +1,224 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>[jquery] jQuery layout X jQuery UI Tabs的應用 - Ascheriit</title>
+	<meta name="author" content="Alive Kuo">
+
+	
+	<meta name="description" content="jQuery layout是一套幫助RD排版的工具，
+現在遇到一個需求是在某個layout出來的版面中塞jQuery UI TABS，
+會有scrollbar顯示的問題。 在jQuery layout官方範例有特別作一個tab結合的範例，看看它怎麼處理這個問題：
+原始網址 jsfiddle &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Ascheriit" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Ascheriit</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:alivedise.github.com">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		<a class="twitter" href="http://twitter.com/alivedise" title="Twitter">Twitter</a>
+		
+		
+		<a class="github" href="https://github.com/alivedise" title="GitHub">GitHub</a>
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:alivedise.github.com">
+	</form>
+</nav>
+
+</header>
+	
+		
+<div id="banner" class="inner">
+	<div class="container">
+		<ul class="feed"></ul>
+	</div>
+	<small><a href="http://twitter.com/alivedise">alivedise</a> @ <a href="http://twitter.com">Twitter</a></small>
+	<div class="loading">Loading...</div>
+</div>
+<script src="/javascripts/twitter.js"></script>
+<script type="text/javascript">
+	(function($){
+		$('#banner').getTwitterFeed('alivedise', 4, false);
+	})(jQuery);
+</script>
+
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">[Jquery] jQuery Layout X jQuery UI Tabs的應用</h2>
+	<div class="entry-content"><p>jQuery layout是一套幫助RD排版的工具，
+現在遇到一個需求是在某個layout出來的版面中塞jQuery UI TABS，
+會有scrollbar顯示的問題。</p>
+
+<p>在jQuery layout官方範例有特別作一個tab結合的範例，看看它怎麼處理這個問題：
+<a href="http://layout.jquery-dev.net/demos/tabs.html">原始網址</a></p>
+
+<h2>jsfiddle</h2>
+
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/tmmuU/embedded/js,resources,html,css,result/light/"></iframe>
+
+
+<h2>source</h2>
+
+<figure class='code'><figcaption><span>jquery.layout-latest.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="mi">322</span>             <span class="p">,</span>   <span class="nx">contentSelector</span><span class="o">:</span>        <span class="s2">&quot;.ui-layout-content&quot;</span> <span class="c1">// INNER div/element to auto-size so only it scrolls, not the entire pane!                      </span>
+</span><span class='line'><span class="mi">323</span>         <span class="p">,</span>   <span class="nx">contentIgnoreSelector</span><span class="o">:</span>  <span class="s2">&quot;.ui-layout-ignore&quot;</span> <span class="c1">// element(s) to &#39;ignore&#39; when measuring &#39;content&#39;</span>
+</span><span class='line'><span class="mi">324</span>         <span class="p">,</span>   <span class="nx">findNestedContent</span><span class="o">:</span>      <span class="kc">false</span>       <span class="c1">// true = $P.find(contentSelector), false = $P.children(contentSelector)</span>
+</span><span class='line'><span class="mi">325</span>         <span class="c1">//  GENERIC ROOT-CLASSES - for auto-generated classNames</span>
+</span><span class='line'><span class="mi">326</span>         <span class="p">,</span>   <span class="nx">paneClass</span><span class="o">:</span>              <span class="s2">&quot;ui-layout-pane&quot;</span>    <span class="c1">// border-Pane - default: &#39;ui-layout-pane&#39;</span>
+</span><span class='line'><span class="mi">327</span>         <span class="p">,</span>   <span class="nx">resizerClass</span><span class="o">:</span>           <span class="s2">&quot;ui-layout-resizer&quot;</span> <span class="c1">// Resizer Bar      - default: &#39;ui-layout-resizer&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>也就是，利用<code>contentSelector</code>跟<code>findNestedContent</code>告訴layout plugin我要把contentSelector的內容視作layout-pane的本體，
+在改變大小時候應該去改變它而不是整個layout-pane。</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-02-06T10:05:00+08:00" pubdate data-updated="true">Feb 6<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/jquery/'>jquery</a>
+
+
+</div>
+	
+</div></article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h2 class="title">Comments</h2>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2012
+
+    Alive Kuo
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'ascheriit';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://alivedise.github.com/blog/2012/02/06/jquery-layout-cross-tabs/';
+        var disqus_url = 'http://alivedise.github.com/blog/2012/02/06/jquery-layout-cross-tabs/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-29151691-2']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

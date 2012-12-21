@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: javascriptMVC | Ascheriit]]></title>
+  <link href="http://alivedise.github.com/blog/categories/javascriptmvc/atom.xml" rel="self"/>
+  <link href="http://alivedise.github.com/"/>
+  <updated>2012-12-22T00:53:56+08:00</updated>
+  <id>http://alivedise.github.com/</id>
+  <author>
+    <name><![CDATA[Alive Kuo]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[javascriptMVC原始碼分析 - Class實作（下）]]></title>
+    <link href="http://alivedise.github.com/blog/2012/05/17/class-code-trace-3/"/>
+    <updated>2012-05-17T10:36:00+08:00</updated>
+    <id>http://alivedise.github.com/blog/2012/05/17/class-code-trace-3</id>
+    <content type="html"><![CDATA[<h1>Instantiation</h1>
+
+<p>這篇開始先跳出JMVC，從語言來看物件化，類別化，初始化這幾件事。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[javascriptMVC原始碼分析 - Class實作（中）]]></title>
+    <link href="http://alivedise.github.com/blog/2012/05/15/class-code-trace-2/"/>
+    <updated>2012-05-15T10:44:00+08:00</updated>
+    <id>http://alivedise.github.com/blog/2012/05/15/class-code-trace-2</id>
+    <content type="html"><![CDATA[<h3>fnText Magic</h3>
+
+<p>上一篇忘了提這個很特別的function</p>
+
+<pre><code>fnTest = /xyz/.test(function() {
+    xyz;
+}) ? /\b_super\b/ : /.*/,
+
+//after several lines
+
+prototype[name] = typeof prop[name] == "function" &amp;&amp; typeof _super[name] == "function" &amp;&amp; fnTest.test(prop[name]) ?
+</code></pre>
+
+<p>大概可以推測他想做的是從字串找到._super，但是那個詭異的fnTest實在不容易懂。</p>
+
+<p>後來在一個對岸熱血青年(他把所有js lib的類別實作都研究過了，這也是我之後想做的事)的文章中看到了曙光：<a href="http://www.cnblogs.com/sanshi/archive/2009/07/09/1519585.html">http://www.cnblogs.com/sanshi/archive/2009/07/09/1519585.html</a></p>
+
+<p>簡單的說利用了隱含型別轉換來作regExp測試，測試什麼？新的類別定義中，所有函數裡面有寫到this.<em>super的話，去把this.</em>super替換掉，變成舊類別的同名函數。</p>
+
+<h3>proxy</h3>
+
+<p>以下節錄自<a href="http://www.javascriptmvc.com/docs.html#!jQuery.Class.static.proxy">jmvcdoc中proxy的說明</a>:</p>
+
+<h4>jQuery.Class.static.proxy</h4>
+
+<h5>Source</h5>
+
+<p>Returns a callback function for a function on this Class. Proxy ensures that 'this' is set appropriately.</p>
+
+<pre><code>$.Class("MyClass",{
+    getData: function() {
+    this.showing = null;
+    $.get("data.json",this.proxy('gotData'),'json')
+    },
+    gotData: function( data ) {
+    this.showing = data;
+    }
+},{});
+MyClass.showData();
+</code></pre>
+
+<h5>Currying Arguments</h5>
+
+<p>Additional arguments to proxy will fill in arguments on the returning function.</p>
+
+<pre><code>$.Class("MyClass",{
+   getData: function( callback ) {
+     $.get("data.json",this.proxy('process',callback),'json');
+   },
+   process: function( callback, jsonData ) { //callback is added as first argument
+       jsonData.processed = true;
+       callback(jsonData);
+   }
+},{});
+MyClass.getData(showDataFunc)
+</code></pre>
+
+<h5>Nesting Functions</h5>
+
+<p>Proxy can take an array of functions to call as the first argument. When the returned callback function is called each function in the array is passed the return value of the prior function. This is often used to eliminate currying initial arguments.</p>
+
+<pre><code>$.Class("MyClass",{
+   getData: function( callback ) {
+     //calls process, then callback with value from process
+     $.get("data.json",this.proxy(['process2',callback]),'json') 
+   },
+   process2: function( type,jsonData ) {
+       jsonData.processed = true;
+       return [jsonData];
+   }
+},{});
+MyClass.getData(showDataFunc);
+</code></pre>
+
+<h4>Currying是什麼？</h4>
+
+<p>在javascript pattern一書中有提到Currying，
+這個名詞來自於一個數學家Haskell Curry，Currying指的是函式轉換（的過程）。</p>
+
+<h4>Code Trace to proxy</h4>
+
+<p>proxy source code如下：</p>
+
+<pre><code>proxy: function(funcs) {
+
+    //args that should be curried
+    var args = makeArray(arguments),
+    self;
+
+    // get the functions to callback
+    funcs = args.shift();
+
+    // if there is only one function, make funcs into an array
+    if (!isArray(funcs)) {
+    funcs = [funcs];
+    }
+
+    // keep a reference to us in self
+    self = this;
+
+    return function class_cb() {
+    // add the arguments after the curried args
+    var cur = concatArgs(args, arguments),
+        isString, length = funcs.length,
+        f = 0,
+        func;
+
+    // go through each function to call back
+    for (; f &lt; length; f++) {
+        func = funcs[f];
+        if (!func) {
+            continue;
+        }
+
+        // set called with the name of the function on self (this is how this.view works)
+        isString = typeof func == "string";
+        if (isString &amp;&amp; self._set_called) {
+            self.called = func;
+        }
+
+        // call the function
+        cur = (isString ? self[func] : func).apply(self, cur || []);
+
+        // pass the result to the next function (if there is a next function)
+        if (f &lt; length - 1) {
+            cur = !isArray(cur) || cur._use_call ? [cur] : cur
+        }
+    }
+    return cur;
+    }
+}
+</code></pre>
+
+<ol>
+<li><code>funcs = args.shift();</code> //this.proxy的第一個參數會是函數名稱字串或函數名稱字串的陣列。取出後剩下的是要傳給這些函數的參數。</li>
+<li><code>return function class_cb(){...}</code> //這邊就是在做Currying: 用另一個函數回傳取代原本的函數。同時將此函數取名class_cb</li>
+<li><code> if (isString &amp;&amp; self._set_called) {
+
+<pre><code>         self.called = func;
+</code></pre>
+
+<p>  } </code>  這一段目前看起來只有$.Controller才用的到，先不管他。</p></li>
+<li>把字串轉成函數<code>self[func]</code></li>
+<li>重寫return，把一開始傳進來的參數再return給下一個函數用</li>
+</ol>
+
+
+<h4>callback</h4>
+
+<p>callback算是蠻常用Class功能，主要用在Ajax回傳結果時，需要連續傳遞給一個或多個以上的函數時使用。
+而callback的實作就來自於proxy:</p>
+
+<pre><code>clss.callback = clss[STR_PROTOTYPE].callback = clss[STR_PROTOTYPE].proxy = clss.proxy;
+</code></pre>
+
+<h5>Static 與 Prototype</h5>
+
+<p>$.Class中的prototype其實就是John實作的部份，而jmvc又加入對整個Class操作的static scope。
+這部份實現蠻長，留給最後一篇$.Class專門討論。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[javascriptMVC原始碼分析 - Class實作（上）]]></title>
+    <link href="http://alivedise.github.com/blog/2012/05/15/class-code-trace/"/>
+    <updated>2012-05-15T09:58:00+08:00</updated>
+    <id>http://alivedise.github.com/blog/2012/05/15/class-code-trace</id>
+    <content type="html"><![CDATA[<h3>前言</h3>
+
+<p>這系列文章將從javascript patterns的角度來看javascriptMVC的實作方式。</p>
+
+<p>藉此更了解jsMVC的架構，以及javascript的語言特性。</p>
+
+<h3>最初的$.Class</h3>
+
+<p>javascript有許多種關於類別繼承的實作方式，jMVC中的$.Class實作來自於<a href="http://ejohn.org/blog/simple-javascript-inheritance/">http://ejohn.org/blog/simple-javascript-inheritance/</a></p>
+
+<p>而作者又聲稱他的實作想法來自Base2(http://code.google.com/p/base2/)與Prototype(http://prototypejs.org/)</p>
+
+<p>這個最初的實作的要點如下：</p>
+
+<ol>
+<li>支援overriden(原作者說這最有挑戰性)。提供this._super存取父類別的同名函數。</li>
+<li>所有類別都是Class這個物件的延伸。</li>
+<li>創造一個新類別必須從已經存在的類別做延伸(extend)。</li>
+<li>建構子內容很簡潔(init)</li>
+</ol>
+
+
+<p>以下是實作的程式碼：</p>
+
+<pre><code>/* Simple JavaScript Inheritance
+ * By John Resig http://ejohn.org/
+ * MIT Licensed.
+ */
+// Inspired by base2 and Prototype
+(function(){
+  var initializing = false, fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
+  // The base Class implementation (does nothing)
+  this.Class = function(){};
+
+  // Create a new Class that inherits from this class
+  Class.extend = function(prop) {
+    var _super = this.prototype;
+
+    // Instantiate a base class (but only create the instance,
+    // don't run the init constructor)
+    initializing = true;
+    var prototype = new this();
+    initializing = false;
+
+    // Copy the properties over onto the new prototype
+    for (var name in prop) {
+      // Check if we're overwriting an existing function
+      prototype[name] = typeof prop[name] == "function" &amp;&amp; 
+        typeof _super[name] == "function" &amp;&amp; fnTest.test(prop[name]) ?
+        (function(name, fn){
+          return function() {
+            var tmp = this._super;
+
+            // Add a new ._super() method that is the same method
+            // but on the super-class
+            this._super = _super[name];
+
+            // The method only need to be bound temporarily, so we
+            // remove it when we're done executing
+            var ret = fn.apply(this, arguments);        
+            this._super = tmp;
+
+            return ret;
+          };
+        })(name, prop[name]) :
+        prop[name];
+    }
+
+    // The dummy class constructor
+    function Class() {
+      // All construction is actually done in the init method
+      if ( !initializing &amp;&amp; this.init )
+        this.init.apply(this, arguments);
+    }
+
+    // Populate our constructed prototype object
+    Class.prototype = prototype;
+
+    // Enforce the constructor to be what we expect
+    Class.prototype.constructor = Class;
+
+    // And make this class extendable
+    Class.extend = arguments.callee;
+
+    return Class;
+  };
+})();
+</code></pre>
+
+<ol>
+<li>為了避免污染全域變數先用immediate function包起來。</li>
+<li>single var pattern, 將區域變數宣告在函式最上面。</li>
+<li>this.Class = function(){};
+ 這邊的this是全域物件，所以這一行結束後全域物件會多一個Class的屬性，值是一個空函數。</li>
+<li>var _super = this.prototype;  //把prototype存起來</li>
+<li>接下來是John認為比較trick的步驟：要先產生一個實體方便後面使用，但不去執行真正的建構子。
+ 所以他使用了initializing這個變數來使這件事可以實現。
+ 正常的instance化中initializing會是false，所以會執行init。
+ 非正常，也就是拿來定義新Class時initializing是true，不會執行init。</li>
+<li><p>遍歷新定義的屬性物件，找到其中值為function屬性。
+ 在每一個function object中添加_super這個屬性指到原本的value。
+ 下面這一段在使用immediate function(self-invoking function)，同時回傳一個function object來取代原本的function</p>
+
+<pre><code>     (function(name, fn){
+       return function() {
+         var tmp = this._super;
+
+         // Add a new ._super() method that is the same method
+         // but on the super-class
+         this._super = _super[name];
+
+         // The method only need to be bound temporarily, so we
+         // remove it when we're done executing
+         var ret = fn.apply(this, arguments);        
+         this._super = tmp;
+
+         return ret;
+       };
+     })(name, prop[name])
+</code></pre></li>
+<li>定義一個function叫Class，覆蓋掉它的prototype屬性，同時也要把prototype.constructor蓋掉，否則產生instance時會有問題。</li>
+<li>使新的類別定義都能繼續擁有extend這個方法。</li>
+</ol>
+
+
+<h3>$.Class新功能</h3>
+
+<p>看完原初的類別實作後，其實$.Class也就是再多了以下功能：</p>
+
+<ol>
+<li>區分static與prototype</li>
+<li>給出proxy function</li>
+<li>給出this.callback function obj</li>
+</ol>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[ff13-2] chromie - Time labyrinth breaker]]></title>
+    <link href="http://alivedise.github.com/blog/2012/02/29/chromie/"/>
+    <updated>2012-02-29T14:29:00+08:00</updated>
+    <id>http://alivedise.github.com/blog/2012/02/29/chromie</id>
+    <content type="html"><![CDATA[<h3>簡介</h3>
+
+<ul>
+<li>ff13-2裡面有個時鐘小遊戲，<a href="http://www.youtube.com/watch?v=ngJyJDLkRh0&amp;feature=related">影片參考</a>。</li>
+<li>說穿了就是一個排列組合遊戲，比起其他小遊戲這個難度高很多，所以網路上有一些人寫了程式專門解這個小遊戲。其實有很多解答版本，但是都不太好用，UI也...。乾脆自己寫一個！</li>
+<li>有參考某個flash實做，不過我用純html5+js實現。js核心是jquery1.7.1，框架是javascriptMVC。</li>
+</ul>
+
+
+<h3>命名</h3>
+
+<h4>Chromie = 克羅米</h4>
+
+<p>克羅米是魔獸世界WoW中擁有時間穿梭能力的種族-青銅龍族中的一員。
+<a href="http://www.wowwiki.com/Chromie">克羅米@wow wiki</a></p>
+
+<h3>實做</h3>
+
+<ol>
+<li>尋徑遞迴演算法
+核心片段
+``` js
+ divergence: function(current, attractor_fields, paths, dir){
+
+<pre><code> var self = this;
+ var value = attractor_fields[current];
+ if(value == null) 
+ {
+     return false;
+ }
+ //paths.push(attractor_fields[current].toString()+'['+(current+1)+']'+dir);
+ paths.push(current);
+ attractor_fields[current] = null;
+ if(paths.length == attractor_fields.length)
+ {
+     this.renderSolution(paths);
+     this.renderHistroy(paths);
+     if(this.element.find('#steinsgate span').length &gt; 0)
+         this.element.find('#steinsgate').html('');
+     this.element.find('#steinsgate').append(paths.toString()+'&lt;br/&gt;');
+     return true;
+ }
+ var path_fork1 = paths.slice();
+ var path_fork2 = paths.slice();
+ var af1 = attractor_fields.slice();
+ var af2 = attractor_fields.slice();
+ return this.divergence((attractor_fields.length+current+value)%attractor_fields.length, af1, path_fork1, '+'+value) || this.divergence((attractor_fields.length+current-value)%attractor_fields.length, af2, path_fork2, '-'+value);    
+</code></pre>
+
+<p> }
+```</p></li>
+<li>Canvas繪圖
+就是查API而已，利用了mozilla的線上開發手冊<a href="https://developer.mozilla.org/zh-TW/">mdn</a></li>
+</ol>
+
+
+<h3>截圖及操作</h3>
+
+<p>1~6數字輸入刻度，0刪除前一個。
+<img src="http://i.imgur.com/MSugN.png"></p>
+
+<h3>Github demo page</h3>
+
+<p><a href="http://alivedise.github.com/chromie">chromie</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[javascriptMVC] Forum 問答]]></title>
+    <link href="http://alivedise.github.com/blog/2012/02/24/jmvc-forum-treasure/"/>
+    <updated>2012-02-24T01:53:00+08:00</updated>
+    <id>http://alivedise.github.com/blog/2012/02/24/jmvc-forum-treasure</id>
+    <content type="html"><![CDATA[<h3>如何手動觸發model update? 讓'{model} updated'可以被想要接受的人接收</h3>
+
+<ul>
+<li><a href="https://forum.javascriptmvc.com/topic/how-to-invoke-model-foo-updated-after-model-update">出處</a></li>
+<li>答案
+<code>js
+  modelInstanceVariable.updated({});
+</code></li>
+</ul>
+
+
+<h3>可以讓view自動聽model更新自己改變自己嗎？</h3>
+
+<pre><code>不行。你應該用controller去更新view。
+</code></pre>
+
+<h3>如何除錯./js</h3>
+
+<p>``` bash</p>
+
+<pre><code>./js -d  ##開啟Rhino javascript debugger
+
+##之後針對要除錯的js下load
+
+load('steal/pluginifyjs')
+steal.build.pluginify('alive/gundam',{});
+## 記得設中斷點
+</code></pre>
+
+<p>```</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,1261 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Ascheriit</title>
+	<meta name="author" content="Alive Kuo">
+
+	
+	<meta name="description" content="最近遇到一個問題，原本開發時看起來沒問題的網站，到了測試人員手中變得不堪一擊：包括出現JSON is undefined的script error alert，以及各種css錯亂問題。問過IE版本之後確實跟自己在用的同樣都是IE8沒錯。 後來發現一條線索：當網際網路選項-> &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Ascheriit" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Ascheriit</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:alivedise.github.com">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		<a class="twitter" href="http://twitter.com/alivedise" title="Twitter">Twitter</a>
+		
+		
+		<a class="github" href="https://github.com/alivedise" title="GitHub">GitHub</a>
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:alivedise.github.com">
+	</form>
+</nav>
+
+</header>
+	
+		
+<div id="banner" class="inner">
+	<div class="container">
+		<ul class="feed"></ul>
+	</div>
+	<small><a href="http://twitter.com/alivedise">alivedise</a> @ <a href="http://twitter.com">Twitter</a></small>
+	<div class="loading">Loading...</div>
+</div>
+<script src="/javascripts/twitter.js"></script>
+<script type="text/javascript">
+	(function($){
+		$('#banner').getTwitterFeed('alivedise', 4, false);
+	})(jQuery);
+</script>
+
+	
+	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2012/05/22/ie8-security/">
+		
+			你的IE8/9真的是IE8/9嗎？</a>
+	</h2>
+	<div class="entry-content">
+		<p>最近遇到一個問題，原本開發時看起來沒問題的網站，到了測試人員手中變得不堪一擊：包括出現JSON is undefined的script error alert，以及各種css錯亂問題。問過IE版本之後確實跟自己在用的同樣都是IE8沒錯。</p>
+
+<p>後來發現一條線索：當網際網路選項->安全性中將某個網站加入近端內部網路區域清單內的話，安全等級為何都會觸發上面那些怪bug。</p>
+
+<p>以<a href="http://secondstory.com">secondstory</a>為例，如下圖設定：
+<img src="http://i.imgur.com/waJfX.png"></p>
+
+<p>原本設定前用IE9開的長相：<img src="http://i.imgur.com/KFR5d.jpg"></p>
+
+<p>加入清單後：<img src="http://i.imgur.com/XndFx.jpg"></p>
+
+<p>排版都飛掉了。打開開發者工具一看，文件模式被強制改成IE7標準。自己手動改回IE8/IE9標準後網頁CSS才奏效。</p>
+
+<p><b>這件事可怕的地方在於使用者可能不知道他把這個網頁加入了限制清單，如同我們的測試人員。更可怕的地方是幾乎不會有人知道安全限制代表著網頁功能失效，人們看到的只會是一些不能用的功能以及錯亂的排版。</b></p>
+
+<p>永遠別小看IE！</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-22T21:12:00+08:00" pubdate data-updated="true">May 22<span>nd</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/iesucks/'>iesucks</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2012/05/17/class-code-trace-3/">
+		
+			javascriptMVC原始碼分析 - Class實作（下）</a>
+	</h2>
+	<div class="entry-content">
+		<h1>Instantiation</h1>
+
+<p>這篇開始先跳出JMVC，從語言來看物件化，類別化，初始化這幾件事。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-17T10:36:00+08:00" pubdate data-updated="true">May 17<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/javascriptmvc/'>javascriptMVC</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2012/05/15/class-code-trace-2/">
+		
+			javascriptMVC原始碼分析 - Class實作（中）</a>
+	</h2>
+	<div class="entry-content">
+		<h3>fnText Magic</h3>
+
+<p>上一篇忘了提這個很特別的function</p>
+
+<pre><code>fnTest = /xyz/.test(function() {
+    xyz;
+}) ? /\b_super\b/ : /.*/,
+
+//after several lines
+
+prototype[name] = typeof prop[name] == "function" &amp;&amp; typeof _super[name] == "function" &amp;&amp; fnTest.test(prop[name]) ?
+</code></pre>
+
+<p>大概可以推測他想做的是從字串找到._super，但是那個詭異的fnTest實在不容易懂。</p>
+
+<p>後來在一個對岸熱血青年(他把所有js lib的類別實作都研究過了，這也是我之後想做的事)的文章中看到了曙光：<a href="http://www.cnblogs.com/sanshi/archive/2009/07/09/1519585.html">http://www.cnblogs.com/sanshi/archive/2009/07/09/1519585.html</a></p>
+
+<p>簡單的說利用了隱含型別轉換來作regExp測試，測試什麼？新的類別定義中，所有函數裡面有寫到this.<em>super的話，去把this.</em>super替換掉，變成舊類別的同名函數。</p>
+
+<h3>proxy</h3>
+
+<p>以下節錄自<a href="http://www.javascriptmvc.com/docs.html#!jQuery.Class.static.proxy">jmvcdoc中proxy的說明</a>:</p>
+
+<h4>jQuery.Class.static.proxy</h4>
+
+<h5>Source</h5>
+
+<p>Returns a callback function for a function on this Class. Proxy ensures that &#8216;this&#8217; is set appropriately.</p>
+
+<pre><code>$.Class("MyClass",{
+    getData: function() {
+    this.showing = null;
+    $.get("data.json",this.proxy('gotData'),'json')
+    },
+    gotData: function( data ) {
+    this.showing = data;
+    }
+},{});
+MyClass.showData();
+</code></pre>
+
+<h5>Currying Arguments</h5>
+
+<p>Additional arguments to proxy will fill in arguments on the returning function.</p>
+
+<pre><code>$.Class("MyClass",{
+   getData: function( callback ) {
+     $.get("data.json",this.proxy('process',callback),'json');
+   },
+   process: function( callback, jsonData ) { //callback is added as first argument
+       jsonData.processed = true;
+       callback(jsonData);
+   }
+},{});
+MyClass.getData(showDataFunc)
+</code></pre>
+
+<h5>Nesting Functions</h5>
+
+<p>Proxy can take an array of functions to call as the first argument. When the returned callback function is called each function in the array is passed the return value of the prior function. This is often used to eliminate currying initial arguments.</p>
+
+<pre><code>$.Class("MyClass",{
+   getData: function( callback ) {
+     //calls process, then callback with value from process
+     $.get("data.json",this.proxy(['process2',callback]),'json') 
+   },
+   process2: function( type,jsonData ) {
+       jsonData.processed = true;
+       return [jsonData];
+   }
+},{});
+MyClass.getData(showDataFunc);
+</code></pre>
+
+<h4>Currying是什麼？</h4>
+
+<p>在javascript pattern一書中有提到Currying，
+這個名詞來自於一個數學家Haskell Curry，Currying指的是函式轉換（的過程）。</p>
+
+<h4>Code Trace to proxy</h4>
+
+<p>proxy source code如下：</p>
+
+<pre><code>proxy: function(funcs) {
+
+    //args that should be curried
+    var args = makeArray(arguments),
+    self;
+
+    // get the functions to callback
+    funcs = args.shift();
+
+    // if there is only one function, make funcs into an array
+    if (!isArray(funcs)) {
+    funcs = [funcs];
+    }
+
+    // keep a reference to us in self
+    self = this;
+
+    return function class_cb() {
+    // add the arguments after the curried args
+    var cur = concatArgs(args, arguments),
+        isString, length = funcs.length,
+        f = 0,
+        func;
+
+    // go through each function to call back
+    for (; f &lt; length; f++) {
+        func = funcs[f];
+        if (!func) {
+            continue;
+        }
+
+        // set called with the name of the function on self (this is how this.view works)
+        isString = typeof func == "string";
+        if (isString &amp;&amp; self._set_called) {
+            self.called = func;
+        }
+
+        // call the function
+        cur = (isString ? self[func] : func).apply(self, cur || []);
+
+        // pass the result to the next function (if there is a next function)
+        if (f &lt; length - 1) {
+            cur = !isArray(cur) || cur._use_call ? [cur] : cur
+        }
+    }
+    return cur;
+    }
+}
+</code></pre>
+
+<ol>
+<li><code>funcs = args.shift();</code> //this.proxy的第一個參數會是函數名稱字串或函數名稱字串的陣列。取出後剩下的是要傳給這些函數的參數。</li>
+<li><code>return function class_cb(){...}</code> //這邊就是在做Currying: 用另一個函數回傳取代原本的函數。同時將此函數取名class_cb</li>
+<li><code> if (isString &amp;&amp; self._set_called) {
+
+<pre><code>         self.called = func;
+</code></pre>
+
+<p>  } </code>  這一段目前看起來只有$.Controller才用的到，先不管他。</p></li>
+<li>把字串轉成函數<code>self[func]</code></li>
+<li>重寫return，把一開始傳進來的參數再return給下一個函數用</li>
+</ol>
+
+
+<h4>callback</h4>
+
+<p>callback算是蠻常用Class功能，主要用在Ajax回傳結果時，需要連續傳遞給一個或多個以上的函數時使用。
+而callback的實作就來自於proxy:</p>
+
+<pre><code>clss.callback = clss[STR_PROTOTYPE].callback = clss[STR_PROTOTYPE].proxy = clss.proxy;
+</code></pre>
+
+<h5>Static 與 Prototype</h5>
+
+<p>$.Class中的prototype其實就是John實作的部份，而jmvc又加入對整個Class操作的static scope。
+這部份實現蠻長，留給最後一篇$.Class專門討論。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-15T10:44:00+08:00" pubdate data-updated="true">May 15<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/javascriptmvc/'>javascriptMVC</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2012/05/15/class-code-trace/">
+		
+			javascriptMVC原始碼分析 - Class實作（上）</a>
+	</h2>
+	<div class="entry-content">
+		<h3>前言</h3>
+
+<p>這系列文章將從javascript patterns的角度來看javascriptMVC的實作方式。</p>
+
+<p>藉此更了解jsMVC的架構，以及javascript的語言特性。</p>
+
+<h3>最初的$.Class</h3>
+
+<p>javascript有許多種關於類別繼承的實作方式，jMVC中的$.Class實作來自於<a href="http://ejohn.org/blog/simple-javascript-inheritance/">http://ejohn.org/blog/simple-javascript-inheritance/</a></p>
+
+<p>而作者又聲稱他的實作想法來自Base2(http://code.google.com/p/base2/)與Prototype(http://prototypejs.org/)</p>
+
+<p>這個最初的實作的要點如下：</p>
+
+<ol>
+<li>支援overriden(原作者說這最有挑戰性)。提供this._super存取父類別的同名函數。</li>
+<li>所有類別都是Class這個物件的延伸。</li>
+<li>創造一個新類別必須從已經存在的類別做延伸(extend)。</li>
+<li>建構子內容很簡潔(init)</li>
+</ol>
+
+
+<p>以下是實作的程式碼：</p>
+
+<pre><code>/* Simple JavaScript Inheritance
+ * By John Resig http://ejohn.org/
+ * MIT Licensed.
+ */
+// Inspired by base2 and Prototype
+(function(){
+  var initializing = false, fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
+  // The base Class implementation (does nothing)
+  this.Class = function(){};
+
+  // Create a new Class that inherits from this class
+  Class.extend = function(prop) {
+    var _super = this.prototype;
+
+    // Instantiate a base class (but only create the instance,
+    // don't run the init constructor)
+    initializing = true;
+    var prototype = new this();
+    initializing = false;
+
+    // Copy the properties over onto the new prototype
+    for (var name in prop) {
+      // Check if we're overwriting an existing function
+      prototype[name] = typeof prop[name] == "function" &amp;&amp; 
+        typeof _super[name] == "function" &amp;&amp; fnTest.test(prop[name]) ?
+        (function(name, fn){
+          return function() {
+            var tmp = this._super;
+
+            // Add a new ._super() method that is the same method
+            // but on the super-class
+            this._super = _super[name];
+
+            // The method only need to be bound temporarily, so we
+            // remove it when we're done executing
+            var ret = fn.apply(this, arguments);        
+            this._super = tmp;
+
+            return ret;
+          };
+        })(name, prop[name]) :
+        prop[name];
+    }
+
+    // The dummy class constructor
+    function Class() {
+      // All construction is actually done in the init method
+      if ( !initializing &amp;&amp; this.init )
+        this.init.apply(this, arguments);
+    }
+
+    // Populate our constructed prototype object
+    Class.prototype = prototype;
+
+    // Enforce the constructor to be what we expect
+    Class.prototype.constructor = Class;
+
+    // And make this class extendable
+    Class.extend = arguments.callee;
+
+    return Class;
+  };
+})();
+</code></pre>
+
+<ol>
+<li>為了避免污染全域變數先用immediate function包起來。</li>
+<li>single var pattern, 將區域變數宣告在函式最上面。</li>
+<li>this.Class = function(){};
+ 這邊的this是全域物件，所以這一行結束後全域物件會多一個Class的屬性，值是一個空函數。</li>
+<li>var _super = this.prototype;  //把prototype存起來</li>
+<li>接下來是John認為比較trick的步驟：要先產生一個實體方便後面使用，但不去執行真正的建構子。
+ 所以他使用了initializing這個變數來使這件事可以實現。
+ 正常的instance化中initializing會是false，所以會執行init。
+ 非正常，也就是拿來定義新Class時initializing是true，不會執行init。</li>
+<li><p>遍歷新定義的屬性物件，找到其中值為function屬性。
+ 在每一個function object中添加_super這個屬性指到原本的value。
+ 下面這一段在使用immediate function(self-invoking function)，同時回傳一個function object來取代原本的function</p>
+
+<pre><code>     (function(name, fn){
+       return function() {
+         var tmp = this._super;
+
+         // Add a new ._super() method that is the same method
+         // but on the super-class
+         this._super = _super[name];
+
+         // The method only need to be bound temporarily, so we
+         // remove it when we're done executing
+         var ret = fn.apply(this, arguments);        
+         this._super = tmp;
+
+         return ret;
+       };
+     })(name, prop[name])
+</code></pre></li>
+<li>定義一個function叫Class，覆蓋掉它的prototype屬性，同時也要把prototype.constructor蓋掉，否則產生instance時會有問題。</li>
+<li>使新的類別定義都能繼續擁有extend這個方法。</li>
+</ol>
+
+
+<h3>$.Class新功能</h3>
+
+<p>看完原初的類別實作後，其實$.Class也就是再多了以下功能：</p>
+
+<ol>
+<li>區分static與prototype</li>
+<li>給出proxy function</li>
+<li>給出this.callback function obj</li>
+</ol>
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-15T09:58:00+08:00" pubdate data-updated="true">May 15<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/javascriptmvc/'>javascriptMVC</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2012/05/09/animation-cross-deferred/">
+		
+			[jQuery] jQuery Animation * jQuery Deferred</a>
+	</h2>
+	<div class="entry-content">
+		<p>jQuery 1.6開始animation也支援Deferred操作了!</p>
+
+<pre><code>$.when($('#timeline').animate({ left: 100 }),  $.ajax({
+    url: 'fake.json', dataType: 'json'
+})).done(function(){
+    $('#result').text('done!');
+});
+</code></pre>
+
+<p>測試用的jsfiddle：</p>
+
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/wLHaG/embedded/js,resources,html,css,result/light/"></iframe>
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-09T17:53:00+08:00" pubdate data-updated="true">May 9<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/jquery/'>jquery</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2012/05/05/excel-web/">
+		
+			讓Excel與網頁互相溝通</a>
+	</h2>
+	<div class="entry-content">
+		<h1>前言</h1>
+
+<p>同事在做一個Excel的應用，主要使用VBA，
+這語言真是一個十年沒長進的東西，
+不過我嘗試做了一個網頁，讓VBA可以透過Office內建的WebBrowser元件跟網頁之間互相溝通，
+以達到利用Excel表格內容控制網頁行為的效果。</p>
+
+<h1>網頁 -> Excel</h1>
+
+<p>其實能用的方法很少，我想到的是利用TitleChange，
+把網頁要告訴Excel的訊息寫進document.title，這樣Excel內的WebBrowser會觸發TitleChange</p>
+
+<pre><code>Private Sub WebBrowser1_TitleChange(ByVal Text As String)
+    If Text &lt;&gt; "loading" Then
+        ...
+    End If
+End Sub
+</code></pre>
+
+<h1>Excel -> 網頁</h1>
+
+<p>Excel可以去寫某個DOM的內容，寫完之後可以去操作某個按鈕讓網頁知道訊息寫完了</p>
+
+<pre><code>ActiveSheet.WebBrowser1.Document.getElementById("excel").innerHtml = "test"
+ActiveSheet.WebBrowser1.Document.getElementById("import").Click
+</code></pre>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-05T11:10:00+08:00" pubdate data-updated="true">May 5<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/web/'>Web</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2012/05/05/gaia/">
+		
+			Setup Gaia on Mac With Firefox Nightly Build</a>
+	</h2>
+	<div class="entry-content">
+		<ul>
+<li><p>本文來自<a href="https://github.com/jrburke/gaia-devserver">https://github.com/jrburke/gaia-devserver</a></p></li>
+<li><p>安裝Node
+ PKG: <a href="https://sites.google.com/site/nodejsmacosx/">https://sites.google.com/site/nodejsmacosx/</a></p></li>
+<li>安裝<a href="http://nightly.mozilla.org/">Firefox Nightly Build</a></li>
+<li><p>修改<code>/etc/hosts</code>加入</p>
+
+<p> 127.0.0.1     gaiamobile.org</p></li>
+<li><p>安裝gaia</p>
+
+<p> mkdir b2g
+ cd b2g
+ git clone git://github.com/andreasgal/gaia.git
+ git clone git://github.com/jrburke/gaia-devserver.git
+ cd gaia
+ GAIA_DOMAIN=gaiamobile.org:8424 make
+ cd ..
+ node gaia-devserver/devserver.js docRoot=gaia/apps</p></li>
+<li><p>啟動Firefox Nightly</p>
+
+<p> /Applications/FirefoxNightly.app/Contents/MacOS/firefox -profile /Users/alive/b2g/gaia/profile &#8211;no-remote http://homescreen.gaiamobile.org:8424</p></li>
+<li><p>開新分頁<code>about:config</code>，把<code>browser.offline-apps.notify</code>設成false</p></li>
+<li>加入一個新的Boolean設定值名為<code>dom.w3c_touch_events.enabled</code>設成true</li>
+<li>完成了！
+<img src="https://lh6.googleusercontent.com/-an0dqr9lhAM/T6Qjwhk5emI/AAAAAAAAC5k/6-4SRu5Wv7Q/s1162/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2012-05-05+%E4%B8%8A%E5%8D%882.44.59.png"></li>
+</ul>
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-05T10:40:00+08:00" pubdate data-updated="true">May 5<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/gaia/'>gaia</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2012/03/01/eimorhc/">
+		
+			[FF13-2] Eimorhc - Timeline Puzzle Creator 以及一些心得</a>
+	</h2>
+	<div class="entry-content">
+		<h3>簡介</h3>
+
+<p>既然都做解題程式了，乾脆連出題程式也作一下吧</p>
+
+<h4>命名</h4>
+
+<p>Eimorhc是Chromie的倒字。（本人極愛倒字）
+Chromie是解題者，出題者當然是要倒過來囉。</p>
+
+<h3>實作細節</h3>
+
+<h4>Canvas圖形變換</h4>
+
+<ol>
+<li>第一個碰到的問題是要旋轉指針&#8230;而且要旋轉兩根。網路上有不少使用canvas實現時鐘的作品，不過我大致看了一下決定自己用canvas刻。
+
+<h5>參考網頁</h5>
+
+一樣是MDN的<a href="https://developer.mozilla.org/zh_tw/Canvas_%E6%95%99%E5%AD%B8">Canvas教學</a>
+
+<h5>Canvas的save/restore</h5>
+
+<p>在這邊卡了一下，
+以我的理解restore跟save要成對使用，是用來區隔不同座標變換組合的起點跟終點。
+以下用畫這個時鐘的函式當範例：</p></li>
+</ol>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>renderClock: function(){
+</span><span class='line'>  var canvas = this.element.find('#canvas canvas')[0], self = this;
+</span><span class='line'>  var ctx = canvas.getContext("2d");
+</span><span class='line'>  var options = self.constructor.defaults.canvas;
+</span><span class='line'>  ctx.clearRect(0, 0, canvas.width, canvas.height);
+</span><span class='line'>
+</span><span class='line'>  ctx.beginPath();
+</span><span class='line'>  ctx.arc(options.x,options.y,options.C,0,Math.PI*2,true); // 外圈
+</span><span class='line'>  ctx.fillStyle = 'black';
+</span><span class='line'>  ctx.font= 'bold 18px sans-serif';
+</span><span class='line'>  ctx.fill();
+</span><span class='line'>  $.each(self.puzzle, function(index, value){
+</span><span class='line'>          var slice = index/self.puzzle.length;
+</span><span class='line'>          if(self.available[index] && !self.steped[index])
+</span><span class='line'>          {
+</span><span class='line'>              ctx.beginPath();
+</span><span class='line'>              ctx.fillStyle = "#0186d1";
+</span><span class='line'>              ctx.strokeStyle = "#0186d1";
+</span><span class='line'>              ctx.arc(options.x+options.r*Math.sin(2*Math.PI*slice), options.y-options.r*Math.cos(2*Math.PI*slice), 10, 0, Math.PI*2, true);   
+</span><span class='line'>              ctx.fill();
+</span><span class='line'>              ctx.closePath();
+</span><span class='line'>          }
+</span><span class='line'>          if(!self.steped[index])
+</span><span class='line'>          {
+</span><span class='line'>              ctx.fillStyle = self.constructor.defaults.color[value];
+</span><span class='line'>              ctx.fillText(value, options.x-6+options.r*Math.sin(2*Math.PI*slice), options.y+6-options.r*Math.cos(2*Math.PI*slice));   
+</span><span class='line'>          }
+</span><span class='line'>      });
+</span><span class='line'>  ctx.save();</span></code></pre></td></tr></table></div></figure>
+
+
+<p>到這裡為止是畫時鐘大圓跟刻度，不需要用到座標變換。
+這裡將畫布作第一次乾淨的存檔。
+也就是說，平移跟旋轉量都是0。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>       <span class="nx">ctx</span><span class="p">.</span><span class="nx">translate</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span><span class="nx">options</span><span class="p">.</span><span class="nx">y</span><span class="p">);</span>
+</span><span class='line'>      <span class="nx">ctx</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span><span class="o">*</span><span class="p">((</span><span class="k">this</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">plus</span><span class="o">+</span><span class="k">this</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">angle</span><span class="p">)</span><span class="o">/</span><span class="k">this</span><span class="p">.</span><span class="nx">puzzle</span><span class="p">.</span><span class="nx">length</span><span class="p">));</span>
+</span><span class='line'>      <span class="nx">ctx</span><span class="p">.</span><span class="nx">drawImage</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">img</span><span class="p">,</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="o">-</span><span class="nx">options</span><span class="p">.</span><span class="nx">y</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">37</span><span class="p">);</span>
+</span><span class='line'>      <span class="nx">ctx</span><span class="p">.</span><span class="nx">restore</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>開始畫第一根指針，需要旋轉<code>angle+plus</code>角度。
+畫完之後就呼叫<code>restore()</code>回到旋轉量是0的時候。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>   <span class="nx">ctx</span><span class="p">.</span><span class="nx">save</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>這裡還要再存一次乾淨的狀態給後面的畫布用。
+因為剛剛save過得狀態已經被restore用掉了！</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>   <span class="nx">ctx</span><span class="p">.</span><span class="nx">translate</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span><span class="nx">options</span><span class="p">.</span><span class="nx">y</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">ctx</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span><span class="o">*</span><span class="p">((</span><span class="k">this</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">angle</span><span class="o">+</span><span class="k">this</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">minus</span><span class="p">)</span><span class="o">/</span><span class="k">this</span><span class="p">.</span><span class="nx">puzzle</span><span class="p">.</span><span class="nx">length</span><span class="p">));</span>
+</span><span class='line'>  <span class="nx">ctx</span><span class="p">.</span><span class="nx">drawImage</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">img</span><span class="p">,</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="o">-</span><span class="nx">options</span><span class="p">.</span><span class="nx">y</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">37</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">ctx</span><span class="p">.</span><span class="nx">restore</span><span class="p">();</span>
+</span><span class='line'>  <span class="nx">ctx</span><span class="p">.</span><span class="nx">save</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>全部做完。</p>
+
+<h5>利用$.animate的動畫來控制Canvas</h5>
+
+<p>這邊參考了<a href="http://acko.net/blog/abusing-jquery-animate-for-fun-and-profit-and-bacon/">http://acko.net/blog/abusing-jquery-animate-for-fun-and-profit-and-bacon/</a>, 主要的技巧是</p>
+
+<h6>1. 對$.fx進行改寫，讓$.animate可以接受自訂的屬性</h6>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>   <span class="kd">var</span> <span class="nx">$_fx_step_default</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">fx</span><span class="p">.</span><span class="nx">step</span><span class="p">.</span><span class="nx">_default</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">$</span><span class="p">.</span><span class="nx">fx</span><span class="p">.</span><span class="nx">step</span><span class="p">.</span><span class="nx">_default</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">fx</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">fx</span><span class="p">.</span><span class="nx">elem</span><span class="p">.</span><span class="nx">customAnimate</span><span class="p">)</span> <span class="k">return</span> <span class="nx">$_fx_step_default</span><span class="p">(</span><span class="nx">fx</span><span class="p">);</span>
+</span><span class='line'>      <span class="nx">fx</span><span class="p">.</span><span class="nx">elem</span><span class="p">[</span><span class="nx">fx</span><span class="p">.</span><span class="nx">prop</span><span class="p">]</span> <span class="o">=</span> <span class="nx">fx</span><span class="p">.</span><span class="nx">now</span><span class="p">;</span>
+</span><span class='line'>      <span class="nx">fx</span><span class="p">.</span><span class="nx">elem</span><span class="p">.</span><span class="nx">updated</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h6>2. 利用一個中介div DOM，讓$.animate去動態改變自訂屬性。</h6>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>   <span class="k">this</span><span class="p">.</span><span class="nx">vars</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;&lt;div&gt;&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">angle</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">plus</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">minus</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">end</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">customAnimate</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">updated</span><span class="o">:</span> <span class="kc">true</span>
+</span><span class='line'>  <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h6>3. Canvas的繪圖函式中，直接拿中介DOM的屬性來繪圖。</h6>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">ctx</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span><span class="o">*</span><span class="p">((</span><span class="k">this</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">plus</span><span class="o">+</span><span class="k">this</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">angle</span><span class="p">)</span><span class="o">/</span><span class="k">this</span><span class="p">.</span><span class="nx">puzzle</span><span class="p">.</span><span class="nx">length</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h6>4. 任何時候想要讓Canvas有動畫只要直接對中介DIV作animate</h6>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>   <span class="nx">$</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">vars</span><span class="p">).</span><span class="nx">animate</span><span class="p">({</span> <span class="nx">angle</span><span class="o">:</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">plus</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">minus</span><span class="o">:</span> <span class="mi">0</span> <span class="p">},</span> <span class="p">{</span> <span class="nx">duration</span><span class="o">:</span> <span class="mi">2000</span><span class="p">}).</span><span class="nx">queue</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span> 
+</span><span class='line'>      <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">dequeue</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">}).</span><span class="nx">animate</span><span class="p">({</span> <span class="nx">angle</span><span class="o">:</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">plus</span><span class="o">:</span> <span class="nx">value</span><span class="p">,</span> <span class="nx">minus</span><span class="o">:</span> <span class="o">-</span><span class="nx">value</span> <span class="p">},</span> <span class="p">{</span> <span class="nx">duration</span><span class="o">:</span> <span class="mi">2000</span><span class="p">}).</span><span class="nx">queue</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>      <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">dequeue</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h6>5.建立一個定時函數檢查update的值</h6>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>   <span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">self</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">updated</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>      <span class="nx">self</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">updated</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>                  
+</span><span class='line'>      <span class="nx">self</span><span class="p">.</span><span class="nx">renderClock</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">},</span> <span class="mi">30</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Screenshot &amp; Github demo pages</h3>
+
+<p><img src="http://i.imgur.com/29wCE.jpg">
+<a href="http://alivedise.github.com/Eimorhc/">http://alivedise.github.com/Eimorhc/</a></p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-03-01T19:47:00+08:00" pubdate data-updated="true">Mar 1<span>st</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/javascriptmvc/'>javascriptmvc</a>, <a class='category' href='/blog/categories/jquery/'>jquery</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2012/02/29/chromie/">
+		
+			[Ff13-2] Chromie - Time Labyrinth Breaker</a>
+	</h2>
+	<div class="entry-content">
+		<h3>簡介</h3>
+
+<ul>
+<li>ff13-2裡面有個時鐘小遊戲，<a href="http://www.youtube.com/watch?v=ngJyJDLkRh0&amp;feature=related">影片參考</a>。</li>
+<li>說穿了就是一個排列組合遊戲，比起其他小遊戲這個難度高很多，所以網路上有一些人寫了程式專門解這個小遊戲。其實有很多解答版本，但是都不太好用，UI也&#8230;。乾脆自己寫一個！</li>
+<li>有參考某個flash實做，不過我用純html5+js實現。js核心是jquery1.7.1，框架是javascriptMVC。</li>
+</ul>
+
+
+<h3>命名</h3>
+
+<h4>Chromie = 克羅米</h4>
+
+<p>克羅米是魔獸世界WoW中擁有時間穿梭能力的種族-青銅龍族中的一員。
+<a href="http://www.wowwiki.com/Chromie">克羅米@wow wiki</a></p>
+
+<h3>實做</h3>
+
+<ol>
+<li>尋徑遞迴演算法
+核心片段</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">divergence</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">current</span><span class="p">,</span> <span class="nx">attractor_fields</span><span class="p">,</span> <span class="nx">paths</span><span class="p">,</span> <span class="nx">dir</span><span class="p">){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">attractor_fields</span><span class="p">[</span><span class="nx">current</span><span class="p">];</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="nx">value</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="c1">//paths.push(attractor_fields[current].toString()+&#39;[&#39;+(current+1)+&#39;]&#39;+dir);</span>
+</span><span class='line'>  <span class="nx">paths</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">current</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">attractor_fields</span><span class="p">[</span><span class="nx">current</span><span class="p">]</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="nx">paths</span><span class="p">.</span><span class="nx">length</span> <span class="o">==</span> <span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">renderSolution</span><span class="p">(</span><span class="nx">paths</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">renderHistroy</span><span class="p">(</span><span class="nx">paths</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;#steinsgate span&#39;</span><span class="p">).</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>          <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;#steinsgate&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;#steinsgate&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">paths</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span><span class="o">+</span><span class="s1">&#39;&lt;br/&gt;&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">path_fork1</span> <span class="o">=</span> <span class="nx">paths</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">path_fork2</span> <span class="o">=</span> <span class="nx">paths</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">af1</span> <span class="o">=</span> <span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">af2</span> <span class="o">=</span> <span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span>
+</span><span class='line'>  <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">divergence</span><span class="p">((</span><span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">length</span><span class="o">+</span><span class="nx">current</span><span class="o">+</span><span class="nx">value</span><span class="p">)</span><span class="o">%</span><span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span> <span class="nx">af1</span><span class="p">,</span> <span class="nx">path_fork1</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="o">+</span><span class="nx">value</span><span class="p">)</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">divergence</span><span class="p">((</span><span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">length</span><span class="o">+</span><span class="nx">current</span><span class="o">-</span><span class="nx">value</span><span class="p">)</span><span class="o">%</span><span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span> <span class="nx">af2</span><span class="p">,</span> <span class="nx">path_fork2</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="o">+</span><span class="nx">value</span><span class="p">);</span>  
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>Canvas繪圖
+就是查API而已，利用了mozilla的線上開發手冊<a href="https://developer.mozilla.org/zh-TW/">mdn</a></li>
+</ol>
+
+
+<h3>截圖及操作</h3>
+
+<p>1~6數字輸入刻度，0刪除前一個。
+<img src="http://i.imgur.com/MSugN.png"></p>
+
+<h3>Github demo page</h3>
+
+<p><a href="http://alivedise.github.com/chromie">chromie</a></p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-02-29T14:29:00+08:00" pubdate data-updated="true">Feb 29<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/jquery/'>jQuery</a>, <a class='category' href='/blog/categories/javascriptmvc/'>javascriptMVC</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2012/02/24/jmvc-forum-treasure/">
+		
+			[javascriptMVC] Forum 問答</a>
+	</h2>
+	<div class="entry-content">
+		<h3>如何手動觸發model update? 讓&#8217;{model} updated&#8217;可以被想要接受的人接收</h3>
+
+<ul>
+<li><a href="https://forum.javascriptmvc.com/topic/how-to-invoke-model-foo-updated-after-model-update">出處</a></li>
+<li>答案</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">modelInstanceVariable</span><span class="p">.</span><span class="nx">updated</span><span class="p">({});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<h3>可以讓view自動聽model更新自己改變自己嗎？</h3>
+
+<pre><code>不行。你應該用controller去更新view。
+</code></pre>
+
+<h3>如何除錯./js</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>./js -d  <span class="c">##開啟Rhino javascript debugger</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">##之後針對要除錯的js下load</span>
+</span><span class='line'>
+</span><span class='line'>load<span class="o">(</span><span class="s1">&#39;steal/pluginifyjs&#39;</span><span class="o">)</span>
+</span><span class='line'>steal.build.pluginify<span class="o">(</span><span class="s1">&#39;alive/gundam&#39;</span>,<span class="o">{})</span>;
+</span><span class='line'><span class="c">## 記得設中斷點</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-02-24T01:53:00+08:00" pubdate data-updated="true">Feb 24<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/javascriptmvc/'>javascriptMVC</a>
+
+
+</div>
+	
+</div></article>
+
+<nav id="pagenavi">
+    
+        <a href="/" class="prev">Prev</a>
+    
+    
+        <a href="/blog/page/3/" class="next">Next</a>
+    
+    <div class="center"><a href="/blog/archives">Blog Archives</a></div>
+</nav></div>
+	<footer id="footer" class="inner">Copyright &copy; 2012
+
+    Alive Kuo
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'ascheriit';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-29151691-2']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>
