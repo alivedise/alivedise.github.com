@@ -1,19 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://alivedise.github.com/blog/2012/02/01/octopress-tags/</loc>
-        <lastmod>2012-12-22T00:28:52+08:00</lastmod>
-    </url>
-    <url>
         <loc>http://alivedise.github.com/blog/2012/02/02/jmvc-overview/</loc>
         <lastmod>2012-12-22T00:28:52+08:00</lastmod>
     </url>
     <url>
         <loc>http://alivedise.github.com/blog/2012/02/02/jmvc-model/</loc>
-        <lastmod>2012-12-22T00:28:52+08:00</lastmod>
-    </url>
-    <url>
-        <loc>http://alivedise.github.com/blog/2012/02/02/working/</loc>
         <lastmod>2012-12-22T00:28:52+08:00</lastmod>
     </url>
     <url>
@@ -30,10 +22,6 @@
     </url>
     <url>
         <loc>http://alivedise.github.com/blog/2012/02/07/jmvc-controller/</loc>
-        <lastmod>2012-12-22T00:28:52+08:00</lastmod>
-    </url>
-    <url>
-        <loc>http://alivedise.github.com/blog/2012/02/07/jmvc-view/</loc>
         <lastmod>2012-12-22T00:28:52+08:00</lastmod>
     </url>
     <url>
@@ -153,11 +141,19 @@
         <lastmod>2012-12-22T00:51:57+08:00</lastmod>
     </url>
     <url>
+        <loc>http://alivedise.github.com/blog/2013/02/23/interview/</loc>
+        <lastmod>2013-02-23T17:32:55+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://alivedise.github.com/blog/2013/02/23/mock-moz-activity/</loc>
+        <lastmod>2013-02-23T17:37:10+08:00</lastmod>
+    </url>
+    <url>
         <loc>http://alivedise.github.com/blog/archives/</loc>
-        <lastmod>2012-12-22T00:51:57+08:00</lastmod>
+        <lastmod>2013-02-23T17:37:10+08:00</lastmod>
     </url>
     <url>
         <loc>http://alivedise.github.com/</loc>
-        <lastmod>2012-12-22T00:51:57+08:00</lastmod>
+        <lastmod>2013-02-23T17:37:10+08:00</lastmod>
     </url>
 </urlset>

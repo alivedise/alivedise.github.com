@@ -7,9 +7,8 @@
 	<meta name="author" content="Alive Kuo">
 
 	
-	<meta name="description" content="As you know, function in javascript is also an object,
-you could use a property of the object to keep function result.
-This is called Memorization. &hellip;">
+	<meta name="description" content="之前在寫單元測試時，需要測到MozActivity的呼叫。 當我們嘗試去取代window object中的MozActivity時，會遇到： 1
+0) Feed "before all" hook: Error: global leak detected: 解決方法： 在程式前面加上mocha. &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -92,6 +91,254 @@ This is called Memorization. &hellip;">
 
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/02/23/mock-moz-activity/">
+		
+			Mocha: MockMozActivity與global Leak</a>
+	</h2>
+	<div class="entry-content">
+		<p>之前在寫單元測試時，需要測到MozActivity的呼叫。</p>
+
+<p>當我們嘗試去取代window object中的MozActivity時，會遇到：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>0) Feed "before all" hook: Error: global leak detected:</span></code></pre></td></tr></table></div></figure>
+
+
+<p>解決方法：</p>
+
+<p>在程式前面加上<code>mocha.setup({ignoreLeaks: true});</code></p>
+
+<p>最後加上<code>mocha.setup({ignoreLeaks: true});</code></p>
+
+<p>碰到這個錯誤是在嘗試加入假的MozActivity給window時。</p>
+
+<p>因為要被測試的module中有如下的程式片段：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>  <span class="k">new</span> <span class="nx">MozActivity</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;view&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">data</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;url&#39;</span><span class="p">,</span> <span class="nx">url</span><span class="o">:</span> <span class="nx">url</span> <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>去呼叫browser app開啟某個特定網頁，</p>
+
+<p>但是mocha跑的環境中有可能：</p>
+
+<ol>
+<li>並沒有window.MozActivity這個物件。</li>
+<li>有MozActivity但是我們無法知道他是否被呼叫。</li>
+</ol>
+
+
+<p>這時候需要塞一個MockMozActivity給window，暫時取代掉原本的MozActivity，</p>
+
+<p>然後從MockMozActivity裡面留個變數記錄被呼叫的參數狀況來判斷程式是否正確的執行呼叫activity。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">mockMozActivityInstance</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">MockMozActivity</span> <span class="o">=</span> <span class="kd">function</span> <span class="nx">MozActivity</span><span class="p">(</span><span class="nx">configuration</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">property</span> <span class="k">in</span> <span class="nx">configuration</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">[</span><span class="nx">property</span><span class="p">]</span> <span class="o">=</span> <span class="nx">configuration</span><span class="p">[</span><span class="nx">property</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="nx">mockMozActivityInstance</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>之後寫的測試內容：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// Captive Portal Test</span>
+</span><span class='line'>  <span class="nx">test</span><span class="p">(</span><span class="s1">&#39;system/captive portal login w/o manual enable wifi&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">CaptivePortal</span><span class="p">.</span><span class="nx">handleEvent</span><span class="p">(</span><span class="nx">event</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">MockSettingsListener</span><span class="p">.</span><span class="nx">mCallback</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">assert</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span><span class="nx">mockMozActivityInstance</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span> <span class="s1">&#39;view&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>人生第一個單元測試程式完成 \O/</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-23T16:56:00+08:00" pubdate data-updated="true">Feb 23<span>rd</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/javascript/'>javascript</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/02/23/interview/">
+		
+			Mocha: MockMozActivity與global Leak</a>
+	</h2>
+	<div class="entry-content">
+		<p>之前在寫某個單元測試時，需要測到MozActivity的呼叫。</p>
+
+<p>當我們嘗試去取代window object中的MozActivity時，會遇到：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>0) Feed "before all" hook: Error: global leak detected:</span></code></pre></td></tr></table></div></figure>
+
+
+<p>解決方法：</p>
+
+<p>在程式前面加上<code>mocha.setup({ignoreLeaks: true});</code></p>
+
+<p>最後加上<code>mocha.setup({ignoreLeaks: true});</code></p>
+
+<p>碰到這個錯誤是在嘗試加入假的MozActivity給window時。</p>
+
+<p>因為要被測試的module中有如下的程式片段：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>  <span class="k">new</span> <span class="nx">MozActivity</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;view&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">data</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;url&#39;</span><span class="p">,</span> <span class="nx">url</span><span class="o">:</span> <span class="nx">url</span> <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>去呼叫browser app開啟某個特定網頁，</p>
+
+<p>但是mocha跑的環境中有可能：</p>
+
+<ol>
+<li>並沒有window.MozActivity這個物件。</li>
+<li>有MozActivity但是我們無法知道他是否被呼叫。</li>
+</ol>
+
+
+<p>這時候需要塞一個MockMozActivity給window，暫時取代掉原本的MozActivity，</p>
+
+<p>然後從MockMozActivity裡面留個變數記錄被呼叫的參數狀況來判斷程式是否正確的執行呼叫activity。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">mockMozActivityInstance</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">MockMozActivity</span> <span class="o">=</span> <span class="kd">function</span> <span class="nx">MozActivity</span><span class="p">(</span><span class="nx">configuration</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">property</span> <span class="k">in</span> <span class="nx">configuration</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">[</span><span class="nx">property</span><span class="p">]</span> <span class="o">=</span> <span class="nx">configuration</span><span class="p">[</span><span class="nx">property</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="nx">mockMozActivityInstance</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>之後寫的測試內容：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// Captive Portal Test</span>
+</span><span class='line'>  <span class="nx">test</span><span class="p">(</span><span class="s1">&#39;system/captive portal login w/o manual enable wifi&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">CaptivePortal</span><span class="p">.</span><span class="nx">handleEvent</span><span class="p">(</span><span class="nx">event</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">MockSettingsListener</span><span class="p">.</span><span class="nx">mCallback</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">assert</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span><span class="nx">mockMozActivityInstance</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span> <span class="s1">&#39;view&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-23T16:56:00+08:00" pubdate data-updated="true">Feb 23<span>rd</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/javascript/'>javascript</a>
+
+
+</div>
+	
+</div></article>
 
 
     <article class="post">
@@ -1255,243 +1502,6 @@ JMVC除了MVC還提供其他的case solution，而Backbone只專注在MVC身上�
 	
 </div></article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2012/05/24/javascriptmvc-slideshare/">
-		
-			JavascriptMVC on Slideshare</a>
-	</h2>
-	<div class="entry-content">
-		<p>陸續看到兩個介紹Backbone的投影片&#8211;JSDC上的<a href="https://speakerdeck.com/u/jaceju/p/refactoring-with-backbonejs">Refactor with Backbone.js</a>，以及在slideshare看到的<a href="http://www.slideshare.net/molily/javascript-application-architecture-with-backbonejs">Javasciprt Application Architecture with Backbone.js</a>，一時手癢就想自己也來做一個介紹JavascriptMVC的投影片丟到Slideshare。</p>
-
-<p>目前Slideshare上跟JavascriptMVC有關的投影片有：</p>
-
-<ol>
-<li><a href="http://www.slideshare.net/4lb0/javascriptmvc">JavascriptMVC</a>:六個月前上傳，德文？撰寫。</li>
-</ol>
-
-
-<div style="width:425px" id="__ss_10174435"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/4lb0/javascriptmvc" title="JavascriptMVC" target="_blank">JavascriptMVC</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/10174435" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" allowfullscreen></iframe></div>
-
-
-<ol>
-<li><a href="http://www.slideshare.net/zukunftsalick/introduction-to-javascriptmvc">Introduction to JavascriptMVC</a>:一年前上傳。</li>
-</ol>
-
-
-<div style="width:425px" id="__ss_7966052"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/zukunftsalick/introduction-to-javascriptmvc" title="Introduction to JavaScriptMVC" target="_blank">Introduction to JavaScriptMVC</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/7966052" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" allowfullscreen></iframe></div>
-
-
-<ol>
-<li><a href="http://www.slideshare.net/tdreyno/jqconf">Organizing Code with JavascriptMVC</a>:兩年前上傳。</li>
-</ol>
-
-
-<div style="width:425px" id="__ss_5467723"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/tdreyno/jqconf" title="Organizing Code with JavascriptMVC" target="_blank">Organizing Code with JavascriptMVC</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/5467723" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" allowfullscreen></iframe></div>
-
-
-<p>比起Backbone實在差太多了&#8230;而且有些還是過時的資訊。</p>
-
-<p>姑且先整理一下之前的Javascript簡介投影片丟上去，下個目標預計是寫一個完整的建置範例，不過目前還沒有想到主題。</p>
-
-<div style="width:425px" id="__ss_13010920"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/DavidSkyAlive/javascriptmvc-another-choice-of-web-framework" title="JavascriptMVC: Another choice of web framework" target="_blank">JavascriptMVC: Another choice of web framework</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/13010920" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" allowfullscreen></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/DavidSkyAlive" target="_blank">Alive Kuo</a> </div> </div>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-05-24T14:58:00+08:00" pubdate data-updated="true">May 24<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/javascriptmvc/'>javascriptmvc</a>
-
-
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2012/05/24/jsdc-tw-2012/">
-		
-			JSDC Taiwan 2012 - 參加心得</a>
-	</h2>
-	<div class="entry-content">
-		<p><img src="http://i.imgur.com/2YabH.jpg"></p>
-
-<p>5/19(六)有幸參加台灣第一屆Javascript開發者研討會，簡單寫一些感想。</p>
-
-<h1>[Key note] Node.JS on Windows Azure</h1>
-
-<p><img src="http://i.imgur.com/FWnFz.jpg"></p>
-
-<p>主講者是大學時期的好人助教ericsk，這次他代表微軟出席講在Windows Azure上的Node.js開發，</p>
-
-<p>因為我對windows沒什麼興趣，這場都在玩弄IPAD上的irc client度過。不過ericsk有特別提到他在OSDC被當梗的事情XD</p>
-
-<h1>[Key note] Gaia: A modern smartphone user interface in HTML5 and JavaScript</h1>
-
-<p><img src="http://i.imgur.com/ivh8j.jpg"></p>
-
-<p>講者是Mozilla的技術總監，全程英文。剛趕來現場的朋友說：「剛剛計程車上司機問我這老外是要去哪&#8230;」XDD</p>
-
-<p>因為投影片字蠻小英文又說的很快，不少人在IRC上表示聽不太懂。</p>
-
-<p>前面都在鋪梗，講網路瀏覽器的發展，到Mobile的現況（Android跟iOS各據一方），最後帶出HTML5才是未來所有應用的依歸，而Mozilla要透過B2G這個專案來帶動HTML5 app的發展，以及打破Mobile市場的現況。</p>
-
-<p>聽起來比較算是宣傳性質的演講，不過後來仔細看投影片還是有提到一些技術問題喔！</p>
-
-<h1>Happy Programming with CoffeeScript</h1>
-
-<p><img src="http://i.imgur.com/uLEL9.jpg"></p>
-
-<p>其實對CoffeeScript沒太大興趣，不過講者帶的很好很順，蠻吸引人去看的。</p>
-
-<p>然後聽到當天覺得最好笑的笑話：「CoffeeScript作者2009年第一次commit，有一天他在網路上看到有人自稱擁有5年+CS開發經驗，作者：「我想去跟他學一下&#8230;.」」</p>
-
-<p>簡單的說，CoffeeScript是在幫助你少寫一些code，要學的話還是建議學JavaScript，然後「用CoffeeScript寫」。</p>
-
-<h1>JavaScript MVC compare</h1>
-
-<p><img src="http://i.imgur.com/TyoNN.jpg"></p>
-
-<p>TonyQ主講，簡單介紹一個Web MVC framework該有的特徵。</p>
-
-<p>可惜並沒有詳細提到各家solution的好壞。</p>
-
-<p>View方面有拿JavascriptMVC的實作-EmbeddedJS當做範例。</p>
-
-<h1>Module Pattern, AMD, RequireJS</h1>
-
-<p><img src="http://i.imgur.com/Z20kJ.jpg"></p>
-
-<p>RequireJS聽起來很像是StealJS解決library dependancy的方案，不過好像不需要透過同時載入JS來做，有機會再找來研究看看。</p>
-
-<p>AMD我一直以為是某處理器廠牌Orz&#8230;原來是指Asynchronous Module Definition。聽說是業界現在的標準？</p>
-
-<p>Module Pattern就是講JS實作private的方式。</p>
-
-<h1>針對行動平台最佳化的HTML5動畫引擎設計與實作</h1>
-
-<p>我睡著了&#8230;.</p>
-
-<h1>前端工程師也可以淡定的開發網站應用！RedTea Web Framework！</h1>
-
-<p><img src="http://i.imgur.com/2M3uR.jpg"></p>
-
-<p>原本的題目是Non MVC framework。</p>
-
-<p>講者介紹自己基於Node.js開發的前後端結合framework，RedTea。</p>
-
-<p>名言：「強者都要自己做一套framework！」</p>
-
-<h1>淡淡定定用 JS 寫 WebAPI</h1>
-
-<p><img src="http://i.imgur.com/IDgs8.jpg"></p>
-
-<p>其實就是Mozilla B2G專案中的底層技術介紹，如何export API給上層網頁使用。</p>
-
-<h1>Refactoring with Backbone.js</h1>
-
-<p><img src="http://i.imgur.com/bATCl.jpg"></p>
-
-<p>講者用一個非常完整的例子介紹如何用Backbone來refactor一個網頁。</p>
-
-<h1>Lightning talks</h1>
-
-<h2>JavaScript，我真是搞不懂你啊！</h2>
-
-<p><img src="http://i.imgur.com/mblUI.jpg"></p>
-
-<p>WAT!</p>
-
-<p>用一些有趣的範例帶出js奇妙的語言特性。</p>
-
-<h2>造輪子好好玩</h2>
-
-<p>有人提到講者做的互動式即時聊天繪圖網頁比他介紹的jQuery Modile Slider還有趣很多，深表贊同。</p>
-
-<h2>一起來玩 d3.js 吧</h2>
-
-<p>唯一的女講者，我只記得這不是Diablo3&#8230;</p>
-
-<h2>眉角瞥見 JavaScript 與自由/開放源碼著作權議題</h2>
-
-<p>唯一的非工程師講者，從法律角度切入JS開發。</p>
-
-<h2>Spatial Publish Subscribe for LBS Applications</h2>
-
-<p>我完全想不起來這在說什麼&#8230;</p>
-
-<h2>有 Backbone 真是太好了</h2>
-
-<p>講者用backbone來改寫自己名片網站的故事。</p>
-
-<h1>沒技術含量的總結</h1>
-
-<ul>
-<li>有三場提到Backbone，只有一場有沾到JavascriptMVC。</li>
-<li>Node.js也是一個大宗。</li>
-<li>Mobile應用是另一個大主題。</li>
-<li>現場開發者大部分看起來都非常年輕。</li>
-<li>一眼看去大概90%的聽眾自備電腦，八成都是蘋果&#8230;</li>
-<li>希望明年有機會上台分享！</li>
-</ul>
-
-
-<p><img src="http://i.imgur.com/e0pcO.jpg"></p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-05-24T14:47:00+08:00" pubdate data-updated="true">May 24<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/javascript/'>javascript</a>
-
-
-</div>
-	
-</div></article>
-
 <nav id="pagenavi">
     
     
@@ -1499,7 +1509,7 @@ JMVC除了MVC還提供其他的case solution，而Backbone只專注在MVC身上�
     
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav></div>
-	<footer id="footer" class="inner">Copyright &copy; 2012
+	<footer id="footer" class="inner">Copyright &copy; 2013
 
     Alive Kuo
 

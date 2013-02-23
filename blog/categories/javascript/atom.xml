@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | Ascheriit]]></title>
   <link href="http://alivedise.github.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2012-12-22T00:53:56+08:00</updated>
+  <updated>2013-02-23T17:37:35+08:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -12,6 +12,172 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Mocha: MockMozActivity與global leak]]></title>
+    <link href="http://alivedise.github.com/blog/2013/02/23/mock-moz-activity/"/>
+    <updated>2013-02-23T16:56:00+08:00</updated>
+    <id>http://alivedise.github.com/blog/2013/02/23/mock-moz-activity</id>
+    <content type="html"><![CDATA[<p>之前在寫單元測試時，需要測到MozActivity的呼叫。</p>
+
+<p>當我們嘗試去取代window object中的MozActivity時，會遇到：</p>
+
+<p><code>
+0) Feed "before all" hook: Error: global leak detected:
+</code></p>
+
+<p>解決方法：</p>
+
+<p>在程式前面加上<code>mocha.setup({ignoreLeaks: true});</code></p>
+
+<p>最後加上<code>mocha.setup({ignoreLeaks: true});</code></p>
+
+<p>碰到這個錯誤是在嘗試加入假的MozActivity給window時。</p>
+
+<p>因為要被測試的module中有如下的程式片段：</p>
+
+<p>``` js
+  new MozActivity({</p>
+
+<pre><code>name: 'view',
+data: { type: 'url', url: url }
+</code></pre>
+
+<p>  });</p>
+
+<p>```</p>
+
+<p>去呼叫browser app開啟某個特定網頁，</p>
+
+<p>但是mocha跑的環境中有可能：</p>
+
+<ol>
+<li>並沒有window.MozActivity這個物件。</li>
+<li>有MozActivity但是我們無法知道他是否被呼叫。</li>
+</ol>
+
+
+<p>這時候需要塞一個MockMozActivity給window，暫時取代掉原本的MozActivity，</p>
+
+<p>然後從MockMozActivity裡面留個變數記錄被呼叫的參數狀況來判斷程式是否正確的執行呼叫activity。</p>
+
+<p>``` js
+'use strict';</p>
+
+<p>var mockMozActivityInstance = null;</p>
+
+<p>var MockMozActivity = function MozActivity(configuration) {
+  for (var property in configuration) {</p>
+
+<pre><code>this[property] = configuration[property];
+</code></pre>
+
+<p>  }
+  mockMozActivityInstance = this;
+  return this;
+};</p>
+
+<p>```</p>
+
+<p>之後寫的測試內容：</p>
+
+<p>``` js
+// Captive Portal Test
+  test('system/captive portal login w/o manual enable wifi', function() {</p>
+
+<pre><code>CaptivePortal.handleEvent(event);
+MockSettingsListener.mCallback(true);
+assert.equal(mockMozActivityInstance.name, 'view');
+</code></pre>
+
+<p>  });
+```</p>
+
+<p>人生第一個單元測試程式完成 \O/</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Mocha: MockMozActivity與global leak]]></title>
+    <link href="http://alivedise.github.com/blog/2013/02/23/interview/"/>
+    <updated>2013-02-23T16:56:00+08:00</updated>
+    <id>http://alivedise.github.com/blog/2013/02/23/interview</id>
+    <content type="html"><![CDATA[<p>之前在寫某個單元測試時，需要測到MozActivity的呼叫。</p>
+
+<p>當我們嘗試去取代window object中的MozActivity時，會遇到：</p>
+
+<p><code>
+0) Feed "before all" hook: Error: global leak detected:
+</code></p>
+
+<p>解決方法：</p>
+
+<p>在程式前面加上<code>mocha.setup({ignoreLeaks: true});</code></p>
+
+<p>最後加上<code>mocha.setup({ignoreLeaks: true});</code></p>
+
+<p>碰到這個錯誤是在嘗試加入假的MozActivity給window時。</p>
+
+<p>因為要被測試的module中有如下的程式片段：</p>
+
+<p>``` js
+  new MozActivity({</p>
+
+<pre><code>name: 'view',
+data: { type: 'url', url: url }
+</code></pre>
+
+<p>  });</p>
+
+<p>```</p>
+
+<p>去呼叫browser app開啟某個特定網頁，</p>
+
+<p>但是mocha跑的環境中有可能：</p>
+
+<ol>
+<li>並沒有window.MozActivity這個物件。</li>
+<li>有MozActivity但是我們無法知道他是否被呼叫。</li>
+</ol>
+
+
+<p>這時候需要塞一個MockMozActivity給window，暫時取代掉原本的MozActivity，</p>
+
+<p>然後從MockMozActivity裡面留個變數記錄被呼叫的參數狀況來判斷程式是否正確的執行呼叫activity。</p>
+
+<p>``` js
+'use strict';</p>
+
+<p>var mockMozActivityInstance = null;</p>
+
+<p>var MockMozActivity = function MozActivity(configuration) {
+  for (var property in configuration) {</p>
+
+<pre><code>this[property] = configuration[property];
+</code></pre>
+
+<p>  }
+  mockMozActivityInstance = this;
+  return this;
+};</p>
+
+<p>```</p>
+
+<p>之後寫的測試內容：</p>
+
+<p>``` js
+// Captive Portal Test
+  test('system/captive portal login w/o manual enable wifi', function() {</p>
+
+<pre><code>CaptivePortal.handleEvent(event);
+MockSettingsListener.mCallback(true);
+assert.equal(mockMozActivityInstance.name, 'view');
+</code></pre>
+
+<p>  });
+```</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Javascript memorization]]></title>
@@ -341,108 +507,6 @@ obj.publish = function (channel) {
 <p>```</p>
 
 <p>看起來是利用一個變數來根據widget name儲存callback function進array裡面。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[[javascript] function hoisting應用]]></title>
-    <link href="http://alivedise.github.com/blog/2012/06/10/function-hoisting-appliance/"/>
-    <updated>2012-06-10T16:17:00+08:00</updated>
-    <id>http://alivedise.github.com/blog/2012/06/10/function-hoisting-appliance</id>
-    <content type="html"><![CDATA[<h1>function hoisting是什麼？</h1>
-
-<p>一個不說你也不會知道的js語言特性，是指js看到function xxx(){}這種宣告時會把定義搬到scope最頂端
-的行為，hoisting的意思是提昇。</p>
-
-<p>自從在Javascript Patterns這本書上面看到hoisting的時候，就一直在想到底有什麼場合可以用到這個奇妙的語言特性？想不到還真的遇到了，雖然其實是個反例XD</p>
-
-<p>原文出自PTT Web_Design版「<a href="http://www.ptt.cc/bbs/Ajax/M.1339127132.A.226.html">[問題] jQuery 參數的問題~</a>」，這名網友問為什麼下面的js不能用？</p>
-
-<p>``` js
-$("#test").bind("click", aaa);
-var aaa= function () {</p>
-
-<pre><code>alert("yo");
-</code></pre>
-
-<p>}
-```</p>
-
-<h2>好傻好天真？</h2>
-
-<p>雖然不知道為什麼提問者堅持要把函數宣告放在用它之前，不過既然他問了，剛好這情況可以利用function hoisting來做，只是要修改一些小地方。</p>
-
-<p>``` js
-$("#test").bind("click", aaa);
-function aaa() {</p>
-
-<pre><code>alert("yo");
-</code></pre>
-
-<p>}
-/<em> function expression instead of function declaration </em>/
-```
-我另外寫了一個jsfiddle來測試：
-<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/Ytmqw/embedded/js,resources,html,css,result/light/"></iframe></p>
-
-<h1>做的到，只不過真的有必要嗎？</h1>
-
-<p>真的有太多理由不建議這樣做。原po在我回文後也沒出現，看來也無從得知他這樣做的理由了。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[把assignment變數轉成JSON格式]]></title>
-    <link href="http://alivedise.github.com/blog/2012/05/31/underline-to-json/"/>
-    <updated>2012-05-31T10:53:00+08:00</updated>
-    <id>http://alivedise.github.com/blog/2012/05/31/underline-to-json</id>
-    <content type="html"><![CDATA[<p>從Server端收到的資訊是如下格式</p>
-
-<pre><code>user_i0_name=alive
-user_i0_gender=male
-user_i0_age=27
-user_i0_company_c0_name=VIVOTEK
-user_i0_company_c1_name=Mozilla
-system_model=ABC1234
-network_hostname=abc1234
-</code></pre>
-
-<p>但是這些資訊很難使用，想透過某個統一的方法把它轉成object來用。
-另外存回去的時候要把object轉回跟上面一樣的assignment。</p>
-
-<h1>Step#1: eval拆解進區域變數</h1>
-
-<p>為了避免污染全域變數，前後取代原本的字串：
-<code>js
-var object = {};
-var string_rev_1 = (('object[\''+string).replace(/\r\n$/,'').replace(/\r\n/gi, '\r\nobject[\'').replace(/=/gi, '\']='));
-eval(string_rev_1);
-console.log(object)
-</code>
-現在得到了一個只有一層的object，是好用了一點，但是能不能切出多層來？</p>
-
-<h1>Step#2: 用底線切object</h1>
-
-<p><code>js
-var string_rev_2 = string_rev_1.replace(/_/gi, '\''][\'');
-</code>
-但是這樣會有undefined的問題，如</p>
-
-<pre><code>user_i0_name=alive
-</code></pre>
-
-<p>會變成</p>
-
-<pre><code>object['user']['i0']['name']=alive
-</code></pre>
-
-<p>eval後會出現<code>i10 is undefined.</code>
-所以要想辦法解決這種超前reference的狀況。</p>
-
-<p>一個辦法是用<code>\r\n</code>切分assignment後個別eval，再用try catch區塊判斷是否發生超前定義的情況。
-假設發生了就個別處理該assignment。</p>
-
-<p>(待續)</p>
 ]]></content>
   </entry>
   

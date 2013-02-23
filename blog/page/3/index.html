@@ -7,21 +7,9 @@
 	<meta name="author" content="Alive Kuo">
 
 	
-	<meta name="description" content="1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-$.Controller(&#39;Alive&#39;,{ //static init init: function(){ steal.dev.log(&#39;The class init will be invoked &hellip;">
+	<meta name="description" content="簡介 ff13-2裡面有個時鐘小遊戲，影片參考。
+說穿了就是一個排列組合遊戲，比起其他小遊戲這個難度高很多，所以網路上有一些人寫了程式專門解這個小遊戲。其實有很多解答版本，但是都不太好用，UI也&#8230;。乾脆自己寫一個！
+有參考某個flash實做，不過我用純html5+js實現。 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -104,6 +92,215 @@ $.Controller(&#39;Alive&#39;,{ //static init init: function(){ steal.dev.log(&#3
 
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2012/02/29/chromie/">
+		
+			[Ff13-2] Chromie - Time Labyrinth Breaker</a>
+	</h2>
+	<div class="entry-content">
+		<h3>簡介</h3>
+
+<ul>
+<li>ff13-2裡面有個時鐘小遊戲，<a href="http://www.youtube.com/watch?v=ngJyJDLkRh0&amp;feature=related">影片參考</a>。</li>
+<li>說穿了就是一個排列組合遊戲，比起其他小遊戲這個難度高很多，所以網路上有一些人寫了程式專門解這個小遊戲。其實有很多解答版本，但是都不太好用，UI也&#8230;。乾脆自己寫一個！</li>
+<li>有參考某個flash實做，不過我用純html5+js實現。js核心是jquery1.7.1，框架是javascriptMVC。</li>
+</ul>
+
+
+<h3>命名</h3>
+
+<h4>Chromie = 克羅米</h4>
+
+<p>克羅米是魔獸世界WoW中擁有時間穿梭能力的種族-青銅龍族中的一員。
+<a href="http://www.wowwiki.com/Chromie">克羅米@wow wiki</a></p>
+
+<h3>實做</h3>
+
+<ol>
+<li>尋徑遞迴演算法
+核心片段</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">divergence</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">current</span><span class="p">,</span> <span class="nx">attractor_fields</span><span class="p">,</span> <span class="nx">paths</span><span class="p">,</span> <span class="nx">dir</span><span class="p">){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">attractor_fields</span><span class="p">[</span><span class="nx">current</span><span class="p">];</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="nx">value</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="c1">//paths.push(attractor_fields[current].toString()+&#39;[&#39;+(current+1)+&#39;]&#39;+dir);</span>
+</span><span class='line'>  <span class="nx">paths</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">current</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">attractor_fields</span><span class="p">[</span><span class="nx">current</span><span class="p">]</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="nx">paths</span><span class="p">.</span><span class="nx">length</span> <span class="o">==</span> <span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">renderSolution</span><span class="p">(</span><span class="nx">paths</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">renderHistroy</span><span class="p">(</span><span class="nx">paths</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;#steinsgate span&#39;</span><span class="p">).</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>          <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;#steinsgate&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;#steinsgate&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">paths</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span><span class="o">+</span><span class="s1">&#39;&lt;br/&gt;&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">path_fork1</span> <span class="o">=</span> <span class="nx">paths</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">path_fork2</span> <span class="o">=</span> <span class="nx">paths</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">af1</span> <span class="o">=</span> <span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">af2</span> <span class="o">=</span> <span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span>
+</span><span class='line'>  <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">divergence</span><span class="p">((</span><span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">length</span><span class="o">+</span><span class="nx">current</span><span class="o">+</span><span class="nx">value</span><span class="p">)</span><span class="o">%</span><span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span> <span class="nx">af1</span><span class="p">,</span> <span class="nx">path_fork1</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="o">+</span><span class="nx">value</span><span class="p">)</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">divergence</span><span class="p">((</span><span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">length</span><span class="o">+</span><span class="nx">current</span><span class="o">-</span><span class="nx">value</span><span class="p">)</span><span class="o">%</span><span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span> <span class="nx">af2</span><span class="p">,</span> <span class="nx">path_fork2</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="o">+</span><span class="nx">value</span><span class="p">);</span>  
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>Canvas繪圖
+就是查API而已，利用了mozilla的線上開發手冊<a href="https://developer.mozilla.org/zh-TW/">mdn</a></li>
+</ol>
+
+
+<h3>截圖及操作</h3>
+
+<p>1~6數字輸入刻度，0刪除前一個。
+<img src="http://i.imgur.com/MSugN.png"></p>
+
+<h3>Github demo page</h3>
+
+<p><a href="http://alivedise.github.com/chromie">chromie</a></p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-02-29T14:29:00+08:00" pubdate data-updated="true">Feb 29<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/jquery/'>jQuery</a>, <a class='category' href='/blog/categories/javascriptmvc/'>javascriptMVC</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2012/02/24/jmvc-forum-treasure/">
+		
+			[javascriptMVC] Forum 問答</a>
+	</h2>
+	<div class="entry-content">
+		<h3>如何手動觸發model update? 讓&#8217;{model} updated&#8217;可以被想要接受的人接收</h3>
+
+<ul>
+<li><a href="https://forum.javascriptmvc.com/topic/how-to-invoke-model-foo-updated-after-model-update">出處</a></li>
+<li>答案</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">modelInstanceVariable</span><span class="p">.</span><span class="nx">updated</span><span class="p">({});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<h3>可以讓view自動聽model更新自己改變自己嗎？</h3>
+
+<pre><code>不行。你應該用controller去更新view。
+</code></pre>
+
+<h3>如何除錯./js</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>./js -d  <span class="c">##開啟Rhino javascript debugger</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">##之後針對要除錯的js下load</span>
+</span><span class='line'>
+</span><span class='line'>load<span class="o">(</span><span class="s1">&#39;steal/pluginifyjs&#39;</span><span class="o">)</span>
+</span><span class='line'>steal.build.pluginify<span class="o">(</span><span class="s1">&#39;alive/gundam&#39;</span>,<span class="o">{})</span>;
+</span><span class='line'><span class="c">## 記得設中斷點</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-02-24T01:53:00+08:00" pubdate data-updated="true">Feb 24<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/javascriptmvc/'>javascriptMVC</a>
+
+
+</div>
+	
+</div></article>
 
 
     <article class="post">
@@ -1403,85 +1600,6 @@ IE跟Chrome是正常的。</p>
 	
 </div></article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2012/02/07/image-tag-test-on-cats/">
-		
-			[Octopress] Image Tag of Octopress測試</a>
-	</h2>
-	<div class="entry-content">
-		<p><img src="https://p.twimg.com/Ak_HuCoCQAAY7cd.jpg:large">
-<img src="https://p.twimg.com/Ak_H-6VCQAAqQ8s.jpg:large">
-<img src="https://p.twimg.com/Ak9KYgzCIAAr5DM.jpg:large">
-<img src="https://p.twimg.com/Ak4qFNnCMAE9fA-.jpg:large"></p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-02-07T10:07:00+08:00" pubdate data-updated="true">Feb 7<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/cats/'>cats</a>, <a class='category' href='/blog/categories/octopress/'>octopress</a>
-
-
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2012/02/07/jmvc-view/">
-		
-			Jmvc_view</a>
-	</h2>
-	<div class="entry-content">
-		
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-02-07T10:00:00+08:00" pubdate data-updated="true">Feb 7<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-</div>
-	
-</div></article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/2/" class="prev">Prev</a>
@@ -1491,7 +1609,7 @@ IE跟Chrome是正常的。</p>
     
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav></div>
-	<footer id="footer" class="inner">Copyright &copy; 2012
+	<footer id="footer" class="inner">Copyright &copy; 2013
 
     Alive Kuo
 
