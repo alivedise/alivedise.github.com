@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | Ascheriit]]></title>
   <link href="http://alivedise.github.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2013-02-23T17:39:00+08:00</updated>
+  <updated>2013-05-27T16:13:40+08:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -12,6 +12,88 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Javascript從變形矩陣反推scale以及rotate]]></title>
+    <link href="http://alivedise.github.com/blog/2013/05/27/rotation-matrix/"/>
+    <updated>2013-05-27T15:41:00+08:00</updated>
+    <id>http://alivedise.github.com/blog/2013/05/27/rotation-matrix</id>
+    <content type="html"><![CDATA[<p>原文：
+<a href="http://css-tricks.com/get-value-of-css-rotation-through-javascript/">http://css-tricks.com/get-value-of-css-rotation-through-javascript/</a></p>
+
+<p>今天在追一個跟CSS3 transform有關的bug，
+過程中懷疑是transform沒有正確應用到element上。</p>
+
+<p>最後想到用一個Mutation Observer去觀察元素的變形矩陣的某個值（在此例為scale)的變化，
+因為transform沒辦法直接用element.style直接拿到scale的值，
+所以要用getComputedStyle拿出變形矩陣後算出來：
+（skew跟translate的值原文沒有提供算法，看了一下網路文章似乎沒辦法逆推。）</p>
+
+<p>```js
+  /<em>*
+   * Construct a mutation observer.
+   * See https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
+   </em>/</p>
+
+<p>  /<strong>
+   * var target = document.querySelector('#id');
+   */
+  var target = document.querySelector('#id');
+  /</strong>
+   * create an observer instance
+   */
+  var observer = new MutationObserver(function(mutations) {</p>
+
+<pre><code>/**
+ * We could iterate the mutations here,
+ * but I don't really care it now.
+ */
+var st = window.getComputedStyle(target, null);
+var tr = st.getPropertyValue("-webkit-transform") ||
+         st.getPropertyValue("-moz-transform") ||
+         st.getPropertyValue("-ms-transform") ||
+         st.getPropertyValue("-o-transform") ||
+         st.getPropertyValue("transform");
+
+console.log('Matrix: ' + tr);
+
+// rotation matrix - http://en.wikipedia.org/wiki/Rotation_matrix
+
+var values = tr.split('(')[1];
+values = values.split(')')[0];
+values = values.split(',');
+var a = values[0];
+var b = values[1];
+var c = values[2];
+var d = values[3];
+
+var scale = Math.sqrt(a*a + b*b);
+
+// arc sin, convert from radians to degrees, round
+// DO NOT USE: see update below
+var sin = b/scale;
+var angle = Math.round(Math.asin(sin) * (180/Math.PI));
+
+// works!
+console.log('Scale: ' + scale + ';Rotate: ' + angle + 'deg');
+</code></pre>
+
+<p>  });
+  /**</p>
+
+<pre><code>* Configuration of mutation observer.
+*/
+</code></pre>
+
+<p>  var config = { attributes: true, childList: true, characterData: true };</p>
+
+<p>  /<em>*
+   * pass in the target node, as well as the observer options
+   </em>/
+  observer.observe(target, config);
+```</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Mocha: MockMozActivity與global leak]]></title>
@@ -425,53 +507,6 @@ obj.publish = function (channel) {
 <p>```</p>
 
 <p>看起來是利用一個變數來根據widget name儲存callback function進array裡面。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[[javascript] function hoisting應用]]></title>
-    <link href="http://alivedise.github.com/blog/2012/06/10/function-hoisting-appliance/"/>
-    <updated>2012-06-10T16:17:00+08:00</updated>
-    <id>http://alivedise.github.com/blog/2012/06/10/function-hoisting-appliance</id>
-    <content type="html"><![CDATA[<h1>function hoisting是什麼？</h1>
-
-<p>一個不說你也不會知道的js語言特性，是指js看到function xxx(){}這種宣告時會把定義搬到scope最頂端
-的行為，hoisting的意思是提昇。</p>
-
-<p>自從在Javascript Patterns這本書上面看到hoisting的時候，就一直在想到底有什麼場合可以用到這個奇妙的語言特性？想不到還真的遇到了，雖然其實是個反例XD</p>
-
-<p>原文出自PTT Web_Design版「<a href="http://www.ptt.cc/bbs/Ajax/M.1339127132.A.226.html">[問題] jQuery 參數的問題~</a>」，這名網友問為什麼下面的js不能用？</p>
-
-<p>``` js
-$("#test").bind("click", aaa);
-var aaa= function () {</p>
-
-<pre><code>alert("yo");
-</code></pre>
-
-<p>}
-```</p>
-
-<h2>好傻好天真？</h2>
-
-<p>雖然不知道為什麼提問者堅持要把函數宣告放在用它之前，不過既然他問了，剛好這情況可以利用function hoisting來做，只是要修改一些小地方。</p>
-
-<p>``` js
-$("#test").bind("click", aaa);
-function aaa() {</p>
-
-<pre><code>alert("yo");
-</code></pre>
-
-<p>}
-/<em> function expression instead of function declaration </em>/
-```
-我另外寫了一個jsfiddle來測試：
-<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/Ytmqw/embedded/js,resources,html,css,result/light/"></iframe></p>
-
-<h1>做的到，只不過真的有必要嗎？</h1>
-
-<p>真的有太多理由不建議這樣做。原po在我回文後也沒出現，看來也無從得知他這樣做的理由了。</p>
 ]]></content>
   </entry>
   

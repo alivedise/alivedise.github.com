@@ -4,7 +4,7 @@
   <title><![CDATA[Category: gaia | Ascheriit]]></title>
   <link href="http://alivedise.github.com/blog/categories/gaia/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2013-02-23T17:39:00+08:00</updated>
+  <updated>2013-05-27T16:13:40+08:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -12,6 +12,168 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[From browser to browser. (1)]]></title>
+    <link href="http://alivedise.github.com/blog/2013/02/23/from-browser-to-browser/"/>
+    <updated>2013-02-23T17:40:00+08:00</updated>
+    <id>http://alivedise.github.com/blog/2013/02/23/from-browser-to-browser</id>
+    <content type="html"><![CDATA[<h3>Firefox OS</h3>
+
+<p><img src="http://cdn0.mos.techradar.futurecdn.net///art/mobile_phones/Mozilla/FireFoxOS/DeveloperHandsets/FirefoxOSDev-Press-01-580-75.jpg"></p>
+
+<h3>System app</h3>
+
+<p>Exactly, Firefox OS, also known for boot 2 gecko, is having only one app/one page.
+It's the system app, which controls all web app's life cycle.
+When FirefoxOS is booted, it would load the system app from <code>system/index.html</code>.
+Then system app would take care of the remaing stuff.</p>
+
+<ul>
+<li>Load modules</li>
+<li>Init homescreen app</li>
+<li>Etc.</li>
+</ul>
+
+
+<h3>Window Manager</h3>
+
+<p>Window Manager is the core of Firefox OS, the core of system app, which is in charge of creating/maintaining/killing apps.
+An app, indeed, is a web page.</p>
+
+<p>We use a magic, calling browser API, to make a web page act like an app.</p>
+
+<h3>Browser API</h3>
+
+<p>See https://developer.mozilla.org/en-US/docs/DOM/Using_the_Browser_API</p>
+
+<p>A browser here means that the web page acts like it is living in a browser <code>frame</code>.
+We are replacing nearly every XUL-based UI with HTML to <code>port</code> the WEB to the phone.</p>
+
+<h3>Module Pattern</h3>
+
+<p>Module pattern is the way Window Manager being imeplemented.
+A module pattern looks like:</p>
+
+<p>``` js
+var WindowManager = (function() {
+  var <em>id = 0;
+  var </em>running = {};
+  function createApp() {</p>
+
+<pre><code> var app = new App();
+ _running[_id] = app;
+ _id++;
+ return app;
+</code></pre>
+
+<p>  }</p>
+
+<p>  function killApp(id) {</p>
+
+<pre><code>delete _running[id];
+</code></pre>
+
+<p>  }</p>
+
+<p>  return {</p>
+
+<pre><code>create: createApp,
+kill: killApp
+</code></pre>
+
+<p>  }
+})();
+```</p>
+
+<p>Thus the Window Manager object only has 2 public attributes.
+This looks fine, but it would be a nightmare if this pattern grows to over 2000 lines.
+And it's having countless private functions now.</p>
+
+<p>This module now is not unit testable nor maintainable.</p>
+
+<h3>Break it!</h3>
+
+<h4>From the browser to the browser</h4>
+
+<p>Let's define a new object to contain and manage itself in its own scope.</p>
+
+<p>It's called <code>browserFrame</code>.</p>
+
+<h5>The responsibility of browserFrame</h5>
+
+<p>It would create an iframe with all attributes needed for BrowserAPI.</p>
+
+<p>``` js
+'use strict';</p>
+
+<p>/<em> Define a basic mozbrowser iframe class.
+ * It creates a mozbrowser iframe,
+ * and finally returns the DOM element it just created.
+ </em>/</p>
+
+<p>var BrowserFrame = (function invocation() {
+  function BrowserFrame() { // This constructor function is a local variable.</p>
+
+<pre><code>this.element = null;
+this.id = nextId++;
+this.callbacks = {};
+createFrame.apply(this, arguments); // All arguments are values to createFrame
+</code></pre>
+
+<p>  }</p>
+
+<p>  BrowserFrame.className = 'browser';</p>
+
+<p>  // These are helper functions and variables used by the methods above
+  // They're not part of the public API of the module, but they're hidden
+  // within this function scope so we don't have to define them as a
+  // property of Browser or prefix them with underscores.
+  function createFrame(url, origin, name, manifestURL, oop) {</p>
+
+<pre><code>var browser = document.createElement('iframe');
+browser.setAttribute('mozallowfullscreen', 'true');
+
+// Most apps currently need to be hosted in a special 'mozbrowser' iframe.
+// They also need to be marked as 'mozapp' to be recognized as apps by the
+// platform.
+browser.setAttribute('mozbrowser', 'true');
+
+if (oop)
+  browser.setAttribute('remote', 'true');
+
+if (manifestURL)
+  browser.setAttribute('mozapp', manifestURL);
+
+if (origin)
+  this.origin = origin;
+
+if (name)
+  this.name = name;
+
+browser.src = url;
+
+browser.id = this.className + this.id;
+
+browser.classList.add(BrowserFrame.className);
+
+// Store the element
+this.element = browser;
+</code></pre>
+
+<p>  };</p>
+
+<p>  var nextId = 0;
+  // The public API for this module is the Browser() constructor function.
+  // We need to export that function from this private namespace so that
+  // it can be used on the outside. In this case, we export the constructor
+  // by returning it. It becomes the value of the assignment expression
+  // on the first line above.
+  return BrowserFrame;
+}()); // Invoke the function immediately after defining it.
+```</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[[gaia] HTML5 Window Shade]]></title>

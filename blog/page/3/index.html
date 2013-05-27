@@ -7,9 +7,8 @@
 	<meta name="author" content="Alive Kuo">
 
 	
-	<meta name="description" content="如何手動觸發model update? 讓&#8217;{model} updated&#8217;可以被想要接受的人接收 出處
-答案 1
-modelInstanceVariable.updated({}); 可以讓view自動聽model更新自己改變自己嗎？ 不行。 &hellip;">
+	<meta name="description" content="簡介 既然都做解題程式了，乾脆連出題程式也作一下吧 命名 Eimorhc是Chromie的倒字。（本人極愛倒字）
+Chromie是解題者，出題者當然是要倒過來囉。 實作細節 Canvas圖形變換 第一個碰到的問題是要旋轉指針&#8230;而且要旋轉兩根。網路上有不少使用canvas實現時鐘的作品 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -92,6 +91,389 @@ modelInstanceVariable.updated({}); 可以讓view自動聽model更新自己改變
 
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2012/03/01/eimorhc/">
+		
+			[FF13-2] Eimorhc - Timeline Puzzle Creator 以及一些心得</a>
+	</h2>
+	<div class="entry-content">
+		<h3>簡介</h3>
+
+<p>既然都做解題程式了，乾脆連出題程式也作一下吧</p>
+
+<h4>命名</h4>
+
+<p>Eimorhc是Chromie的倒字。（本人極愛倒字）
+Chromie是解題者，出題者當然是要倒過來囉。</p>
+
+<h3>實作細節</h3>
+
+<h4>Canvas圖形變換</h4>
+
+<ol>
+<li>第一個碰到的問題是要旋轉指針&#8230;而且要旋轉兩根。網路上有不少使用canvas實現時鐘的作品，不過我大致看了一下決定自己用canvas刻。
+
+<h5>參考網頁</h5>
+
+一樣是MDN的<a href="https://developer.mozilla.org/zh_tw/Canvas_%E6%95%99%E5%AD%B8">Canvas教學</a>
+
+<h5>Canvas的save/restore</h5>
+
+<p>在這邊卡了一下，
+以我的理解restore跟save要成對使用，是用來區隔不同座標變換組合的起點跟終點。
+以下用畫這個時鐘的函式當範例：</p></li>
+</ol>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>renderClock: function(){
+</span><span class='line'>  var canvas = this.element.find('#canvas canvas')[0], self = this;
+</span><span class='line'>  var ctx = canvas.getContext("2d");
+</span><span class='line'>  var options = self.constructor.defaults.canvas;
+</span><span class='line'>  ctx.clearRect(0, 0, canvas.width, canvas.height);
+</span><span class='line'>
+</span><span class='line'>  ctx.beginPath();
+</span><span class='line'>  ctx.arc(options.x,options.y,options.C,0,Math.PI*2,true); // 外圈
+</span><span class='line'>  ctx.fillStyle = 'black';
+</span><span class='line'>  ctx.font= 'bold 18px sans-serif';
+</span><span class='line'>  ctx.fill();
+</span><span class='line'>  $.each(self.puzzle, function(index, value){
+</span><span class='line'>          var slice = index/self.puzzle.length;
+</span><span class='line'>          if(self.available[index] && !self.steped[index])
+</span><span class='line'>          {
+</span><span class='line'>              ctx.beginPath();
+</span><span class='line'>              ctx.fillStyle = "#0186d1";
+</span><span class='line'>              ctx.strokeStyle = "#0186d1";
+</span><span class='line'>              ctx.arc(options.x+options.r*Math.sin(2*Math.PI*slice), options.y-options.r*Math.cos(2*Math.PI*slice), 10, 0, Math.PI*2, true);   
+</span><span class='line'>              ctx.fill();
+</span><span class='line'>              ctx.closePath();
+</span><span class='line'>          }
+</span><span class='line'>          if(!self.steped[index])
+</span><span class='line'>          {
+</span><span class='line'>              ctx.fillStyle = self.constructor.defaults.color[value];
+</span><span class='line'>              ctx.fillText(value, options.x-6+options.r*Math.sin(2*Math.PI*slice), options.y+6-options.r*Math.cos(2*Math.PI*slice));   
+</span><span class='line'>          }
+</span><span class='line'>      });
+</span><span class='line'>  ctx.save();</span></code></pre></td></tr></table></div></figure>
+
+
+<p>到這裡為止是畫時鐘大圓跟刻度，不需要用到座標變換。
+這裡將畫布作第一次乾淨的存檔。
+也就是說，平移跟旋轉量都是0。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>       <span class="nx">ctx</span><span class="p">.</span><span class="nx">translate</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span><span class="nx">options</span><span class="p">.</span><span class="nx">y</span><span class="p">);</span>
+</span><span class='line'>      <span class="nx">ctx</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span><span class="o">*</span><span class="p">((</span><span class="k">this</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">plus</span><span class="o">+</span><span class="k">this</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">angle</span><span class="p">)</span><span class="o">/</span><span class="k">this</span><span class="p">.</span><span class="nx">puzzle</span><span class="p">.</span><span class="nx">length</span><span class="p">));</span>
+</span><span class='line'>      <span class="nx">ctx</span><span class="p">.</span><span class="nx">drawImage</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">img</span><span class="p">,</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="o">-</span><span class="nx">options</span><span class="p">.</span><span class="nx">y</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">37</span><span class="p">);</span>
+</span><span class='line'>      <span class="nx">ctx</span><span class="p">.</span><span class="nx">restore</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>開始畫第一根指針，需要旋轉<code>angle+plus</code>角度。
+畫完之後就呼叫<code>restore()</code>回到旋轉量是0的時候。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>   <span class="nx">ctx</span><span class="p">.</span><span class="nx">save</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>這裡還要再存一次乾淨的狀態給後面的畫布用。
+因為剛剛save過得狀態已經被restore用掉了！</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>   <span class="nx">ctx</span><span class="p">.</span><span class="nx">translate</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span><span class="nx">options</span><span class="p">.</span><span class="nx">y</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">ctx</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span><span class="o">*</span><span class="p">((</span><span class="k">this</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">angle</span><span class="o">+</span><span class="k">this</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">minus</span><span class="p">)</span><span class="o">/</span><span class="k">this</span><span class="p">.</span><span class="nx">puzzle</span><span class="p">.</span><span class="nx">length</span><span class="p">));</span>
+</span><span class='line'>  <span class="nx">ctx</span><span class="p">.</span><span class="nx">drawImage</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">img</span><span class="p">,</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="o">-</span><span class="nx">options</span><span class="p">.</span><span class="nx">y</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">37</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">ctx</span><span class="p">.</span><span class="nx">restore</span><span class="p">();</span>
+</span><span class='line'>  <span class="nx">ctx</span><span class="p">.</span><span class="nx">save</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>全部做完。</p>
+
+<h5>利用$.animate的動畫來控制Canvas</h5>
+
+<p>這邊參考了<a href="http://acko.net/blog/abusing-jquery-animate-for-fun-and-profit-and-bacon/">http://acko.net/blog/abusing-jquery-animate-for-fun-and-profit-and-bacon/</a>, 主要的技巧是</p>
+
+<h6>1. 對$.fx進行改寫，讓$.animate可以接受自訂的屬性</h6>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>   <span class="kd">var</span> <span class="nx">$_fx_step_default</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">fx</span><span class="p">.</span><span class="nx">step</span><span class="p">.</span><span class="nx">_default</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">$</span><span class="p">.</span><span class="nx">fx</span><span class="p">.</span><span class="nx">step</span><span class="p">.</span><span class="nx">_default</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">fx</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">fx</span><span class="p">.</span><span class="nx">elem</span><span class="p">.</span><span class="nx">customAnimate</span><span class="p">)</span> <span class="k">return</span> <span class="nx">$_fx_step_default</span><span class="p">(</span><span class="nx">fx</span><span class="p">);</span>
+</span><span class='line'>      <span class="nx">fx</span><span class="p">.</span><span class="nx">elem</span><span class="p">[</span><span class="nx">fx</span><span class="p">.</span><span class="nx">prop</span><span class="p">]</span> <span class="o">=</span> <span class="nx">fx</span><span class="p">.</span><span class="nx">now</span><span class="p">;</span>
+</span><span class='line'>      <span class="nx">fx</span><span class="p">.</span><span class="nx">elem</span><span class="p">.</span><span class="nx">updated</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h6>2. 利用一個中介div DOM，讓$.animate去動態改變自訂屬性。</h6>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>   <span class="k">this</span><span class="p">.</span><span class="nx">vars</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;&lt;div&gt;&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">angle</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">plus</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">minus</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">end</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">customAnimate</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">updated</span><span class="o">:</span> <span class="kc">true</span>
+</span><span class='line'>  <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h6>3. Canvas的繪圖函式中，直接拿中介DOM的屬性來繪圖。</h6>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">ctx</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span><span class="o">*</span><span class="p">((</span><span class="k">this</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">plus</span><span class="o">+</span><span class="k">this</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">angle</span><span class="p">)</span><span class="o">/</span><span class="k">this</span><span class="p">.</span><span class="nx">puzzle</span><span class="p">.</span><span class="nx">length</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h6>4. 任何時候想要讓Canvas有動畫只要直接對中介DIV作animate</h6>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>   <span class="nx">$</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">vars</span><span class="p">).</span><span class="nx">animate</span><span class="p">({</span> <span class="nx">angle</span><span class="o">:</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">plus</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">minus</span><span class="o">:</span> <span class="mi">0</span> <span class="p">},</span> <span class="p">{</span> <span class="nx">duration</span><span class="o">:</span> <span class="mi">2000</span><span class="p">}).</span><span class="nx">queue</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span> 
+</span><span class='line'>      <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">dequeue</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">}).</span><span class="nx">animate</span><span class="p">({</span> <span class="nx">angle</span><span class="o">:</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">plus</span><span class="o">:</span> <span class="nx">value</span><span class="p">,</span> <span class="nx">minus</span><span class="o">:</span> <span class="o">-</span><span class="nx">value</span> <span class="p">},</span> <span class="p">{</span> <span class="nx">duration</span><span class="o">:</span> <span class="mi">2000</span><span class="p">}).</span><span class="nx">queue</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>      <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">dequeue</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h6>5.建立一個定時函數檢查update的值</h6>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>   <span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">self</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">updated</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>      <span class="nx">self</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">updated</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>                  
+</span><span class='line'>      <span class="nx">self</span><span class="p">.</span><span class="nx">renderClock</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">},</span> <span class="mi">30</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Screenshot &amp; Github demo pages</h3>
+
+<p><img src="http://i.imgur.com/29wCE.jpg">
+<a href="http://alivedise.github.com/Eimorhc/">http://alivedise.github.com/Eimorhc/</a></p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-03-01T19:47:00+08:00" pubdate data-updated="true">Mar 1<span>st</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/javascriptmvc/'>javascriptmvc</a>, <a class='category' href='/blog/categories/jquery/'>jquery</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2012/02/29/chromie/">
+		
+			[Ff13-2] Chromie - Time Labyrinth Breaker</a>
+	</h2>
+	<div class="entry-content">
+		<h3>簡介</h3>
+
+<ul>
+<li>ff13-2裡面有個時鐘小遊戲，<a href="http://www.youtube.com/watch?v=ngJyJDLkRh0&amp;feature=related">影片參考</a>。</li>
+<li>說穿了就是一個排列組合遊戲，比起其他小遊戲這個難度高很多，所以網路上有一些人寫了程式專門解這個小遊戲。其實有很多解答版本，但是都不太好用，UI也&#8230;。乾脆自己寫一個！</li>
+<li>有參考某個flash實做，不過我用純html5+js實現。js核心是jquery1.7.1，框架是javascriptMVC。</li>
+</ul>
+
+
+<h3>命名</h3>
+
+<h4>Chromie = 克羅米</h4>
+
+<p>克羅米是魔獸世界WoW中擁有時間穿梭能力的種族-青銅龍族中的一員。
+<a href="http://www.wowwiki.com/Chromie">克羅米@wow wiki</a></p>
+
+<h3>實做</h3>
+
+<ol>
+<li>尋徑遞迴演算法
+核心片段</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">divergence</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">current</span><span class="p">,</span> <span class="nx">attractor_fields</span><span class="p">,</span> <span class="nx">paths</span><span class="p">,</span> <span class="nx">dir</span><span class="p">){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">attractor_fields</span><span class="p">[</span><span class="nx">current</span><span class="p">];</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="nx">value</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="c1">//paths.push(attractor_fields[current].toString()+&#39;[&#39;+(current+1)+&#39;]&#39;+dir);</span>
+</span><span class='line'>  <span class="nx">paths</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">current</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">attractor_fields</span><span class="p">[</span><span class="nx">current</span><span class="p">]</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="nx">paths</span><span class="p">.</span><span class="nx">length</span> <span class="o">==</span> <span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">renderSolution</span><span class="p">(</span><span class="nx">paths</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">renderHistroy</span><span class="p">(</span><span class="nx">paths</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;#steinsgate span&#39;</span><span class="p">).</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>          <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;#steinsgate&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;#steinsgate&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">paths</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span><span class="o">+</span><span class="s1">&#39;&lt;br/&gt;&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">path_fork1</span> <span class="o">=</span> <span class="nx">paths</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">path_fork2</span> <span class="o">=</span> <span class="nx">paths</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">af1</span> <span class="o">=</span> <span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">af2</span> <span class="o">=</span> <span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span>
+</span><span class='line'>  <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">divergence</span><span class="p">((</span><span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">length</span><span class="o">+</span><span class="nx">current</span><span class="o">+</span><span class="nx">value</span><span class="p">)</span><span class="o">%</span><span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span> <span class="nx">af1</span><span class="p">,</span> <span class="nx">path_fork1</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="o">+</span><span class="nx">value</span><span class="p">)</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">divergence</span><span class="p">((</span><span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">length</span><span class="o">+</span><span class="nx">current</span><span class="o">-</span><span class="nx">value</span><span class="p">)</span><span class="o">%</span><span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span> <span class="nx">af2</span><span class="p">,</span> <span class="nx">path_fork2</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="o">+</span><span class="nx">value</span><span class="p">);</span>  
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>Canvas繪圖
+就是查API而已，利用了mozilla的線上開發手冊<a href="https://developer.mozilla.org/zh-TW/">mdn</a></li>
+</ol>
+
+
+<h3>截圖及操作</h3>
+
+<p>1~6數字輸入刻度，0刪除前一個。
+<img src="http://i.imgur.com/MSugN.png"></p>
+
+<h3>Github demo page</h3>
+
+<p><a href="http://alivedise.github.com/chromie">chromie</a></p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-02-29T14:29:00+08:00" pubdate data-updated="true">Feb 29<span>th</span>, 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/jquery/'>jQuery</a>, <a class='category' href='/blog/categories/javascriptmvc/'>javascriptMVC</a>
+
+
+</div>
+	
+</div></article>
 
 
     <article class="post">
@@ -1069,444 +1451,6 @@ IE跟Chrome是正常的。</p>
 
 
 	<a class='category' href='/blog/categories/w3c/'>w3c</a>
-
-
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2012/02/09/slickgrid-api-list/">
-		
-			[jQuery] SlickGrid API列表</a>
-	</h2>
-	<div class="entry-content">
-		<h2>Grid options</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'>    <span class="kd">var</span> <span class="nx">defaults</span> <span class="o">=</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">headerHeight</span><span class="o">:</span> <span class="mi">25</span><span class="p">,</span>                <span class="c1">//header高度</span>
-</span><span class='line'>        <span class="nx">rowHeight</span><span class="o">:</span> <span class="mi">25</span><span class="p">,</span>                   <span class="c1">//列高</span>
-</span><span class='line'>        <span class="nx">defaultColumnWidth</span><span class="o">:</span> <span class="mi">80</span><span class="p">,</span>          <span class="c1">//預設欄位寬度</span>
-</span><span class='line'>        <span class="nx">enableAddRow</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>             <span class="c1">//可否新增列</span>
-</span><span class='line'>        <span class="nx">leaveSpaceForNewRows</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>     <span class="c1">//是否預留新列空間</span>
-</span><span class='line'>        <span class="nx">editable</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>                 <span class="c1">//是否可編輯</span>
-</span><span class='line'>        <span class="nx">autoEdit</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>                  <span class="c1">//?</span>
-</span><span class='line'>        <span class="nx">enableCellNavigation</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>      <span class="c1">//是否可用上下左右</span>
-</span><span class='line'>        <span class="nx">enableColumnReorder</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>       <span class="c1">//欄位是否可換位</span>
-</span><span class='line'>        <span class="nx">asyncEditorLoading</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">asyncEditorLoadDelay</span><span class="o">:</span> <span class="mi">100</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">forceFitColumns</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">enableAsyncPostRender</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">asyncPostRenderDelay</span><span class="o">:</span> <span class="mi">60</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">autoHeight</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">editorLock</span><span class="o">:</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">GlobalEditorLock</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">showHeaderRow</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">headerRowHeight</span><span class="o">:</span> <span class="mi">25</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">showTopPanel</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">topPanelHeight</span><span class="o">:</span> <span class="mi">25</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">formatterFactory</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">editorFactory</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">cellFlashingCssClass</span><span class="o">:</span> <span class="s2">&quot;flashing&quot;</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">selectedCellCssClass</span><span class="o">:</span> <span class="s2">&quot;selected&quot;</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">multiSelect</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">enableTextSelectionOnCells</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">dataItemColumnValueExtractor</span><span class="o">:</span> <span class="kc">null</span>
-</span><span class='line'>    <span class="p">};</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Column options</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'>       <span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">resizable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">sortable</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">minWidth</span><span class="o">:</span> <span class="mi">30</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">rerenderOnResize</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">headerCssClass</span><span class="o">:</span> <span class="kc">null</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<h2>Grid callback</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'>       <span class="s2">&quot;onScroll&quot;</span><span class="o">:</span>                     <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Event</span><span class="p">(),</span>
-</span><span class='line'>        <span class="s2">&quot;onSort&quot;</span><span class="o">:</span>                       <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Event</span><span class="p">(),</span>
-</span><span class='line'>        <span class="s2">&quot;onHeaderContextMenu&quot;</span><span class="o">:</span>          <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Event</span><span class="p">(),</span>
-</span><span class='line'>        <span class="s2">&quot;onHeaderClick&quot;</span><span class="o">:</span>                <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Event</span><span class="p">(),</span>
-</span><span class='line'>        <span class="s2">&quot;onMouseEnter&quot;</span><span class="o">:</span>                 <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Event</span><span class="p">(),</span>
-</span><span class='line'>        <span class="s2">&quot;onMouseLeave&quot;</span><span class="o">:</span>                 <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Event</span><span class="p">(),</span>
-</span><span class='line'>        <span class="s2">&quot;onClick&quot;</span><span class="o">:</span>                      <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Event</span><span class="p">(),</span>
-</span><span class='line'>        <span class="s2">&quot;onDblClick&quot;</span><span class="o">:</span>                   <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Event</span><span class="p">(),</span>
-</span><span class='line'>        <span class="s2">&quot;onContextMenu&quot;</span><span class="o">:</span>                <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Event</span><span class="p">(),</span>
-</span><span class='line'>        <span class="s2">&quot;onKeyDown&quot;</span><span class="o">:</span>                    <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Event</span><span class="p">(),</span>
-</span><span class='line'>        <span class="s2">&quot;onAddNewRow&quot;</span><span class="o">:</span>                  <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Event</span><span class="p">(),</span>
-</span><span class='line'>        <span class="s2">&quot;onValidationError&quot;</span><span class="o">:</span>            <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Event</span><span class="p">(),</span>
-</span><span class='line'>        <span class="s2">&quot;onViewportChanged&quot;</span><span class="o">:</span>            <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Event</span><span class="p">(),</span>
-</span><span class='line'>        <span class="s2">&quot;onColumnsReordered&quot;</span><span class="o">:</span>           <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Event</span><span class="p">(),</span>
-</span><span class='line'>        <span class="s2">&quot;onColumnsResized&quot;</span><span class="o">:</span>             <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Event</span><span class="p">(),</span>
-</span><span class='line'>        <span class="s2">&quot;onCellChange&quot;</span><span class="o">:</span>                 <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Event</span><span class="p">(),</span>
-</span><span class='line'>        <span class="s2">&quot;onBeforeEditCell&quot;</span><span class="o">:</span>             <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Event</span><span class="p">(),</span>
-</span><span class='line'>        <span class="s2">&quot;onBeforeCellEditorDestroy&quot;</span><span class="o">:</span>    <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Event</span><span class="p">(),</span>
-</span><span class='line'>        <span class="s2">&quot;onBeforeDestroy&quot;</span><span class="o">:</span>              <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Event</span><span class="p">(),</span>
-</span><span class='line'>        <span class="s2">&quot;onActiveCellChanged&quot;</span><span class="o">:</span>          <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Event</span><span class="p">(),</span>
-</span><span class='line'>        <span class="s2">&quot;onActiveCellPositionChanged&quot;</span><span class="o">:</span>  <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Event</span><span class="p">(),</span>
-</span><span class='line'>        <span class="s2">&quot;onDragInit&quot;</span><span class="o">:</span>                   <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Event</span><span class="p">(),</span>
-</span><span class='line'>        <span class="s2">&quot;onDragStart&quot;</span><span class="o">:</span>                  <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Event</span><span class="p">(),</span>
-</span><span class='line'>        <span class="s2">&quot;onDrag&quot;</span><span class="o">:</span>                       <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Event</span><span class="p">(),</span>
-</span><span class='line'>        <span class="s2">&quot;onDragEnd&quot;</span><span class="o">:</span>                    <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Event</span><span class="p">(),</span>
-</span><span class='line'>        <span class="s2">&quot;onSelectedRowsChanged&quot;</span><span class="o">:</span>        <span class="k">new</span> <span class="nx">Slick</span><span class="p">.</span><span class="nx">Event</span><span class="p">(),</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Grid API</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'>        <span class="c1">// Methods</span>
-</span><span class='line'>        <span class="s2">&quot;registerPlugin&quot;</span><span class="o">:</span>               <span class="nx">registerPlugin</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;unregisterPlugin&quot;</span><span class="o">:</span>             <span class="nx">unregisterPlugin</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getColumns&quot;</span><span class="o">:</span>                   <span class="nx">getColumns</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;setColumns&quot;</span><span class="o">:</span>                   <span class="nx">setColumns</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getColumnIndex&quot;</span><span class="o">:</span>               <span class="nx">getColumnIndex</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;updateColumnHeader&quot;</span><span class="o">:</span>           <span class="nx">updateColumnHeader</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;setSortColumn&quot;</span><span class="o">:</span>                <span class="nx">setSortColumn</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;autosizeColumns&quot;</span><span class="o">:</span>              <span class="nx">autosizeColumns</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getOptions&quot;</span><span class="o">:</span>                   <span class="nx">getOptions</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;setOptions&quot;</span><span class="o">:</span>                   <span class="nx">setOptions</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getData&quot;</span><span class="o">:</span>                      <span class="nx">getData</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getDataLength&quot;</span><span class="o">:</span>                <span class="nx">getDataLength</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getDataItem&quot;</span><span class="o">:</span>                  <span class="nx">getDataItem</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;setData&quot;</span><span class="o">:</span>                      <span class="nx">setData</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getSelectionModel&quot;</span><span class="o">:</span>            <span class="nx">getSelectionModel</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;setSelectionModel&quot;</span><span class="o">:</span>            <span class="nx">setSelectionModel</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getSelectedRows&quot;</span><span class="o">:</span>              <span class="nx">getSelectedRows</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;setSelectedRows&quot;</span><span class="o">:</span>              <span class="nx">setSelectedRows</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="s2">&quot;render&quot;</span><span class="o">:</span>                       <span class="nx">render</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;invalidate&quot;</span><span class="o">:</span>                   <span class="nx">invalidate</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;invalidateRow&quot;</span><span class="o">:</span>                <span class="nx">invalidateRow</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;invalidateRows&quot;</span><span class="o">:</span>               <span class="nx">invalidateRows</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;invalidateAllRows&quot;</span><span class="o">:</span>            <span class="nx">invalidateAllRows</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;updateCell&quot;</span><span class="o">:</span>                   <span class="nx">updateCell</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;updateRow&quot;</span><span class="o">:</span>                    <span class="nx">updateRow</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getViewport&quot;</span><span class="o">:</span>                  <span class="nx">getVisibleRange</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getRenderedRange&quot;</span><span class="o">:</span>             <span class="nx">getRenderedRange</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;resizeCanvas&quot;</span><span class="o">:</span>                 <span class="nx">resizeCanvas</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;updateRowCount&quot;</span><span class="o">:</span>               <span class="nx">updateRowCount</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;scrollRowIntoView&quot;</span><span class="o">:</span>            <span class="nx">scrollRowIntoView</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getCanvasNode&quot;</span><span class="o">:</span>                <span class="nx">getCanvasNode</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="s2">&quot;getCellFromPoint&quot;</span><span class="o">:</span>             <span class="nx">getCellFromPoint</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getCellFromEvent&quot;</span><span class="o">:</span>             <span class="nx">getCellFromEvent</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getActiveCell&quot;</span><span class="o">:</span>                <span class="nx">getActiveCell</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;setActiveCell&quot;</span><span class="o">:</span>                <span class="nx">setActiveCell</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getActiveCellNode&quot;</span><span class="o">:</span>            <span class="nx">getActiveCellNode</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getActiveCellPosition&quot;</span><span class="o">:</span>        <span class="nx">getActiveCellPosition</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;resetActiveCell&quot;</span><span class="o">:</span>              <span class="nx">resetActiveCell</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;editActiveCell&quot;</span><span class="o">:</span>               <span class="nx">makeActiveCellEditable</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getCellEditor&quot;</span><span class="o">:</span>                <span class="nx">getCellEditor</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getCellNode&quot;</span><span class="o">:</span>                  <span class="nx">getCellNode</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getCellNodeBox&quot;</span><span class="o">:</span>               <span class="nx">getCellNodeBox</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;canCellBeSelected&quot;</span><span class="o">:</span>            <span class="nx">canCellBeSelected</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;canCellBeActive&quot;</span><span class="o">:</span>              <span class="nx">canCellBeActive</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;navigatePrev&quot;</span><span class="o">:</span>                 <span class="nx">navigatePrev</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;navigateNext&quot;</span><span class="o">:</span>                 <span class="nx">navigateNext</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;navigateUp&quot;</span><span class="o">:</span>                   <span class="nx">navigateUp</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;navigateDown&quot;</span><span class="o">:</span>                 <span class="nx">navigateDown</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;navigateLeft&quot;</span><span class="o">:</span>                 <span class="nx">navigateLeft</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;navigateRight&quot;</span><span class="o">:</span>                <span class="nx">navigateRight</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;gotoCell&quot;</span><span class="o">:</span>                     <span class="nx">gotoCell</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getTopPanel&quot;</span><span class="o">:</span>                  <span class="nx">getTopPanel</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;showTopPanel&quot;</span><span class="o">:</span>                 <span class="nx">showTopPanel</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;hideTopPanel&quot;</span><span class="o">:</span>                 <span class="nx">hideTopPanel</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;showHeaderRowColumns&quot;</span><span class="o">:</span>         <span class="nx">showHeaderRowColumns</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;hideHeaderRowColumns&quot;</span><span class="o">:</span>         <span class="nx">hideHeaderRowColumns</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getHeaderRow&quot;</span><span class="o">:</span>                 <span class="nx">getHeaderRow</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getHeaderRowColumn&quot;</span><span class="o">:</span>           <span class="nx">getHeaderRowColumn</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getGridPosition&quot;</span><span class="o">:</span>              <span class="nx">getGridPosition</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;flashCell&quot;</span><span class="o">:</span>                    <span class="nx">flashCell</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;addCellCssStyles&quot;</span><span class="o">:</span>             <span class="nx">addCellCssStyles</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;setCellCssStyles&quot;</span><span class="o">:</span>             <span class="nx">setCellCssStyles</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;removeCellCssStyles&quot;</span><span class="o">:</span>          <span class="nx">removeCellCssStyles</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="s2">&quot;destroy&quot;</span><span class="o">:</span>                      <span class="nx">destroy</span><span class="p">,</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>DataView API</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'>        <span class="s2">&quot;beginUpdate&quot;</span><span class="o">:</span>      <span class="nx">beginUpdate</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;endUpdate&quot;</span><span class="o">:</span>        <span class="nx">endUpdate</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;setPagingOptions&quot;</span><span class="o">:</span> <span class="nx">setPagingOptions</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getPagingInfo&quot;</span><span class="o">:</span>    <span class="nx">getPagingInfo</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getItems&quot;</span><span class="o">:</span>         <span class="nx">getItems</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;setItems&quot;</span><span class="o">:</span>         <span class="nx">setItems</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;setFilter&quot;</span><span class="o">:</span>        <span class="nx">setFilter</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;sort&quot;</span><span class="o">:</span>             <span class="nx">sort</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;fastSort&quot;</span><span class="o">:</span>         <span class="nx">fastSort</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;reSort&quot;</span><span class="o">:</span>           <span class="nx">reSort</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;groupBy&quot;</span><span class="o">:</span>          <span class="nx">groupBy</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;setAggregators&quot;</span><span class="o">:</span>   <span class="nx">setAggregators</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;collapseGroup&quot;</span><span class="o">:</span>    <span class="nx">collapseGroup</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;expandGroup&quot;</span><span class="o">:</span>      <span class="nx">expandGroup</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getGroups&quot;</span><span class="o">:</span>        <span class="nx">getGroups</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getIdxById&quot;</span><span class="o">:</span>       <span class="nx">getIdxById</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getRowById&quot;</span><span class="o">:</span>       <span class="nx">getRowById</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getItemById&quot;</span><span class="o">:</span>      <span class="nx">getItemById</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getItemByIdx&quot;</span><span class="o">:</span>     <span class="nx">getItemByIdx</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;setRefreshHints&quot;</span><span class="o">:</span>  <span class="nx">setRefreshHints</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;setFilterArgs&quot;</span><span class="o">:</span>    <span class="nx">setFilterArgs</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;refresh&quot;</span><span class="o">:</span>          <span class="nx">refresh</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;updateItem&quot;</span><span class="o">:</span>       <span class="nx">updateItem</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;insertItem&quot;</span><span class="o">:</span>       <span class="nx">insertItem</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;addItem&quot;</span><span class="o">:</span>          <span class="nx">addItem</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;deleteItem&quot;</span><span class="o">:</span>       <span class="nx">deleteItem</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// data provider methods</span>
-</span><span class='line'>        <span class="s2">&quot;getLength&quot;</span><span class="o">:</span>        <span class="nx">getLength</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getItem&quot;</span><span class="o">:</span>          <span class="nx">getItem</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;getItemMetadata&quot;</span><span class="o">:</span>  <span class="nx">getItemMetadata</span><span class="p">,</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// events</span>
-</span><span class='line'>        <span class="s2">&quot;onRowCountChanged&quot;</span><span class="o">:</span>    <span class="nx">onRowCountChanged</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;onRowsChanged&quot;</span><span class="o">:</span>        <span class="nx">onRowsChanged</span><span class="p">,</span>
-</span><span class='line'>        <span class="s2">&quot;onPagingInfoChanged&quot;</span><span class="o">:</span>  <span class="nx">onPagingInfoChanged</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-02-09T11:03:00+08:00" pubdate data-updated="true">Feb 9<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/jquery/'>jquery</a>, <a class='category' href='/blog/categories/slickgrid/'>slickgrid</a>
-
-
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2012/02/07/image-tag-test-on-cats/">
-		
-			[Octopress] Image Tag of Octopress測試</a>
-	</h2>
-	<div class="entry-content">
-		<p><img src="https://p.twimg.com/Ak_HuCoCQAAY7cd.jpg:large">
-<img src="https://p.twimg.com/Ak_H-6VCQAAqQ8s.jpg:large">
-<img src="https://p.twimg.com/Ak9KYgzCIAAr5DM.jpg:large">
-<img src="https://p.twimg.com/Ak4qFNnCMAE9fA-.jpg:large"></p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-02-07T10:07:00+08:00" pubdate data-updated="true">Feb 7<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/cats/'>cats</a>, <a class='category' href='/blog/categories/octopress/'>octopress</a>
 
 
 </div>

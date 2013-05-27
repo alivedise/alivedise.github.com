@@ -4,7 +4,7 @@
   <title><![CDATA[Ascheriit]]></title>
   <link href="http://alivedise.github.com/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2013-02-23T17:39:00+08:00</updated>
+  <updated>2013-05-27T16:13:40+08:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -12,6 +12,363 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Javascript從變形矩陣反推scale以及rotate]]></title>
+    <link href="http://alivedise.github.com/blog/2013/05/27/rotation-matrix/"/>
+    <updated>2013-05-27T15:41:00+08:00</updated>
+    <id>http://alivedise.github.com/blog/2013/05/27/rotation-matrix</id>
+    <content type="html"><![CDATA[<p>原文：
+<a href="http://css-tricks.com/get-value-of-css-rotation-through-javascript/">http://css-tricks.com/get-value-of-css-rotation-through-javascript/</a></p>
+
+<p>今天在追一個跟CSS3 transform有關的bug，
+過程中懷疑是transform沒有正確應用到element上。</p>
+
+<p>最後想到用一個Mutation Observer去觀察元素的變形矩陣的某個值（在此例為scale)的變化，
+因為transform沒辦法直接用element.style直接拿到scale的值，
+所以要用getComputedStyle拿出變形矩陣後算出來：
+（skew跟translate的值原文沒有提供算法，看了一下網路文章似乎沒辦法逆推。）</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>  <span class="cm">/**</span>
+</span><span class='line'><span class="cm">   * Construct a mutation observer.</span>
+</span><span class='line'><span class="cm">   * See https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver</span>
+</span><span class='line'><span class="cm">   */</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="cm">/**</span>
+</span><span class='line'><span class="cm">   * var target = document.querySelector(&#39;#id&#39;);</span>
+</span><span class='line'><span class="cm">   */</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">target</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">&#39;#id&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="cm">/**</span>
+</span><span class='line'><span class="cm">   * create an observer instance</span>
+</span><span class='line'><span class="cm">   */</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">observer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MutationObserver</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">mutations</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * We could iterate the mutations here,</span>
+</span><span class='line'><span class="cm">     * but I don&#39;t really care it now.</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">st</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">getComputedStyle</span><span class="p">(</span><span class="nx">target</span><span class="p">,</span> <span class="kc">null</span><span class="p">);</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">tr</span> <span class="o">=</span> <span class="nx">st</span><span class="p">.</span><span class="nx">getPropertyValue</span><span class="p">(</span><span class="s2">&quot;-webkit-transform&quot;</span><span class="p">)</span> <span class="o">||</span>
+</span><span class='line'>             <span class="nx">st</span><span class="p">.</span><span class="nx">getPropertyValue</span><span class="p">(</span><span class="s2">&quot;-moz-transform&quot;</span><span class="p">)</span> <span class="o">||</span>
+</span><span class='line'>             <span class="nx">st</span><span class="p">.</span><span class="nx">getPropertyValue</span><span class="p">(</span><span class="s2">&quot;-ms-transform&quot;</span><span class="p">)</span> <span class="o">||</span>
+</span><span class='line'>             <span class="nx">st</span><span class="p">.</span><span class="nx">getPropertyValue</span><span class="p">(</span><span class="s2">&quot;-o-transform&quot;</span><span class="p">)</span> <span class="o">||</span>
+</span><span class='line'>             <span class="nx">st</span><span class="p">.</span><span class="nx">getPropertyValue</span><span class="p">(</span><span class="s2">&quot;transform&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Matrix: &#39;</span> <span class="o">+</span> <span class="nx">tr</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// rotation matrix - http://en.wikipedia.org/wiki/Rotation_matrix</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">values</span> <span class="o">=</span> <span class="nx">tr</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">];</span>
+</span><span class='line'>    <span class="nx">values</span> <span class="o">=</span> <span class="nx">values</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;)&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>    <span class="nx">values</span> <span class="o">=</span> <span class="nx">values</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="nx">values</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="nx">values</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="nx">values</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">d</span> <span class="o">=</span> <span class="nx">values</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">scale</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">a</span><span class="o">*</span><span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span><span class="o">*</span><span class="nx">b</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// arc sin, convert from radians to degrees, round</span>
+</span><span class='line'>    <span class="c1">// DO NOT USE: see update below</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">sin</span> <span class="o">=</span> <span class="nx">b</span><span class="o">/</span><span class="nx">scale</span><span class="p">;</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">angle</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">asin</span><span class="p">(</span><span class="nx">sin</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">180</span><span class="o">/</span><span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// works!</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Scale: &#39;</span> <span class="o">+</span> <span class="nx">scale</span> <span class="o">+</span> <span class="s1">&#39;;Rotate: &#39;</span> <span class="o">+</span> <span class="nx">angle</span> <span class="o">+</span> <span class="s1">&#39;deg&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>  <span class="cm">/**</span>
+</span><span class='line'><span class="cm">    * Configuration of mutation observer.</span>
+</span><span class='line'><span class="cm">    */</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">config</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">attributes</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">childList</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">characterData</span><span class="o">:</span> <span class="kc">true</span> <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="cm">/**</span>
+</span><span class='line'><span class="cm">   * pass in the target node, as well as the observer options</span>
+</span><span class='line'><span class="cm">   */</span>
+</span><span class='line'>  <span class="nx">observer</span><span class="p">.</span><span class="nx">observe</span><span class="p">(</span><span class="nx">target</span><span class="p">,</span> <span class="nx">config</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[From browser to browser. (1)]]></title>
+    <link href="http://alivedise.github.com/blog/2013/02/23/from-browser-to-browser/"/>
+    <updated>2013-02-23T17:40:00+08:00</updated>
+    <id>http://alivedise.github.com/blog/2013/02/23/from-browser-to-browser</id>
+    <content type="html"><![CDATA[<h3>Firefox OS</h3>
+
+<p><img src="http://cdn0.mos.techradar.futurecdn.net///art/mobile_phones/Mozilla/FireFoxOS/DeveloperHandsets/FirefoxOSDev-Press-01-580-75.jpg"></p>
+
+<h3>System app</h3>
+
+<p>Exactly, Firefox OS, also known for boot 2 gecko, is having only one app/one page.
+It&#8217;s the system app, which controls all web app&#8217;s life cycle.
+When FirefoxOS is booted, it would load the system app from <code>system/index.html</code>.
+Then system app would take care of the remaing stuff.</p>
+
+<ul>
+<li>Load modules</li>
+<li>Init homescreen app</li>
+<li>Etc.</li>
+</ul>
+
+
+<h3>Window Manager</h3>
+
+<p>Window Manager is the core of Firefox OS, the core of system app, which is in charge of creating/maintaining/killing apps.
+An app, indeed, is a web page.</p>
+
+<p>We use a magic, calling browser API, to make a web page act like an app.</p>
+
+<h3>Browser API</h3>
+
+<p>See https://developer.mozilla.org/en-US/docs/DOM/Using_the_Browser_API</p>
+
+<p>A browser here means that the web page acts like it is living in a browser <code>frame</code>.
+We are replacing nearly every XUL-based UI with HTML to <code>port</code> the WEB to the phone.</p>
+
+<h3>Module Pattern</h3>
+
+<p>Module pattern is the way Window Manager being imeplemented.
+A module pattern looks like:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">WindowManager</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">_id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">_running</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'>  <span class="kd">function</span> <span class="nx">createApp</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>     <span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">App</span><span class="p">();</span>
+</span><span class='line'>     <span class="nx">_running</span><span class="p">[</span><span class="nx">_id</span><span class="p">]</span> <span class="o">=</span> <span class="nx">app</span><span class="p">;</span>
+</span><span class='line'>     <span class="nx">_id</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>     <span class="k">return</span> <span class="nx">app</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">function</span> <span class="nx">killApp</span><span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">delete</span> <span class="nx">_running</span><span class="p">[</span><span class="nx">id</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">create</span><span class="o">:</span> <span class="nx">createApp</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">kill</span><span class="o">:</span> <span class="nx">killApp</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">})();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Thus the Window Manager object only has 2 public attributes.
+This looks fine, but it would be a nightmare if this pattern grows to over 2000 lines.
+And it&#8217;s having countless private functions now.</p>
+
+<p>This module now is not unit testable nor maintainable.</p>
+
+<h3>Break it!</h3>
+
+<h4>From the browser to the browser</h4>
+
+<p>Let&#8217;s define a new object to contain and manage itself in its own scope.</p>
+
+<p>It&#8217;s called <code>browserFrame</code>.</p>
+
+<h5>The responsibility of browserFrame</h5>
+
+<p>It would create an iframe with all attributes needed for BrowserAPI.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/* Define a basic mozbrowser iframe class.</span>
+</span><span class='line'><span class="cm"> * It creates a mozbrowser iframe,</span>
+</span><span class='line'><span class="cm"> * and finally returns the DOM element it just created.</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">BrowserFrame</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span> <span class="nx">invocation</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">function</span> <span class="nx">BrowserFrame</span><span class="p">()</span> <span class="p">{</span> <span class="c1">// This constructor function is a local variable.</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">element</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">nextId</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">callbacks</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'>    <span class="nx">createFrame</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span> <span class="c1">// All arguments are values to createFrame</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">BrowserFrame</span><span class="p">.</span><span class="nx">className</span> <span class="o">=</span> <span class="s1">&#39;browser&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// These are helper functions and variables used by the methods above</span>
+</span><span class='line'>  <span class="c1">// They&#39;re not part of the public API of the module, but they&#39;re hidden</span>
+</span><span class='line'>  <span class="c1">// within this function scope so we don&#39;t have to define them as a</span>
+</span><span class='line'>  <span class="c1">// property of Browser or prefix them with underscores.</span>
+</span><span class='line'>  <span class="kd">function</span> <span class="nx">createFrame</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">origin</span><span class="p">,</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">manifestURL</span><span class="p">,</span> <span class="nx">oop</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">browser</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;iframe&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">browser</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;mozallowfullscreen&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Most apps currently need to be hosted in a special &#39;mozbrowser&#39; iframe.</span>
+</span><span class='line'>    <span class="c1">// They also need to be marked as &#39;mozapp&#39; to be recognized as apps by the</span>
+</span><span class='line'>    <span class="c1">// platform.</span>
+</span><span class='line'>    <span class="nx">browser</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;mozbrowser&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">oop</span><span class="p">)</span>
+</span><span class='line'>      <span class="nx">browser</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;remote&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">manifestURL</span><span class="p">)</span>
+</span><span class='line'>      <span class="nx">browser</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;mozapp&#39;</span><span class="p">,</span> <span class="nx">manifestURL</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">origin</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">origin</span> <span class="o">=</span> <span class="nx">origin</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">name</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">browser</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="nx">url</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">browser</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">className</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">browser</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">BrowserFrame</span><span class="p">.</span><span class="nx">className</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Store the element</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">element</span> <span class="o">=</span> <span class="nx">browser</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">nextId</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">// The public API for this module is the Browser() constructor function.</span>
+</span><span class='line'>  <span class="c1">// We need to export that function from this private namespace so that</span>
+</span><span class='line'>  <span class="c1">// it can be used on the outside. In this case, we export the constructor</span>
+</span><span class='line'>  <span class="c1">// by returning it. It becomes the value of the assignment expression</span>
+</span><span class='line'>  <span class="c1">// on the first line above.</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">BrowserFrame</span><span class="p">;</span>
+</span><span class='line'><span class="p">}());</span> <span class="c1">// Invoke the function immediately after defining it.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Mocha: MockMozActivity與global leak]]></title>
@@ -1628,327 +1985,6 @@ ActiveSheet.WebBrowser1.Document.getElementById("import").Click
 <img src="https://lh6.googleusercontent.com/-an0dqr9lhAM/T6Qjwhk5emI/AAAAAAAAC5k/6-4SRu5Wv7Q/s1162/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2012-05-05+%E4%B8%8A%E5%8D%882.44.59.png"></li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[[FF13-2] Eimorhc - Timeline Puzzle Creator 以及一些心得]]></title>
-    <link href="http://alivedise.github.com/blog/2012/03/01/eimorhc/"/>
-    <updated>2012-03-01T19:47:00+08:00</updated>
-    <id>http://alivedise.github.com/blog/2012/03/01/eimorhc</id>
-    <content type="html"><![CDATA[<h3>簡介</h3>
-
-<p>既然都做解題程式了，乾脆連出題程式也作一下吧</p>
-
-<h4>命名</h4>
-
-<p>Eimorhc是Chromie的倒字。（本人極愛倒字）
-Chromie是解題者，出題者當然是要倒過來囉。</p>
-
-<h3>實作細節</h3>
-
-<h4>Canvas圖形變換</h4>
-
-<ol>
-<li>第一個碰到的問題是要旋轉指針&#8230;而且要旋轉兩根。網路上有不少使用canvas實現時鐘的作品，不過我大致看了一下決定自己用canvas刻。
-
-<h5>參考網頁</h5>
-
-一樣是MDN的<a href="https://developer.mozilla.org/zh_tw/Canvas_%E6%95%99%E5%AD%B8">Canvas教學</a>
-
-<h5>Canvas的save/restore</h5>
-
-<p>在這邊卡了一下，
-以我的理解restore跟save要成對使用，是用來區隔不同座標變換組合的起點跟終點。
-以下用畫這個時鐘的函式當範例：</p></li>
-</ol>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>renderClock: function(){
-</span><span class='line'>  var canvas = this.element.find('#canvas canvas')[0], self = this;
-</span><span class='line'>  var ctx = canvas.getContext("2d");
-</span><span class='line'>  var options = self.constructor.defaults.canvas;
-</span><span class='line'>  ctx.clearRect(0, 0, canvas.width, canvas.height);
-</span><span class='line'>
-</span><span class='line'>  ctx.beginPath();
-</span><span class='line'>  ctx.arc(options.x,options.y,options.C,0,Math.PI*2,true); // 外圈
-</span><span class='line'>  ctx.fillStyle = 'black';
-</span><span class='line'>  ctx.font= 'bold 18px sans-serif';
-</span><span class='line'>  ctx.fill();
-</span><span class='line'>  $.each(self.puzzle, function(index, value){
-</span><span class='line'>          var slice = index/self.puzzle.length;
-</span><span class='line'>          if(self.available[index] && !self.steped[index])
-</span><span class='line'>          {
-</span><span class='line'>              ctx.beginPath();
-</span><span class='line'>              ctx.fillStyle = "#0186d1";
-</span><span class='line'>              ctx.strokeStyle = "#0186d1";
-</span><span class='line'>              ctx.arc(options.x+options.r*Math.sin(2*Math.PI*slice), options.y-options.r*Math.cos(2*Math.PI*slice), 10, 0, Math.PI*2, true);   
-</span><span class='line'>              ctx.fill();
-</span><span class='line'>              ctx.closePath();
-</span><span class='line'>          }
-</span><span class='line'>          if(!self.steped[index])
-</span><span class='line'>          {
-</span><span class='line'>              ctx.fillStyle = self.constructor.defaults.color[value];
-</span><span class='line'>              ctx.fillText(value, options.x-6+options.r*Math.sin(2*Math.PI*slice), options.y+6-options.r*Math.cos(2*Math.PI*slice));   
-</span><span class='line'>          }
-</span><span class='line'>      });
-</span><span class='line'>  ctx.save();</span></code></pre></td></tr></table></div></figure>
-
-
-<p>到這裡為止是畫時鐘大圓跟刻度，不需要用到座標變換。
-這裡將畫布作第一次乾淨的存檔。
-也就是說，平移跟旋轉量都是0。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'>       <span class="nx">ctx</span><span class="p">.</span><span class="nx">translate</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span><span class="nx">options</span><span class="p">.</span><span class="nx">y</span><span class="p">);</span>
-</span><span class='line'>      <span class="nx">ctx</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span><span class="o">*</span><span class="p">((</span><span class="k">this</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">plus</span><span class="o">+</span><span class="k">this</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">angle</span><span class="p">)</span><span class="o">/</span><span class="k">this</span><span class="p">.</span><span class="nx">puzzle</span><span class="p">.</span><span class="nx">length</span><span class="p">));</span>
-</span><span class='line'>      <span class="nx">ctx</span><span class="p">.</span><span class="nx">drawImage</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">img</span><span class="p">,</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="o">-</span><span class="nx">options</span><span class="p">.</span><span class="nx">y</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">37</span><span class="p">);</span>
-</span><span class='line'>      <span class="nx">ctx</span><span class="p">.</span><span class="nx">restore</span><span class="p">();</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>開始畫第一根指針，需要旋轉<code>angle+plus</code>角度。
-畫完之後就呼叫<code>restore()</code>回到旋轉量是0的時候。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'>   <span class="nx">ctx</span><span class="p">.</span><span class="nx">save</span><span class="p">();</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>這裡還要再存一次乾淨的狀態給後面的畫布用。
-因為剛剛save過得狀態已經被restore用掉了！</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'>   <span class="nx">ctx</span><span class="p">.</span><span class="nx">translate</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">x</span><span class="p">,</span><span class="nx">options</span><span class="p">.</span><span class="nx">y</span><span class="p">);</span>
-</span><span class='line'>  <span class="nx">ctx</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span><span class="o">*</span><span class="p">((</span><span class="k">this</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">angle</span><span class="o">+</span><span class="k">this</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">minus</span><span class="p">)</span><span class="o">/</span><span class="k">this</span><span class="p">.</span><span class="nx">puzzle</span><span class="p">.</span><span class="nx">length</span><span class="p">));</span>
-</span><span class='line'>  <span class="nx">ctx</span><span class="p">.</span><span class="nx">drawImage</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">img</span><span class="p">,</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="o">-</span><span class="nx">options</span><span class="p">.</span><span class="nx">y</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">37</span><span class="p">);</span>
-</span><span class='line'>  <span class="nx">ctx</span><span class="p">.</span><span class="nx">restore</span><span class="p">();</span>
-</span><span class='line'>  <span class="nx">ctx</span><span class="p">.</span><span class="nx">save</span><span class="p">();</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>全部做完。</p>
-
-<h5>利用$.animate的動畫來控制Canvas</h5>
-
-<p>這邊參考了<a href="http://acko.net/blog/abusing-jquery-animate-for-fun-and-profit-and-bacon/">http://acko.net/blog/abusing-jquery-animate-for-fun-and-profit-and-bacon/</a>, 主要的技巧是</p>
-
-<h6>1. 對$.fx進行改寫，讓$.animate可以接受自訂的屬性</h6>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'>   <span class="kd">var</span> <span class="nx">$_fx_step_default</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">fx</span><span class="p">.</span><span class="nx">step</span><span class="p">.</span><span class="nx">_default</span><span class="p">;</span>
-</span><span class='line'>  <span class="nx">$</span><span class="p">.</span><span class="nx">fx</span><span class="p">.</span><span class="nx">step</span><span class="p">.</span><span class="nx">_default</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">fx</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">fx</span><span class="p">.</span><span class="nx">elem</span><span class="p">.</span><span class="nx">customAnimate</span><span class="p">)</span> <span class="k">return</span> <span class="nx">$_fx_step_default</span><span class="p">(</span><span class="nx">fx</span><span class="p">);</span>
-</span><span class='line'>      <span class="nx">fx</span><span class="p">.</span><span class="nx">elem</span><span class="p">[</span><span class="nx">fx</span><span class="p">.</span><span class="nx">prop</span><span class="p">]</span> <span class="o">=</span> <span class="nx">fx</span><span class="p">.</span><span class="nx">now</span><span class="p">;</span>
-</span><span class='line'>      <span class="nx">fx</span><span class="p">.</span><span class="nx">elem</span><span class="p">.</span><span class="nx">updated</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">};</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h6>2. 利用一個中介div DOM，讓$.animate去動態改變自訂屬性。</h6>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'>   <span class="k">this</span><span class="p">.</span><span class="nx">vars</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;&lt;div&gt;&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">angle</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
-</span><span class='line'>      <span class="nx">plus</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
-</span><span class='line'>      <span class="nx">minus</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
-</span><span class='line'>      <span class="nx">end</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-</span><span class='line'>      <span class="nx">customAnimate</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-</span><span class='line'>      <span class="nx">updated</span><span class="o">:</span> <span class="kc">true</span>
-</span><span class='line'>  <span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h6>3. Canvas的繪圖函式中，直接拿中介DOM的屬性來繪圖。</h6>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">ctx</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span><span class="o">*</span><span class="p">((</span><span class="k">this</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">plus</span><span class="o">+</span><span class="k">this</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">angle</span><span class="p">)</span><span class="o">/</span><span class="k">this</span><span class="p">.</span><span class="nx">puzzle</span><span class="p">.</span><span class="nx">length</span><span class="p">));</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h6>4. 任何時候想要讓Canvas有動畫只要直接對中介DIV作animate</h6>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'>   <span class="nx">$</span><span class="p">(</span><span class="nx">self</span><span class="p">.</span><span class="nx">vars</span><span class="p">).</span><span class="nx">animate</span><span class="p">({</span> <span class="nx">angle</span><span class="o">:</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">plus</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">minus</span><span class="o">:</span> <span class="mi">0</span> <span class="p">},</span> <span class="p">{</span> <span class="nx">duration</span><span class="o">:</span> <span class="mi">2000</span><span class="p">}).</span><span class="nx">queue</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span> 
-</span><span class='line'>      <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">dequeue</span><span class="p">();</span>
-</span><span class='line'>  <span class="p">}).</span><span class="nx">animate</span><span class="p">({</span> <span class="nx">angle</span><span class="o">:</span> <span class="nx">index</span><span class="p">,</span> <span class="nx">plus</span><span class="o">:</span> <span class="nx">value</span><span class="p">,</span> <span class="nx">minus</span><span class="o">:</span> <span class="o">-</span><span class="nx">value</span> <span class="p">},</span> <span class="p">{</span> <span class="nx">duration</span><span class="o">:</span> <span class="mi">2000</span><span class="p">}).</span><span class="nx">queue</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
-</span><span class='line'>      <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">dequeue</span><span class="p">();</span>
-</span><span class='line'>  <span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h6>5.建立一個定時函數檢查update的值</h6>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'>   <span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
-</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">self</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">updated</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
-</span><span class='line'>      <span class="nx">self</span><span class="p">.</span><span class="nx">vars</span><span class="p">.</span><span class="nx">updated</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>                  
-</span><span class='line'>      <span class="nx">self</span><span class="p">.</span><span class="nx">renderClock</span><span class="p">();</span>
-</span><span class='line'>  <span class="p">},</span> <span class="mi">30</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Screenshot &amp; Github demo pages</h3>
-
-<p><img src="http://i.imgur.com/29wCE.jpg">
-<a href="http://alivedise.github.com/Eimorhc/">http://alivedise.github.com/Eimorhc/</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[[ff13-2] chromie - Time labyrinth breaker]]></title>
-    <link href="http://alivedise.github.com/blog/2012/02/29/chromie/"/>
-    <updated>2012-02-29T14:29:00+08:00</updated>
-    <id>http://alivedise.github.com/blog/2012/02/29/chromie</id>
-    <content type="html"><![CDATA[<h3>簡介</h3>
-
-<ul>
-<li>ff13-2裡面有個時鐘小遊戲，<a href="http://www.youtube.com/watch?v=ngJyJDLkRh0&amp;feature=related">影片參考</a>。</li>
-<li>說穿了就是一個排列組合遊戲，比起其他小遊戲這個難度高很多，所以網路上有一些人寫了程式專門解這個小遊戲。其實有很多解答版本，但是都不太好用，UI也&#8230;。乾脆自己寫一個！</li>
-<li>有參考某個flash實做，不過我用純html5+js實現。js核心是jquery1.7.1，框架是javascriptMVC。</li>
-</ul>
-
-
-<h3>命名</h3>
-
-<h4>Chromie = 克羅米</h4>
-
-<p>克羅米是魔獸世界WoW中擁有時間穿梭能力的種族-青銅龍族中的一員。
-<a href="http://www.wowwiki.com/Chromie">克羅米@wow wiki</a></p>
-
-<h3>實做</h3>
-
-<ol>
-<li>尋徑遞迴演算法
-核心片段</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">divergence</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">current</span><span class="p">,</span> <span class="nx">attractor_fields</span><span class="p">,</span> <span class="nx">paths</span><span class="p">,</span> <span class="nx">dir</span><span class="p">){</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">attractor_fields</span><span class="p">[</span><span class="nx">current</span><span class="p">];</span>
-</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="nx">value</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="c1">//paths.push(attractor_fields[current].toString()+&#39;[&#39;+(current+1)+&#39;]&#39;+dir);</span>
-</span><span class='line'>  <span class="nx">paths</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">current</span><span class="p">);</span>
-</span><span class='line'>  <span class="nx">attractor_fields</span><span class="p">[</span><span class="nx">current</span><span class="p">]</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="nx">paths</span><span class="p">.</span><span class="nx">length</span> <span class="o">==</span> <span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">renderSolution</span><span class="p">(</span><span class="nx">paths</span><span class="p">);</span>
-</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">renderHistroy</span><span class="p">(</span><span class="nx">paths</span><span class="p">);</span>
-</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;#steinsgate span&#39;</span><span class="p">).</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>          <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;#steinsgate&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
-</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;#steinsgate&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">paths</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span><span class="o">+</span><span class="s1">&#39;&lt;br/&gt;&#39;</span><span class="p">);</span>
-</span><span class='line'>      <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">path_fork1</span> <span class="o">=</span> <span class="nx">paths</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">path_fork2</span> <span class="o">=</span> <span class="nx">paths</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">af1</span> <span class="o">=</span> <span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">af2</span> <span class="o">=</span> <span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span>
-</span><span class='line'>  <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">divergence</span><span class="p">((</span><span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">length</span><span class="o">+</span><span class="nx">current</span><span class="o">+</span><span class="nx">value</span><span class="p">)</span><span class="o">%</span><span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span> <span class="nx">af1</span><span class="p">,</span> <span class="nx">path_fork1</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="o">+</span><span class="nx">value</span><span class="p">)</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">divergence</span><span class="p">((</span><span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">length</span><span class="o">+</span><span class="nx">current</span><span class="o">-</span><span class="nx">value</span><span class="p">)</span><span class="o">%</span><span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span> <span class="nx">af2</span><span class="p">,</span> <span class="nx">path_fork2</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="o">+</span><span class="nx">value</span><span class="p">);</span>  
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li>Canvas繪圖
-就是查API而已，利用了mozilla的線上開發手冊<a href="https://developer.mozilla.org/zh-TW/">mdn</a></li>
-</ol>
-
-
-<h3>截圖及操作</h3>
-
-<p>1~6數字輸入刻度，0刪除前一個。
-<img src="http://i.imgur.com/MSugN.png"></p>
-
-<h3>Github demo page</h3>
-
-<p><a href="http://alivedise.github.com/chromie">chromie</a></p>
 ]]></content>
   </entry>
   
