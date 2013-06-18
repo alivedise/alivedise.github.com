@@ -1,108 +1,170 @@
 
-<!DOCTYPE HTML>
-<html>
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
-	<meta charset="utf-8">
-	<title>Ascheriit</title>
-	<meta name="author" content="Alive Kuo">
+  <meta charset="utf-8">
+  <title>Ascheriit</title>
+  <meta name="author" content="Alive Kuo">
+  <link rel="author" href="humans.txt">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-	
-	<meta name="description" content="原文：
-http://css-tricks.com/get-value-of-css-rotation-through-javascript/ 今天在追一個跟CSS3 transform有關的bug，
-過程中懷疑是transform沒有正確應用到element上。 最後想到用一個Mutation &hellip;">
-	
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+    
+  
+  <meta name="description" content=" ">
+  
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<link href="/atom.xml" rel="alternate" title="Ascheriit" type="application/atom+xml">
-	<link rel="canonical" href="">
-	<link href="/favicon.png" rel="shortcut icon">
-	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-	
+  
+  <link rel="canonical" href="http://alivedise.github.com/">
+  <link href="/favicon.png" rel="icon">
+  <link href='http://fonts.googleapis.com/css?family=Cantarell' rel='stylesheet' type='text/css'>
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Ascheriit" type="application/atom+xml">
+  <meta name="og:type" content="website" />
+  <meta name="og:site_name" content="Ascheriit" />
+  <meta name="og:title" content="Ascheriit" />
+  <meta name="og:description" content=" " />
+  <meta name="og:url" content="http://alivedise.github.com/index.html"/>
+  <meta name="url" content="http://alivedise.github.com/index.html">
+  
+  <meta name="distribution" content="global">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-29151691-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
 </head>
 
-<body>
-	<header id="header" class="inner"><h1><a href="/">Ascheriit</a></h1>
-<nav id="main-nav"><ul class="main">
-	<li><a href="/">Blog</a></li>
-	<li><a href="/blog/archives">Archives</a></li>
-</ul>
-</nav>
-<nav id="mobile-nav">
-	<div class="alignleft menu">
-		<a class="button">Menu</a>
-		<div class="container"><ul class="main">
-	<li><a href="/">Blog</a></li>
-	<li><a href="/blog/archives">Archives</a></li>
-</ul>
+<body   >
+  <div id="front-wrapper">
+  <div id="hero">
+    <div id="hero-inner" class="container">
+      <div class="span10 offset1">
+  <h1>
+    Ascheriit
+  </h1>
+  <h2>A blogging framework for hackers.</h2>
 </div>
-	</div>
-	<div class="alignright search">
-		<a class="button"></a>
-		<div class="container">
-			<form action="http://google.com/search" method="get">
-				<input type="text" name="q" results="0">
-				<input type="hidden" name="q" value="site:alivedise.github.com">
-			</form>
-		</div>
-	</div>
-</nav>
-<nav id="sub-nav" class="alignright">
-	<div class="social">
-		
-		
-		
-		<a class="twitter" href="http://twitter.com/alivedise" title="Twitter">Twitter</a>
-		
-		
-		<a class="github" href="https://github.com/alivedise" title="GitHub">GitHub</a>
-		
+
+    </div>
+  </div>
+  <section id="sub-hero">
+    <div class="container">
+      <div class="row">
+  <div class="span4">
+    <h2>about me</h2>
+<p>A little something about me.</p>
+
+  </div>
+  <div class="span6">
     
-		
-		
-		
-		
-		
-		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
-		
-	</div>
-	<form class="search" action="http://google.com/search" method="get">
-		<input class="alignright" type="text" name="q" results="0">
-		<input type="hidden" name="q" value="site:alivedise.github.com">
-	</form>
-</nav>
+<h2>recent public projects</h2>
+<dl id="gh_repos" class="dl-horizontal" data-github-user="alivedise" data-github-repo-count="5" data-github-skip-forks="true">
+  <dd class="loading">Status updating&#8230;</dd>
+</dl>
+<script src="/javascripts/github.js" type="text/javascript"> </script>
+<script src="/javascripts/libs/jXHR.js" type="text/javascript"> </script>
 
-</header>
-	
-		
-<div id="banner" class="inner">
-	<div class="container">
-		<ul class="feed"></ul>
-	</div>
-	<small><a href="http://twitter.com/alivedise">alivedise</a> @ <a href="http://twitter.com">Twitter</a></small>
-	<div class="loading">Loading...</div>
+
+  </div>
+  <div class="span2">
+    <h2>found on</h2>
+
+<a href="https://github.com/alivedise/" rel="tooltip" title="Github"><img class="social_icon" title="Github" alt="github icon" src="/images/glyphicons_381_github.png"></a>
+
+
+
+
+
+
+
+<a href="http://twitter.com/alivedise" rel="tooltip" title="Twitter"><img class="social_icon" title="Twitter" alt="Twitter icon" src="/images/glyphicons_391_twitter_t.png"></a>
+
+
+
+
+
+
+
+
+  </div>
 </div>
-<script src="/javascripts/twitter.js"></script>
-<script type="text/javascript">
-	(function($){
-		$('#banner').getTwitterFeed('alivedise', 4, false);
-	})(jQuery);
-</script>
 
-	
-	<div id="content" class="inner">
+    </div>
+  </section>
+  <div class="container">
+    <div class="row" id="post-container">
+    
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/05/27/rotation-matrix/">Javascript從變形矩陣反推scale以及rotate</a></h1>
+    
+    
+      <p class="meta">
+        
+  
 
 
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/05/27/rotation-matrix/">
-		
-			Javascript從變形矩陣反推scale以及rotate</a>
-	</h2>
-	<div class="entry-content">
-		<p>原文：
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-27T15:41:00+08:00" pubdate data-updated="true">May 27<span>th</span>, 2013</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascript/'>javascript</a>
+  
+</span>
+
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>原文：
 <a href="http://css-tricks.com/get-value-of-css-rotation-through-javascript/">http://css-tricks.com/get-value-of-css-rotation-through-javascript/</a></p>
 
 <p>今天在追一個跟CSS3 transform有關的bug，
@@ -225,14 +287,35 @@ http://css-tricks.com/get-value-of-css-rotation-through-javascript/ 今天在追
 </span><span class='line'>  <span class="nx">observer</span><span class="p">.</span><span class="nx">observe</span><span class="p">(</span><span class="nx">target</span><span class="p">,</span> <span class="nx">config</span><span class="p">);</span>
 </span></code></pre></td></tr></table></div></figure>
 
+</div>
+  
+  
 
-		
-		
-	</div>
+
+</div>
+
+      </article>
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/02/23/from-browser-to-browser/">From Browser to Browser. (1)</a></h1>
+    
+    
+      <p class="meta">
+        
+  
 
 
-<div class="meta">
-	<div class="date">
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
 
 
 
@@ -244,27 +327,24 @@ http://css-tricks.com/get-value-of-css-rotation-through-javascript/ 今天在追
   
 
 
-<time datetime="2013-05-27T15:41:00+08:00" pubdate data-updated="true">May 27<span>th</span>, 2013</time></div>
-	<div class="tags">
+<time datetime="2013-02-23T17:40:00+08:00" pubdate data-updated="true">Feb 23<span>rd</span>, 2013</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/gaia/'>gaia</a>
+  
+</span>
 
 
-	<a class='category' href='/blog/categories/javascript/'>javascript</a>
+        
+      </p>
+    
+  </header>
 
 
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/02/23/from-browser-to-browser/">
-		
-			From Browser to Browser. (1)</a>
-	</h2>
-	<div class="entry-content">
-		<h3>Firefox OS</h3>
+  <div class="entry-content"><h3>Firefox OS</h3>
 
 <p><img src="http://cdn0.mos.techradar.futurecdn.net///art/mobile_phones/Mozilla/FireFoxOS/DeveloperHandsets/FirefoxOSDev-Press-01-580-75.jpg"></p>
 
@@ -482,14 +562,35 @@ And it&#8217;s having countless private functions now.</p>
 </span><span class='line'><span class="p">}());</span> <span class="c1">// Invoke the function immediately after defining it.</span>
 </span></code></pre></td></tr></table></div></figure>
 
+</div>
+  
+  
 
-		
-		
-	</div>
+
+</div>
+
+      </article>
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/02/23/mock-moz-activity/">Mocha: MockMozActivity與global Leak</a></h1>
+    
+    
+      <p class="meta">
+        
+  
 
 
-<div class="meta">
-	<div class="date">
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
 
 
 
@@ -501,27 +602,24 @@ And it&#8217;s having countless private functions now.</p>
   
 
 
-<time datetime="2013-02-23T17:40:00+08:00" pubdate data-updated="true">Feb 23<span>rd</span>, 2013</time></div>
-	<div class="tags">
+<time datetime="2013-02-23T16:56:00+08:00" pubdate data-updated="true">Feb 23<span>rd</span>, 2013</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascript/'>javascript</a>
+  
+</span>
 
 
-	<a class='category' href='/blog/categories/gaia/'>gaia</a>
+        
+      </p>
+    
+  </header>
 
 
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/02/23/mock-moz-activity/">
-		
-			Mocha: MockMozActivity與global Leak</a>
-	</h2>
-	<div class="entry-content">
-		<p>之前在寫單元測試時，需要測到MozActivity的呼叫。</p>
+  <div class="entry-content"><p>之前在寫單元測試時，需要測到MozActivity的呼叫。</p>
 
 <p>當我們嘗試去取代window object中的MozActivity時，會遇到：</p>
 
@@ -607,14 +705,35 @@ And it&#8217;s having countless private functions now.</p>
 
 
 <p>人生第一個單元測試程式完成 \O/</p>
+</div>
+  
+  
 
-		
-		
-	</div>
+
+</div>
+
+      </article>
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/12/22/javascript-memorization/">Javascript Memorization</a></h1>
+    
+    
+      <p class="meta">
+        
+  
 
 
-<div class="meta">
-	<div class="date">
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
 
 
 
@@ -626,27 +745,24 @@ And it&#8217;s having countless private functions now.</p>
   
 
 
-<time datetime="2013-02-23T16:56:00+08:00" pubdate data-updated="true">Feb 23<span>rd</span>, 2013</time></div>
-	<div class="tags">
+<time datetime="2012-12-22T00:28:00+08:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2012</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascript/'>javascript</a>
+  
+</span>
 
 
-	<a class='category' href='/blog/categories/javascript/'>javascript</a>
+        
+      </p>
+    
+  </header>
 
 
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2012/12/22/javascript-memorization/">
-		
-			Javascript Memorization</a>
-	</h2>
-	<div class="entry-content">
-		<p>As you know, function in javascript is also an object,
+  <div class="entry-content"><p>As you know, function in javascript is also an object,
 you could use a property of the object to keep function result.
 This is called <code>Memorization</code>.</p>
 
@@ -731,14 +847,35 @@ But we have multiple arguments in this case, we then use stringilized JSON to be
 <li><p>Have fun with your function cache!</p></li>
 </ul>
 
+</div>
+  
+  
 
-		
-		
-	</div>
+
+</div>
+
+      </article>
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/09/04/web-activity/">Web Activity</a></h1>
+    
+    
+      <p class="meta">
+        
+  
 
 
-<div class="meta">
-	<div class="date">
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
 
 
 
@@ -750,27 +887,24 @@ But we have multiple arguments in this case, we then use stringilized JSON to be
   
 
 
-<time datetime="2012-12-22T00:28:00+08:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2012</time></div>
-	<div class="tags">
+<time datetime="2012-09-04T15:45:00+08:00" pubdate data-updated="true">Sep 4<span>th</span>, 2012</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/mozilla-javascript-html5/'>mozilla,javascript,html5</a>
+  
+</span>
 
 
-	<a class='category' href='/blog/categories/javascript/'>javascript</a>
+        
+      </p>
+    
+  </header>
 
 
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2012/09/04/web-activity/">
-		
-			Web Activity</a>
-	</h2>
-	<div class="entry-content">
-		<p>Web activity是由Mozilla設計並開發，用來使web app之間共享資源的框架。
+  <div class="entry-content"><p>Web activity是由Mozilla設計並開發，用來使web app之間共享資源的框架。
 在Firefox OS中已經存在Platform/UI上的實作，並且有一些內建的主要Web app已經利用Web activity來達成跨應用程式溝通的目的。
 （如：Gallery使用它來讓其他程式從它挑選圖片，也用同一技術來實現圖片分享到不同應用）</p>
 
@@ -945,14 +1079,35 @@ Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
 <p>Web activity是一個實驗中的新功能，雖然還有一些地方未盡完善，
 但是看著它從spec到platform implementation到UI implementation，
 就好像親身參與了網路/網頁進化的過程一樣。</p>
+</div>
+  
+  
 
-		
-		
-	</div>
+
+</div>
+
+      </article>
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/07/05/gaia-window-shade/">[Gaia] HTML5 Window Shade</a></h1>
+    
+    
+      <p class="meta">
+        
+  
 
 
-<div class="meta">
-	<div class="date">
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
 
 
 
@@ -964,27 +1119,24 @@ Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
   
 
 
-<time datetime="2012-09-04T15:45:00+08:00" pubdate data-updated="true">Sep 4<span>th</span>, 2012</time></div>
-	<div class="tags">
+<time datetime="2012-07-05T13:58:00+08:00" pubdate data-updated="true">Jul 5<span>th</span>, 2012</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/b2g/'>b2g</a>, <a class='category' href='/blog/categories/css3/'>css3</a>, <a class='category' href='/blog/categories/firefoxos/'>firefoxos</a>, <a class='category' href='/blog/categories/gaia/'>gaia</a>, <a class='category' href='/blog/categories/html5/'>html5</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>
+  
+</span>
 
 
-	<a class='category' href='/blog/categories/mozilla-javascript-html5/'>mozilla,javascript,html5</a>
+        
+      </p>
+    
+  </header>
 
 
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2012/07/05/gaia-window-shade/">
-		
-			[Gaia] HTML5 Window Shade</a>
-	</h2>
-	<div class="entry-content">
-		<h1>Window Shade</h1>
+  <div class="entry-content"><h1>Window Shade</h1>
 
 <p>我手上的Samsung Galaxy S3的作業系統是Android 4.0.4。</p>
 
@@ -1240,14 +1392,35 @@ Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
 
 <p>其實UX還沒有定義這個行為，所以pull request本身沒有被接受。
 不過&#8230;I did learn something from these codes:)</p>
+</div>
+  
+  
 
-		
-		
-	</div>
+
+</div>
+
+      </article>
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/06/10/web-application-core/">[WEB] Web Application Core</a></h1>
+    
+    
+      <p class="meta">
+        
+  
 
 
-<div class="meta">
-	<div class="date">
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
 
 
 
@@ -1259,27 +1432,24 @@ Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
   
 
 
-<time datetime="2012-07-05T13:58:00+08:00" pubdate data-updated="true">Jul 5<span>th</span>, 2012</time></div>
-	<div class="tags">
+<time datetime="2012-06-10T17:06:00+08:00" pubdate data-updated="true">Jun 10<span>th</span>, 2012</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascript/'>javascript</a>
+  
+</span>
 
 
-	<a class='category' href='/blog/categories/b2g/'>b2g</a>, <a class='category' href='/blog/categories/css3/'>css3</a>, <a class='category' href='/blog/categories/firefoxos/'>firefoxos</a>, <a class='category' href='/blog/categories/gaia/'>gaia</a>, <a class='category' href='/blog/categories/html5/'>html5</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>
+        
+      </p>
+    
+  </header>
 
 
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2012/06/10/web-application-core/">
-		
-			[WEB] Web Application Core</a>
-	</h2>
-	<div class="entry-content">
-		<p>最近看到這篇文章<a href="http://addyosmani.github.com/backbone-aura/">Backbone Aura</a>難得的有提到一個web application core該做些什麼事情？跟我想的蠻相似的，這邊將他列出來：
+  <div class="entry-content"><p>最近看到這篇文章<a href="http://addyosmani.github.com/backbone-aura/">Backbone Aura</a>難得的有提到一個web application core該做些什麼事情？跟我想的蠻相似的，這邊將他列出來：
 * 管理widget的life cycle的能力。
 * 低階DOM操作處理
 * 提供publish/subscribe的溝通管道給應用程式的各部位互相溝通</p>
@@ -1358,14 +1528,35 @@ Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
 
 
 <p>看起來是利用一個變數來根據widget name儲存callback function進array裡面。</p>
+</div>
+  
+  
 
-		
-		
-	</div>
+
+</div>
+
+      </article>
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/06/10/function-hoisting-appliance/">[Javascript] Function Hoisting應用</a></h1>
+    
+    
+      <p class="meta">
+        
+  
 
 
-<div class="meta">
-	<div class="date">
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
 
 
 
@@ -1377,27 +1568,24 @@ Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
   
 
 
-<time datetime="2012-06-10T17:06:00+08:00" pubdate data-updated="true">Jun 10<span>th</span>, 2012</time></div>
-	<div class="tags">
+<time datetime="2012-06-10T16:17:00+08:00" pubdate data-updated="true">Jun 10<span>th</span>, 2012</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascript/'>javascript</a>
+  
+</span>
 
 
-	<a class='category' href='/blog/categories/javascript/'>javascript</a>
+        
+      </p>
+    
+  </header>
 
 
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2012/06/10/function-hoisting-appliance/">
-		
-			[Javascript] Function Hoisting應用</a>
-	</h2>
-	<div class="entry-content">
-		<h1>function hoisting是什麼？</h1>
+  <div class="entry-content"><h1>function hoisting是什麼？</h1>
 
 <p>一個不說你也不會知道的js語言特性，是指js看到function xxx(){}這種宣告時會把定義搬到scope最頂端
 的行為，hoisting的意思是提昇。</p>
@@ -1442,14 +1630,35 @@ Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
 <h1>做的到，只不過真的有必要嗎？</h1>
 
 <p>真的有太多理由不建議這樣做。原po在我回文後也沒出現，看來也無從得知他這樣做的理由了。</p>
+</div>
+  
+  
 
-		
-		
-	</div>
+
+</div>
+
+      </article>
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/05/31/underline-to-json/">把assignment變數轉成JSON格式</a></h1>
+    
+    
+      <p class="meta">
+        
+  
 
 
-<div class="meta">
-	<div class="date">
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
 
 
 
@@ -1461,27 +1670,24 @@ Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
   
 
 
-<time datetime="2012-06-10T16:17:00+08:00" pubdate data-updated="true">Jun 10<span>th</span>, 2012</time></div>
-	<div class="tags">
+<time datetime="2012-05-31T10:53:00+08:00" pubdate data-updated="true">May 31<span>st</span>, 2012</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascript/'>javascript</a>
+  
+</span>
 
 
-	<a class='category' href='/blog/categories/javascript/'>javascript</a>
+        
+      </p>
+    
+  </header>
 
 
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2012/05/31/underline-to-json/">
-		
-			把assignment變數轉成JSON格式</a>
-	</h2>
-	<div class="entry-content">
-		<p>從Server端收到的資訊是如下格式</p>
+  <div class="entry-content"><p>從Server端收到的資訊是如下格式</p>
 
 <pre><code>user_i0_name=alive
 user_i0_gender=male
@@ -1536,14 +1742,35 @@ network_hostname=abc1234
 假設發生了就個別處理該assignment。</p>
 
 <p>(待續)</p>
+</div>
+  
+  
 
-		
-		
-	</div>
+
+</div>
+
+      </article>
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/05/30/can-js/">CanJS簡介</a></h1>
+    
+    
+      <p class="meta">
+        
+  
 
 
-<div class="meta">
-	<div class="date">
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
 
 
 
@@ -1555,27 +1782,24 @@ network_hostname=abc1234
   
 
 
-<time datetime="2012-05-31T10:53:00+08:00" pubdate data-updated="true">May 31<span>st</span>, 2012</time></div>
-	<div class="tags">
+<time datetime="2012-05-30T17:33:00+08:00" pubdate data-updated="true">May 30<span>th</span>, 2012</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascriptmvc/'>javascriptmvc</a>
+  
+</span>
 
 
-	<a class='category' href='/blog/categories/javascript/'>javascript</a>
+        
+      </p>
+    
+  </header>
 
 
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2012/05/30/can-js/">
-		
-			CanJS簡介</a>
-	</h2>
-	<div class="entry-content">
-		<h1>CanJS是什麼？</h1>
+  <div class="entry-content"><h1>CanJS是什麼？</h1>
 
 <p>CanJS是JMVC團隊把MVC這一塊獨立出來的結果，並且做了一些改良。以往談到JavascriptMVC跟Backbone的時候，其實這兩個框架的目的是不同的。
 JMVC除了MVC還提供其他的case solution，而Backbone只專注在MVC身上。另外一個不同點是JMVC當時的MVC framework只能綁定在jQuery上面，Backbone可以把核心抽換成zepto(一個類似于jQuery但輕量化的js lib)，這也是有手機網頁app使用backbone卻沒有人使用jmvc的原因。</p>
@@ -1599,55 +1823,122 @@ JMVC除了MVC還提供其他的case solution，而Backbone只專注在MVC身上�
 <h1>展望</h1>
 
 <p>以往JMVC為人詬病的就是本身提供的東西太複雜，不會有全部學完的動力。看來CanJS可以在專心這件事上趕上Backbone。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
+</div>
+  
   
 
 
-<time datetime="2012-05-30T17:33:00+08:00" pubdate data-updated="true">May 30<span>th</span>, 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/javascriptmvc/'>javascriptmvc</a>
-
-
 </div>
-	
-</div></article>
 
-<nav id="pagenavi">
+      </article>
     
-    
-        <a href="/blog/page/2/" class="next">Next</a>
-    
-    <div class="center"><a href="/blog/archives">Blog Archives</a></div>
-</nav></div>
-	<footer id="footer" class="inner">Copyright &copy; 2013
+    </div>
+      <div class="row">
+        <ul class="pager">
+          
+            <li class="previous">
+              <a href="/blog/page/2/">&larr; Older</a>
+            </li>
+          
+          
+        </ul>
+      </div>
+  </div>
+</div>
 
-    Alive Kuo
 
+  <div id="footer-widgets">
+  <div class="container">
+    <div class="row">
+  <div class="span3">
+    <h2>recent posts</h2>
+    <ul class="recent_posts">
+      
+        <li>
+          <a href="/blog/2013/05/27/rotation-matrix/">Javascript從變形矩陣反推scale以及rotate</a>
+        </li>
+      
+        <li>
+          <a href="/blog/2013/02/23/from-browser-to-browser/">From browser to browser. (1)</a>
+        </li>
+      
+        <li>
+          <a href="/blog/2013/02/23/mock-moz-activity/">Mocha: MockMozActivity與global leak</a>
+        </li>
+      
+        <li>
+          <a href="/blog/2012/12/22/javascript-memorization/">Javascript memorization</a>
+        </li>
+      
+        <li>
+          <a href="/blog/2012/09/04/web-activity/">Web activity</a>
+        </li>
+      
+    </ul>
+    <h2><a href="/blog/archives">archives</a></h2>
+  </div>
+  <div class="span3">
+    
+
+  </div>
+  <div class="span4">
+    
+<h2>twitter</h2>
+<a href="https://twitter.com/alivedise" class="twitter-follow-button" data-show-count="true" data-lang="en">Follow @alivedise</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+<div class="tweet" data-twitter-user="alivedise">
+</div>
+
+
+  </div>
+  <div class="span2">
+    <h2>found on</h2>
+
+<a href="https://github.com/alivedise/" rel="tooltip" title="Github"><img class="social_icon" title="Github" alt="github icon" src="/images/glyphicons_381_github.png"></a>
+
+
+
+
+
+
+
+<a href="http://twitter.com/alivedise" rel="tooltip" title="Twitter"><img class="social_icon" title="Twitter" alt="Twitter icon" src="/images/glyphicons_391_twitter_t.png"></a>
+
+
+
+
+
+
+
+
+  </div>
+</div>
+
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-left">
+  <a href="/">Ascheriit</a>
+  - Copyright &copy; 2013 - Alive Kuo
+</p>
+<p class="pull-right">
+  <span>Powered by <a href="http://octopress.org/">Octopress</a>.</span>
+  
+    <span>Designed by <a href="http://www.AdrianArtiles.com">Adrian Artiles</a>.</span>
+  
+</p>
+
+  </div>
 </footer>
-	<script src="/javascripts/slash.js"></script>
-<script src="/javascripts/jquery.fancybox.pack.js"></script>
-<script type="text/javascript">
-(function($){
-	$('.fancybox').fancybox();
-})(jQuery);
-</script> <!-- Delete or comment this line to disable Fancybox -->
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+<script>window.jQuery || document.write('<script src="/javascripts/libs/jquery-1.7.2.min.js" type="text/javascript"><\/script>')</script>
+<script src="/javascripts/libs/bootstrap.min.js" type="text/javascript"></script>
+<script src="/javascripts/jquery.tweet.js" type="text/javascript"></script>
+<script src="/javascripts/jquery.instagram.js" type="text/javascript"></script>
+<script src="/javascripts/libs/jquery.masonry.min.js" type="text/javascript"></script>
+<script src="/javascripts/custom.js" type="text/javascript"></script>
 
 
 <script type="text/javascript">
@@ -1665,17 +1956,29 @@ JMVC除了MVC還提供其他的case solution，而Backbone只專注在MVC身上�
 
 
 
-	<script type="text/javascript">
-		var _gaq = _gaq || [];
-		_gaq.push(['_setAccount', 'UA-29151691-2']);
-		_gaq.push(['_trackPageview']);
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
 
-		(function() {
-			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-		})();
-	</script>
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
 
 
 
