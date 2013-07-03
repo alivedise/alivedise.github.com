@@ -4,7 +4,7 @@
   <title><![CDATA[Ascheriit]]></title>
   <link href="http://alivedise.github.com/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2013-06-18T12:29:25+08:00</updated>
+  <updated>2013-07-03T19:34:17+08:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -12,6 +12,65 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Recent side projects: Alvitr, Lucifer, GaiaSystemAPIDOC]]></title>
+    <link href="http://alivedise.github.com/blog/2013/06/18/alvitr/"/>
+    <updated>2013-06-18T12:33:00+08:00</updated>
+    <id>http://alivedise.github.com/blog/2013/06/18/alvitr</id>
+    <content type="html"><![CDATA[<h3>Alvitr</h3>
+
+<p>Alvitr(艾爾薇妲）是北歐神話中戰女神的其中一名，其名意為「全知」。</p>
+
+<p>最近對某個遊戲(Puzzle &amp; Dragon)很沉迷，
+但是在網路上遍尋不著產生簽名檔的服務，
+於是就興起了想要自己做的念頭。</p>
+
+<p><a href="http://alivedise.github.io/alvitr">Alvitr</a></p>
+
+<p>大概花了一個禮拜的時間，本來想用Amazon AWS + node.js的組合來用伺服器端產生圖檔，
+但是遇到了不少問題如：
+1. AWS初始化實在太煩人了。
+2. node.js跑起來會莫名的crash，錯誤訊息看起來像是c語言的某個函式。（我不是在寫js嗎？！)</p>
+
+<p>後來還是決定用client端javascript application的形式做，
+至少IE9可以支援Canvas。</p>
+
+<h4>Canvas templating</h4>
+
+<p>因為目標是把使用者輸入的資料轉成不同大小內容配置也不同的圖片，</p>
+
+<p>於是我在想可以針對不同大小圖片弄一個像是configurtaion的物件，每次配置選擇改變只要換掉configuration就好了。</p>
+
+<p>最後成果<a href="https://github.com/alivedise/alvitr/blob/gh-pages/javascripts/client.js">client.js</a></p>
+
+<p>繪圖元件配置不外乎：x, y, weight, height, color等的參數，所以要創造一個新的配置物件只要複製貼上再去微調就好了。</p>
+
+<h3>Lucifer</h3>
+
+<blockquote><p>明亮之星，早晨之子啊，你何竟從天墜落？你這攻敗列國的何竟被砍倒在地上？你心裡曾說：我要升到天上；我要高舉我的寶座在神眾星以上；我要坐在聚會的山上，在北方的極處。我要升到高雲之上；我要與至上者同等。然而，你必墜落陰間，到坑中極深之處。</p></blockquote>
+
+
+<p><a href="http://alivedise.github.io/lucifer">Lucifer</a></p>
+
+<p>拿某篇文章來開的小玩笑，主要是用了ejs template engine來亂數產生一些怪物資料在文章內。</p>
+
+<h3>Gaia System API Documentation</h3>
+
+<p><a href="http://alivedise.github.io/gaia-system-jsdoc/">Gaia System JSDOC</a>
+<a href="https://github.com/alivedise/jsdoc3-bootstrap">JSDOC3 bootstrap template</a>
+不知道為什麼jsdoc2我電腦一直裝不成功，jsdoc3倒是很簡單的用npm就裝好了。</p>
+
+<p>找了一下找不到專門給jsdoc3用的好看template&#8230;我就自己套bootstrap上去了，成果如上。</p>
+
+<h3>其他</h3>
+
+<p>我還有一兩個一直很想做的probject&#8230;不過總是因為懶惰作罷:P</p>
+
+<p>回首到Mozilla也一年了，感覺自身還有很多不足&#8230;.
+督促自己寫side project只是開始而已，還要再努力阿！</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Javascript從變形矩陣反推scale以及rotate]]></title>
@@ -1950,41 +2009,6 @@ End Sub
 <pre><code>ActiveSheet.WebBrowser1.Document.getElementById("excel").innerHtml = "test"
 ActiveSheet.WebBrowser1.Document.getElementById("import").Click
 </code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Setup Gaia on Mac with Firefox Nightly build]]></title>
-    <link href="http://alivedise.github.com/blog/2012/05/05/gaia/"/>
-    <updated>2012-05-05T10:40:00+08:00</updated>
-    <id>http://alivedise.github.com/blog/2012/05/05/gaia</id>
-    <content type="html"><![CDATA[<ul>
-<li><p>本文來自<a href="https://github.com/jrburke/gaia-devserver">https://github.com/jrburke/gaia-devserver</a></p></li>
-<li><p>安裝Node
- PKG: <a href="https://sites.google.com/site/nodejsmacosx/">https://sites.google.com/site/nodejsmacosx/</a></p></li>
-<li>安裝<a href="http://nightly.mozilla.org/">Firefox Nightly Build</a></li>
-<li><p>修改<code>/etc/hosts</code>加入</p>
-
-<p> 127.0.0.1     gaiamobile.org</p></li>
-<li><p>安裝gaia</p>
-
-<p> mkdir b2g
- cd b2g
- git clone git://github.com/andreasgal/gaia.git
- git clone git://github.com/jrburke/gaia-devserver.git
- cd gaia
- GAIA_DOMAIN=gaiamobile.org:8424 make
- cd ..
- node gaia-devserver/devserver.js docRoot=gaia/apps</p></li>
-<li><p>啟動Firefox Nightly</p>
-
-<p> /Applications/FirefoxNightly.app/Contents/MacOS/firefox -profile /Users/alive/b2g/gaia/profile &#8211;no-remote http://homescreen.gaiamobile.org:8424</p></li>
-<li><p>開新分頁<code>about:config</code>，把<code>browser.offline-apps.notify</code>設成false</p></li>
-<li>加入一個新的Boolean設定值名為<code>dom.w3c_touch_events.enabled</code>設成true</li>
-<li>完成了！
-<img src="https://lh6.googleusercontent.com/-an0dqr9lhAM/T6Qjwhk5emI/AAAAAAAAC5k/6-4SRu5Wv7Q/s1162/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2012-05-05+%E4%B8%8A%E5%8D%882.44.59.png"></li>
-</ul>
-
 ]]></content>
   </entry>
   

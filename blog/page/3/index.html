@@ -73,7 +73,9 @@
       <div class="row">
   <div class="span4">
     <h2>about me</h2>
-<p>A little something about me.</p>
+<p>I am a web developer,</p>
+<p>I work for Mozilla now,</p>
+<p>I live in Taipei.</p>
 
   </div>
   <div class="span6">
@@ -115,6 +117,90 @@
   <div class="container">
     <div class="row" id="post-container">
     
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/05/05/gaia/">Setup Gaia on Mac With Firefox Nightly Build</a></h1>
+    
+    
+      <p class="meta">
+        
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-05T10:40:00+08:00" pubdate data-updated="true">May 5<span>th</span>, 2012</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/gaia/'>gaia</a>
+  
+</span>
+
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><ul>
+<li><p>本文來自<a href="https://github.com/jrburke/gaia-devserver">https://github.com/jrburke/gaia-devserver</a></p></li>
+<li><p>安裝Node
+ PKG: <a href="https://sites.google.com/site/nodejsmacosx/">https://sites.google.com/site/nodejsmacosx/</a></p></li>
+<li>安裝<a href="http://nightly.mozilla.org/">Firefox Nightly Build</a></li>
+<li><p>修改<code>/etc/hosts</code>加入</p>
+
+<p> 127.0.0.1     gaiamobile.org</p></li>
+<li><p>安裝gaia</p>
+
+<p> mkdir b2g
+ cd b2g
+ git clone git://github.com/andreasgal/gaia.git
+ git clone git://github.com/jrburke/gaia-devserver.git
+ cd gaia
+ GAIA_DOMAIN=gaiamobile.org:8424 make
+ cd ..
+ node gaia-devserver/devserver.js docRoot=gaia/apps</p></li>
+<li><p>啟動Firefox Nightly</p>
+
+<p> /Applications/FirefoxNightly.app/Contents/MacOS/firefox -profile /Users/alive/b2g/gaia/profile &#8211;no-remote http://homescreen.gaiamobile.org:8424</p></li>
+<li><p>開新分頁<code>about:config</code>，把<code>browser.offline-apps.notify</code>設成false</p></li>
+<li>加入一個新的Boolean設定值名為<code>dom.w3c_touch_events.enabled</code>設成true</li>
+<li>完成了！
+<img src="https://lh6.googleusercontent.com/-an0dqr9lhAM/T6Qjwhk5emI/AAAAAAAAC5k/6-4SRu5Wv7Q/s1162/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2012-05-05+%E4%B8%8A%E5%8D%882.44.59.png"></li>
+</ul>
+
+</div>
+  
+  
+
+
+</div>
+
+      </article>
     
     
       <article class="span4">
@@ -1588,79 +1674,6 @@ git pull</p>
 
       </article>
     
-    
-      <article class="span4">
-        <div class="article-format">
-
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/02/09/multiline-tooltip/">[HTML] 多行tooltip(title)</a></h1>
-    
-    
-      <p class="meta">
-        
-  
-
-
-  
-    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
-  
-
- - 
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-02-09T11:46:00+08:00" pubdate data-updated="true">Feb 9<span>th</span>, 2012</time> - 
-        
-
-posted in
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/w3c/'>w3c</a>
-  
-</span>
-
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>html原生tooltip(title屬性)顯示多行的方法：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;span</span> <span class="na">title=</span><span class="s">&quot;123&amp;#13;456&quot;</span><span class="nt">&gt;</span>test3<span class="nt">&lt;/span&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>殘念得是很難得的firefox有bug，多行會變成空白字元&#8230;.
-IE跟Chrome是正常的。</p>
-
-<h2>jsfiddle</h2>
-
-<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/CUAh9/embedded/result,html/light/"></iframe>
-
-
-
-</div>
-  
-  
-
-
-</div>
-
-      </article>
-    
     </div>
       <div class="row">
         <ul class="pager">
@@ -1688,6 +1701,10 @@ IE跟Chrome是正常的。</p>
     <ul class="recent_posts">
       
         <li>
+          <a href="/blog/2013/06/18/alvitr/">Recent side projects: Alvitr, Lucifer, GaiaSystemAPIDOC</a>
+        </li>
+      
+        <li>
           <a href="/blog/2013/05/27/rotation-matrix/">Javascript從變形矩陣反推scale以及rotate</a>
         </li>
       
@@ -1701,10 +1718,6 @@ IE跟Chrome是正常的。</p>
       
         <li>
           <a href="/blog/2012/12/22/javascript-memorization/">Javascript memorization</a>
-        </li>
-      
-        <li>
-          <a href="/blog/2012/09/04/web-activity/">Web activity</a>
         </li>
       
     </ul>

@@ -73,7 +73,9 @@
       <div class="row">
   <div class="span4">
     <h2>about me</h2>
-<p>A little something about me.</p>
+<p>I am a web developer,</p>
+<p>I work for Mozilla now,</p>
+<p>I live in Taipei.</p>
 
   </div>
   <div class="span6">
@@ -115,6 +117,114 @@
   <div class="container">
     <div class="row" id="post-container">
     
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/06/18/alvitr/">Recent Side Projects: Alvitr, Lucifer, GaiaSystemAPIDOC</a></h1>
+    
+    
+      <p class="meta">
+        
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-18T12:33:00+08:00" pubdate data-updated="true">Jun 18<span>th</span>, 2013</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/github-javascript/'>github,javascript</a>
+  
+</span>
+
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>Alvitr</h3>
+
+<p>Alvitr(艾爾薇妲）是北歐神話中戰女神的其中一名，其名意為「全知」。</p>
+
+<p>最近對某個遊戲(Puzzle &amp; Dragon)很沉迷，
+但是在網路上遍尋不著產生簽名檔的服務，
+於是就興起了想要自己做的念頭。</p>
+
+<p><a href="http://alivedise.github.io/alvitr">Alvitr</a></p>
+
+<p>大概花了一個禮拜的時間，本來想用Amazon AWS + node.js的組合來用伺服器端產生圖檔，
+但是遇到了不少問題如：
+1. AWS初始化實在太煩人了。
+2. node.js跑起來會莫名的crash，錯誤訊息看起來像是c語言的某個函式。（我不是在寫js嗎？！)</p>
+
+<p>後來還是決定用client端javascript application的形式做，
+至少IE9可以支援Canvas。</p>
+
+<h4>Canvas templating</h4>
+
+<p>因為目標是把使用者輸入的資料轉成不同大小內容配置也不同的圖片，</p>
+
+<p>於是我在想可以針對不同大小圖片弄一個像是configurtaion的物件，每次配置選擇改變只要換掉configuration就好了。</p>
+
+<p>最後成果<a href="https://github.com/alivedise/alvitr/blob/gh-pages/javascripts/client.js">client.js</a></p>
+
+<p>繪圖元件配置不外乎：x, y, weight, height, color等的參數，所以要創造一個新的配置物件只要複製貼上再去微調就好了。</p>
+
+<h3>Lucifer</h3>
+
+<blockquote><p>明亮之星，早晨之子啊，你何竟從天墜落？你這攻敗列國的何竟被砍倒在地上？你心裡曾說：我要升到天上；我要高舉我的寶座在神眾星以上；我要坐在聚會的山上，在北方的極處。我要升到高雲之上；我要與至上者同等。然而，你必墜落陰間，到坑中極深之處。</p></blockquote>
+
+
+<p><a href="http://alivedise.github.io/lucifer">Lucifer</a></p>
+
+<p>拿某篇文章來開的小玩笑，主要是用了ejs template engine來亂數產生一些怪物資料在文章內。</p>
+
+<h3>Gaia System API Documentation</h3>
+
+<p><a href="http://alivedise.github.io/gaia-system-jsdoc/">Gaia System JSDOC</a>
+<a href="https://github.com/alivedise/jsdoc3-bootstrap">JSDOC3 bootstrap template</a>
+不知道為什麼jsdoc2我電腦一直裝不成功，jsdoc3倒是很簡單的用npm就裝好了。</p>
+
+<p>找了一下找不到專門給jsdoc3用的好看template&#8230;我就自己套bootstrap上去了，成果如上。</p>
+
+<h3>其他</h3>
+
+<p>我還有一兩個一直很想做的probject&#8230;不過總是因為懶惰作罷:P</p>
+
+<p>回首到Mozilla也一年了，感覺自身還有很多不足&#8230;.
+督促自己寫side project只是開始而已，還要再努力阿！</p>
+</div>
+  
+  
+
+
+</div>
+
+      </article>
     
     
       <article class="span4">
@@ -1751,87 +1861,6 @@ network_hostname=abc1234
 
       </article>
     
-    
-      <article class="span4">
-        <div class="article-format">
-
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/05/30/can-js/">CanJS簡介</a></h1>
-    
-    
-      <p class="meta">
-        
-  
-
-
-  
-    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
-  
-
- - 
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-05-30T17:33:00+08:00" pubdate data-updated="true">May 30<span>th</span>, 2012</time> - 
-        
-
-posted in
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/javascriptmvc/'>javascriptmvc</a>
-  
-</span>
-
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h1>CanJS是什麼？</h1>
-
-<p>CanJS是JMVC團隊把MVC這一塊獨立出來的結果，並且做了一些改良。以往談到JavascriptMVC跟Backbone的時候，其實這兩個框架的目的是不同的。
-JMVC除了MVC還提供其他的case solution，而Backbone只專注在MVC身上。另外一個不同點是JMVC當時的MVC framework只能綁定在jQuery上面，Backbone可以把核心抽換成zepto(一個類似于jQuery但輕量化的js lib)，這也是有手機網頁app使用backbone卻沒有人使用jmvc的原因。</p>
-
-<h1>CanJS</h1>
-
-<p><a href="http://canjs.us">CanJS官網</a>
-以下節錄幾個要點：</p>
-
-<ol>
-<li>核心可抽換成Zepto, jQuery, YUI, Dojo, Mootools。</li>
-<li>非常快，
-<img src="http://bitovi.com/images/introducing-canjs/performance_control.png">
-<img src="http://bitovi.com/images/introducing-canjs/performance_livebind.png">
-比較令我訝異的是backbone竟然沒有live binding功能？</li>
-<li>安全的Model。jqueryMX一個缺點是常常會有內容相同的model instance，CanJS解決了這點。它保證相同內容的Object只會有一個instance。</li>
-<li>View可以做live binding了，直接對應Model change。</li>
-</ol>
-
-
-<h1>展望</h1>
-
-<p>以往JMVC為人詬病的就是本身提供的東西太複雜，不會有全部學完的動力。看來CanJS可以在專心這件事上趕上Backbone。</p>
-</div>
-  
-  
-
-
-</div>
-
-      </article>
-    
     </div>
       <div class="row">
         <ul class="pager">
@@ -1855,6 +1884,10 @@ JMVC除了MVC還提供其他的case solution，而Backbone只專注在MVC身上�
     <ul class="recent_posts">
       
         <li>
+          <a href="/blog/2013/06/18/alvitr/">Recent side projects: Alvitr, Lucifer, GaiaSystemAPIDOC</a>
+        </li>
+      
+        <li>
           <a href="/blog/2013/05/27/rotation-matrix/">Javascript從變形矩陣反推scale以及rotate</a>
         </li>
       
@@ -1868,10 +1901,6 @@ JMVC除了MVC還提供其他的case solution，而Backbone只專注在MVC身上�
       
         <li>
           <a href="/blog/2012/12/22/javascript-memorization/">Javascript memorization</a>
-        </li>
-      
-        <li>
-          <a href="/blog/2012/09/04/web-activity/">Web activity</a>
         </li>
       
     </ul>

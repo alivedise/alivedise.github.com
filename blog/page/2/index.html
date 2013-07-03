@@ -73,7 +73,9 @@
       <div class="row">
   <div class="span4">
     <h2>about me</h2>
-<p>A little something about me.</p>
+<p>I am a web developer,</p>
+<p>I work for Mozilla now,</p>
+<p>I live in Taipei.</p>
 
   </div>
   <div class="span6">
@@ -115,6 +117,87 @@
   <div class="container">
     <div class="row" id="post-container">
     
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/05/30/can-js/">CanJS簡介</a></h1>
+    
+    
+      <p class="meta">
+        
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-30T17:33:00+08:00" pubdate data-updated="true">May 30<span>th</span>, 2012</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascriptmvc/'>javascriptmvc</a>
+  
+</span>
+
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h1>CanJS是什麼？</h1>
+
+<p>CanJS是JMVC團隊把MVC這一塊獨立出來的結果，並且做了一些改良。以往談到JavascriptMVC跟Backbone的時候，其實這兩個框架的目的是不同的。
+JMVC除了MVC還提供其他的case solution，而Backbone只專注在MVC身上。另外一個不同點是JMVC當時的MVC framework只能綁定在jQuery上面，Backbone可以把核心抽換成zepto(一個類似于jQuery但輕量化的js lib)，這也是有手機網頁app使用backbone卻沒有人使用jmvc的原因。</p>
+
+<h1>CanJS</h1>
+
+<p><a href="http://canjs.us">CanJS官網</a>
+以下節錄幾個要點：</p>
+
+<ol>
+<li>核心可抽換成Zepto, jQuery, YUI, Dojo, Mootools。</li>
+<li>非常快，
+<img src="http://bitovi.com/images/introducing-canjs/performance_control.png">
+<img src="http://bitovi.com/images/introducing-canjs/performance_livebind.png">
+比較令我訝異的是backbone竟然沒有live binding功能？</li>
+<li>安全的Model。jqueryMX一個缺點是常常會有內容相同的model instance，CanJS解決了這點。它保證相同內容的Object只會有一個instance。</li>
+<li>View可以做live binding了，直接對應Model change。</li>
+</ol>
+
+
+<h1>展望</h1>
+
+<p>以往JMVC為人詬病的就是本身提供的東西太複雜，不會有全部學完的動力。看來CanJS可以在專心這件事上趕上Backbone。</p>
+</div>
+  
+  
+
+
+</div>
+
+      </article>
     
     
       <article class="span4">
@@ -1271,90 +1354,6 @@ ActiveSheet.WebBrowser1.Document.getElementById("import").Click
 
       </article>
     
-    
-      <article class="span4">
-        <div class="article-format">
-
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/05/05/gaia/">Setup Gaia on Mac With Firefox Nightly Build</a></h1>
-    
-    
-      <p class="meta">
-        
-  
-
-
-  
-    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
-  
-
- - 
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-05-05T10:40:00+08:00" pubdate data-updated="true">May 5<span>th</span>, 2012</time> - 
-        
-
-posted in
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/gaia/'>gaia</a>
-  
-</span>
-
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><ul>
-<li><p>本文來自<a href="https://github.com/jrburke/gaia-devserver">https://github.com/jrburke/gaia-devserver</a></p></li>
-<li><p>安裝Node
- PKG: <a href="https://sites.google.com/site/nodejsmacosx/">https://sites.google.com/site/nodejsmacosx/</a></p></li>
-<li>安裝<a href="http://nightly.mozilla.org/">Firefox Nightly Build</a></li>
-<li><p>修改<code>/etc/hosts</code>加入</p>
-
-<p> 127.0.0.1     gaiamobile.org</p></li>
-<li><p>安裝gaia</p>
-
-<p> mkdir b2g
- cd b2g
- git clone git://github.com/andreasgal/gaia.git
- git clone git://github.com/jrburke/gaia-devserver.git
- cd gaia
- GAIA_DOMAIN=gaiamobile.org:8424 make
- cd ..
- node gaia-devserver/devserver.js docRoot=gaia/apps</p></li>
-<li><p>啟動Firefox Nightly</p>
-
-<p> /Applications/FirefoxNightly.app/Contents/MacOS/firefox -profile /Users/alive/b2g/gaia/profile &#8211;no-remote http://homescreen.gaiamobile.org:8424</p></li>
-<li><p>開新分頁<code>about:config</code>，把<code>browser.offline-apps.notify</code>設成false</p></li>
-<li>加入一個新的Boolean設定值名為<code>dom.w3c_touch_events.enabled</code>設成true</li>
-<li>完成了！
-<img src="https://lh6.googleusercontent.com/-an0dqr9lhAM/T6Qjwhk5emI/AAAAAAAAC5k/6-4SRu5Wv7Q/s1162/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2012-05-05+%E4%B8%8A%E5%8D%882.44.59.png"></li>
-</ul>
-
-</div>
-  
-  
-
-
-</div>
-
-      </article>
-    
     </div>
       <div class="row">
         <ul class="pager">
@@ -1382,6 +1381,10 @@ posted in
     <ul class="recent_posts">
       
         <li>
+          <a href="/blog/2013/06/18/alvitr/">Recent side projects: Alvitr, Lucifer, GaiaSystemAPIDOC</a>
+        </li>
+      
+        <li>
           <a href="/blog/2013/05/27/rotation-matrix/">Javascript從變形矩陣反推scale以及rotate</a>
         </li>
       
@@ -1395,10 +1398,6 @@ posted in
       
         <li>
           <a href="/blog/2012/12/22/javascript-memorization/">Javascript memorization</a>
-        </li>
-      
-        <li>
-          <a href="/blog/2012/09/04/web-activity/">Web activity</a>
         </li>
       
     </ul>
