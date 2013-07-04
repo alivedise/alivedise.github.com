@@ -128,6 +128,118 @@
 
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2012/05/31/underline-to-json/">把assignment變數轉成JSON格式</a></h1>
+    
+    
+      <p class="meta">
+        
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-31T10:53:00+08:00" pubdate data-updated="true">May 31<span>st</span>, 2012</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascript/'>javascript</a>
+  
+</span>
+
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>從Server端收到的資訊是如下格式</p>
+
+<pre><code>user_i0_name=alive
+user_i0_gender=male
+user_i0_age=27
+user_i0_company_c0_name=VIVOTEK
+user_i0_company_c1_name=Mozilla
+system_model=ABC1234
+network_hostname=abc1234
+</code></pre>
+
+<p>但是這些資訊很難使用，想透過某個統一的方法把它轉成object來用。
+另外存回去的時候要把object轉回跟上面一樣的assignment。</p>
+
+<h1>Step#1: eval拆解進區域變數</h1>
+
+<p>為了避免污染全域變數，前後取代原本的字串：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">object</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">string_rev_1</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;object[\&#39;&#39;</span><span class="o">+</span><span class="nx">string</span><span class="p">).</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\r\n$/</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">).</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\r\n/gi</span><span class="p">,</span> <span class="s1">&#39;\r\nobject[\&#39;&#39;</span><span class="p">).</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/=/gi</span><span class="p">,</span> <span class="s1">&#39;\&#39;]=&#39;</span><span class="p">));</span>
+</span><span class='line'><span class="nb">eval</span><span class="p">(</span><span class="nx">string_rev_1</span><span class="p">);</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">object</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>現在得到了一個只有一層的object，是好用了一點，但是能不能切出多層來？</p>
+
+<h1>Step#2: 用底線切object</h1>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">string_rev_2</span> <span class="o">=</span> <span class="nx">string_rev_1</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/_/gi</span><span class="p">,</span> <span class="s1">&#39;\&#39;&#39;</span><span class="p">][</span><span class="err">\</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>但是這樣會有undefined的問題，如</p>
+
+<pre><code>user_i0_name=alive
+</code></pre>
+
+<p>會變成</p>
+
+<pre><code>object['user']['i0']['name']=alive
+</code></pre>
+
+<p>eval後會出現<code>i10 is undefined.</code>
+所以要想辦法解決這種超前reference的狀況。</p>
+
+<p>一個辦法是用<code>\r\n</code>切分assignment後個別eval，再用try catch區塊判斷是否發生超前定義的情況。
+假設發生了就個別處理該assignment。</p>
+
+<p>(待續)</p>
+</div>
+  
+  
+
+
+</div>
+
+      </article>
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2012/05/30/can-js/">CanJS簡介</a></h1>
     
     
@@ -1275,89 +1387,6 @@ posted in
 
       </article>
     
-    
-      <article class="span4">
-        <div class="article-format">
-
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/05/05/excel-web/">讓Excel與網頁互相溝通</a></h1>
-    
-    
-      <p class="meta">
-        
-  
-
-
-  
-    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
-  
-
- - 
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-05-05T11:10:00+08:00" pubdate data-updated="true">May 5<span>th</span>, 2012</time> - 
-        
-
-posted in
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/web/'>Web</a>
-  
-</span>
-
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h1>前言</h1>
-
-<p>同事在做一個Excel的應用，主要使用VBA，
-這語言真是一個十年沒長進的東西，
-不過我嘗試做了一個網頁，讓VBA可以透過Office內建的WebBrowser元件跟網頁之間互相溝通，
-以達到利用Excel表格內容控制網頁行為的效果。</p>
-
-<h1>網頁 -> Excel</h1>
-
-<p>其實能用的方法很少，我想到的是利用TitleChange，
-把網頁要告訴Excel的訊息寫進document.title，這樣Excel內的WebBrowser會觸發TitleChange</p>
-
-<pre><code>Private Sub WebBrowser1_TitleChange(ByVal Text As String)
-    If Text &lt;&gt; "loading" Then
-        ...
-    End If
-End Sub
-</code></pre>
-
-<h1>Excel -> 網頁</h1>
-
-<p>Excel可以去寫某個DOM的內容，寫完之後可以去操作某個按鈕讓網頁知道訊息寫完了</p>
-
-<pre><code>ActiveSheet.WebBrowser1.Document.getElementById("excel").innerHtml = "test"
-ActiveSheet.WebBrowser1.Document.getElementById("import").Click
-</code></pre>
-</div>
-  
-  
-
-
-</div>
-
-      </article>
-    
     </div>
       <div class="row">
         <ul class="pager">
@@ -1385,6 +1414,10 @@ ActiveSheet.WebBrowser1.Document.getElementById("import").Click
     <ul class="recent_posts">
       
         <li>
+          <a href="/blog/2013/07/05/one-year-at-mozilla/">My first year at Mozilla</a>
+        </li>
+      
+        <li>
           <a href="/blog/2013/06/18/alvitr/">Recent side projects: Alvitr, Lucifer, GaiaSystemAPIDOC</a>
         </li>
       
@@ -1398,10 +1431,6 @@ ActiveSheet.WebBrowser1.Document.getElementById("import").Click
       
         <li>
           <a href="/blog/2013/02/23/mock-moz-activity/">Mocha: MockMozActivity與global leak</a>
-        </li>
-      
-        <li>
-          <a href="/blog/2012/12/22/javascript-memorization/">Javascript memorization</a>
         </li>
       
     </ul>

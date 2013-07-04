@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Mocha: MockMozActivity與global leak - Ascheriit</title>
+  <title>My first year at Mozilla - Ascheriit</title>
   <meta name="author" content="Alive Kuo">
   <link rel="author" href="humans.txt">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -13,8 +13,12 @@
   
     
   
-  <meta name="description" content="之前在寫單元測試時，需要測到MozActivity的呼叫。 當我們嘗試去取代window object中的MozActivity時，會遇到： 1
-0) Feed "before all" hook: Error: global leak detected: 解決方法： 在程式前面加上mocha. &hellip;">
+  <meta name="description" content="Achievements 第一次出國，第一次出差。
+工作關係出差四次去了三個國家（美國兩次，德國，西班牙），自己自助旅行去了日本。
+變成module peer。
+參與了一些以前沒有被發明過的WebAPI的設計或討論。
+有了當面試官的經驗。
+第一次參加全公司的出遊活動。 &hellip;">
   
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -22,21 +26,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://alivedise.github.com/blog/2013/02/23/mock-moz-activity/">
+  <link rel="canonical" href="http://alivedise.github.com/blog/2013/07/05/one-year-at-mozilla/">
   <link href="/favicon.png" rel="icon">
   <link href='http://fonts.googleapis.com/css?family=Cantarell' rel='stylesheet' type='text/css'>
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Ascheriit" type="application/atom+xml">
   <meta name="og:type" content="website" />
   <meta name="og:site_name" content="Ascheriit" />
-  <meta name="og:title" content="Mocha: MockMozActivity與global leak" />
-  <meta name="og:description" content="之前在寫單元測試時，需要測到MozActivity的呼叫。 當我們嘗試去取代window object中的MozActivity時，會遇到： 1
-0) Feed "before all" hook: Error: global leak detected: 解決方法： 在程式前面加上mocha. &hellip;" />
-  <meta name="og:url" content="http://alivedise.github.com/blog/2013/02/23/mock-moz-activity/"/>
-  <meta name="url" content="http://alivedise.github.com/blog/2013/02/23/mock-moz-activity/">
+  <meta name="og:title" content="My first year at Mozilla" />
+  <meta name="og:description" content="Achievements 第一次出國，第一次出差。
+工作關係出差四次去了三個國家（美國兩次，德國，西班牙），自己自助旅行去了日本。
+變成module peer。
+參與了一些以前沒有被發明過的WebAPI的設計或討論。
+有了當面試官的經驗。
+第一次參加全公司的出遊活動。 &hellip;" />
+  <meta name="og:url" content="http://alivedise.github.com/blog/2013/07/05/one-year-at-mozilla/"/>
+  <meta name="url" content="http://alivedise.github.com/blog/2013/07/05/one-year-at-mozilla/">
   
-  <meta name="subject" content="javascript"/>
-  <meta name="category" content="javascript"/>
+  <meta name="subject" content="mozilla"/>
+  <meta name="category" content="mozilla"/>
   
   <meta name="distribution" content="global">
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
@@ -90,7 +98,7 @@
 
   <header>
     
-      <h1 class="entry-title">Mocha: MockMozActivity與global Leak</h1>
+      <h1 class="entry-title">My First Year at Mozilla</h1>
     
     
       <p class="meta">
@@ -115,13 +123,13 @@
   
 
 
-<time datetime="2013-02-23T16:56:00+08:00" pubdate data-updated="true">Feb 23<span>rd</span>, 2013</time> - 
+<time datetime="2013-07-05T02:31:00+08:00" pubdate data-updated="true">Jul 5<span>th</span>, 2013</time> - 
         
 
 posted in
 <span class="categories">
   
-    <a class='category' href='/blog/categories/javascript/'>javascript</a>
+    <a class='category' href='/blog/categories/mozilla/'>mozilla</a>
   
 </span>
 
@@ -132,92 +140,68 @@ posted in
   </header>
 
 
-  <div class="entry-content"><p>之前在寫單元測試時，需要測到MozActivity的呼叫。</p>
+  <div class="entry-content"><h3>Achievements</h3>
 
-<p>當我們嘗試去取代window object中的MozActivity時，會遇到：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>0) Feed "before all" hook: Error: global leak detected:</span></code></pre></td></tr></table></div></figure>
-
-
-<p>解決方法：</p>
-
-<p>在程式前面加上<code>mocha.setup({ignoreLeaks: true});</code></p>
-
-<p>最後加上<code>mocha.setup({ignoreLeaks: true});</code></p>
-
-<p>碰到這個錯誤是在嘗試加入假的MozActivity給window時。</p>
-
-<p>因為要被測試的module中有如下的程式片段：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'>  <span class="k">new</span> <span class="nx">MozActivity</span><span class="p">({</span>
-</span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;view&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">data</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;url&#39;</span><span class="p">,</span> <span class="nx">url</span><span class="o">:</span> <span class="nx">url</span> <span class="p">}</span>
-</span><span class='line'>  <span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
+<ul>
+<li>第一次出國，第一次出差。</li>
+<li>工作關係出差四次去了三個國家（美國兩次，德國，西班牙），自己自助旅行去了日本。</li>
+<li><a href="https://wiki.mozilla.org/Modules/FirefoxOS#System">變成module peer</a>。</li>
+<li>參與了一些以前沒有被發明過的WebAPI的設計或討論。</li>
+<li>有了當面試官的經驗。</li>
+<li>第一次參加全公司的出遊活動。</li>
+<li>對Firefox的layout engine: Gecko送了幾次patch，<a href="http://www.mozilla.org/hacking/committer/">簽了Level 1 Committer賣身契</a>。</li>
+<li>寫了數百個各種patch，解了數百個各種bug。</li>
+<li>看到很多以前沒有遇過的pattern，現在回去看一年前寫的東西感覺又不同了。</li>
+<li>當然也看到一些不好的設計，很希望有機會能夠改變它。</li>
+<li>認識一些除了我之外在工作之餘還是對技術玩意很有熱忱的人。</li>
+<li>目前身分是自由球員，理論上被允許去做任何我想做的事，不太被干涉，我非常，非常喜歡這件事。也很感謝我的主管&#8221;縱容&#8221;我。</li>
+<li>養了叫bug的貓。<img src="http://i.imgur.com/JPR0wzu.jpg"></li>
+<li><a href="http://coscup.org/2012/en/program/">在COSCUP 2012給過talk</a>。</li>
+<li><a href="http://coscup.org/2013/zh-tw/program/">今年還有一次跟FxOS有關的talk</a>。</li>
+<li>在柏林的時候人生第一次看到雪。<img src="http://i.imgur.com/ffpaudD.jpg"></li>
+</ul>
 
 
-<p>去呼叫browser app開啟某個特定網頁，</p>
+<h3>Canvas</h3>
 
-<p>但是mocha跑的環境中有可能：</p>
+<h4>MountainView</h4>
 
-<ol>
-<li>並沒有window.MozActivity這個物件。</li>
-<li>有MozActivity但是我們無法知道他是否被呼叫。</li>
-</ol>
+<p><img src="http://i.imgur.com/V1mXfJf.jpg">
+<img src="http://i.imgur.com/ytFnxpi.jpg">
+<img src="http://i.imgur.com/pCGMHcF.jpg"></p>
 
+<h4>California</h4>
 
-<p>這時候需要塞一個MockMozActivity給window，暫時取代掉原本的MozActivity，</p>
+<p><img src="http://i.imgur.com/2WElJM1.jpg">
+<img src="http://i.imgur.com/OBv99Ty.jpg">
+<img src="http://i.imgur.com/7u3g8IC.jpg"></p>
 
-<p>然後從MockMozActivity裡面留個變數記錄被呼叫的參數狀況來判斷程式是否正確的執行呼叫activity。</p>
+<h4>Berlin - Snow!</h4>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">mockMozActivityInstance</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">MockMozActivity</span> <span class="o">=</span> <span class="kd">function</span> <span class="nx">MozActivity</span><span class="p">(</span><span class="nx">configuration</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">property</span> <span class="k">in</span> <span class="nx">configuration</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">this</span><span class="p">[</span><span class="nx">property</span><span class="p">]</span> <span class="o">=</span> <span class="nx">configuration</span><span class="p">[</span><span class="nx">property</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="nx">mockMozActivityInstance</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-</span><span class='line'><span class="p">};</span>
-</span></code></pre></td></tr></table></div></figure>
+<p><img src="http://i.imgur.com/cO74ubC.jpg">
+<img src="http://i.imgur.com/EULi3MV.jpg">
+<img src="http://i.imgur.com/tSer20f.jpg">
+<img src="http://i.imgur.com/FEtE2wg.jpg"></p>
 
+<h4>Spain</h4>
 
-<p>之後寫的測試內容：</p>
+<p><img src="http://i.imgur.com/eufuWlp.jpg">
+<img src="http://i.imgur.com/tbjIL9m.jpg">
+<img src="http://i.imgur.com/GkWfumD.jpg">
+<img src="http://i.imgur.com/v8Y3472.jpg"></p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// Captive Portal Test</span>
-</span><span class='line'>  <span class="nx">test</span><span class="p">(</span><span class="s1">&#39;system/captive portal login w/o manual enable wifi&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">CaptivePortal</span><span class="p">.</span><span class="nx">handleEvent</span><span class="p">(</span><span class="nx">event</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">MockSettingsListener</span><span class="p">.</span><span class="nx">mCallback</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">assert</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span><span class="nx">mockMozActivityInstance</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span> <span class="s1">&#39;view&#39;</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
+<h4>Japan</h4>
 
+<ul>
+<li>自助旅行 - 是的，這其實跟工作無關，不過也因為是在這裡，請長假出國玩絕對不是太困難的事情。</li>
+<li>我在日本期間去了日本Mozilla辦公室 - 位在六本木，一個很棒的空間。
+<img src="http://i.imgur.com/z4ekB4W.jpg">
+<img src="http://i.imgur.com/2ErLpTd.jpg">
+<img src="http://i.imgur.com/qtQGJuH.jpg">
+<img src="http://i.imgur.com/BTRD67c.jpg">
+<img src="http://i.imgur.com/q27j5yp.jpg"></li>
+</ul>
 
-<p>人生第一個單元測試程式完成 \O/</p>
 </div>
 
 
@@ -244,13 +228,13 @@ posted in
   
 
 
-<time datetime="2013-02-23T16:56:00+08:00" pubdate data-updated="true">Feb 23<span>rd</span>, 2013</time>
+<time datetime="2013-07-05T02:31:00+08:00" pubdate data-updated="true">Jul 5<span>th</span>, 2013</time>
       
 
 posted in
 <span class="categories">
   
-    <a class='category' href='/blog/categories/javascript/'>javascript</a>
+    <a class='category' href='/blog/categories/mozilla/'>mozilla</a>
   
 </span>
 
@@ -273,10 +257,8 @@ posted in
 
     
     
-      <a class="pull-left" href="/blog/2012/12/22/javascript-memorization/" title="Previous Post: Javascript memorization">&laquo; Javascript memorization</a>
+      <a class="pull-left" href="/blog/2013/06/18/alvitr/" title="Previous Post: Recent side projects: Alvitr, Lucifer, GaiaSystemAPIDOC">&laquo; Recent side projects: Alvitr, Lucifer, GaiaSystemAPIDOC</a>
     
-    
-      <a class="pull-right" href="/blog/2013/02/23/from-browser-to-browser/" title="Next Post: From browser to browser. (1)">From browser to browser. (1) &raquo;</a>
     
   </footer>
 
@@ -391,8 +373,8 @@ posted in
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://alivedise.github.com/blog/2013/02/23/mock-moz-activity/';
-        var disqus_url = 'http://alivedise.github.com/blog/2013/02/23/mock-moz-activity/';
+        var disqus_identifier = 'http://alivedise.github.com/blog/2013/07/05/one-year-at-mozilla/';
+        var disqus_url = 'http://alivedise.github.com/blog/2013/07/05/one-year-at-mozilla/';
         var disqus_script = 'embed.js';
       
     (function () {

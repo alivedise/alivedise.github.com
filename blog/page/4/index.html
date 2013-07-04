@@ -128,6 +128,112 @@
 
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2012/02/10/octopress-on-ubuntu-lazy/">[Octopress] 重來懶人包</a></h1>
+    
+    
+      <p class="meta">
+        
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-02-10T15:36:00+08:00" pubdate data-updated="true">Feb 10<span>th</span>, 2012</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/octopress/'>octopress</a>, <a class='category' href='/blog/categories/ubuntu/'>ubuntu</a>
+  
+</span>
+
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>在ubuntu上架設octopress環境的懶人包：</p>
+
+<h1>Git</h1>
+
+<p>略過</p>
+
+<h1>rvm/ruby系列</h1>
+
+<h2>事前準備</h2>
+
+<pre><code>apt-get install libssl-dev
+apt-get install libtool
+sudo apt-get install libyaml-0-2 libyaml-dev
+</code></pre>
+
+<h2>開始</h2>
+
+<p>bash -s stable &lt; &lt;(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)
+echo &#8216;[[ -s &#8220;$HOME/.rvm/scripts/rvm&#8221; ]] &amp;&amp; . &#8220;$HOME/.rvm/scripts/rvm&#8221; # Load RVM function&#8217; >> ~/.bash_profile
+source ~/.bash_profile
+rvm pkg install openssl
+rvm pkg install iconv
+rvm install 1.9.2 -C &#8211;with-openssl-dir=$HOME/.rvm/usr,&#8211;with-iconv-dir=$HOME/.rvm/usr
+rvm rubygems latest
+rvm use 1.9.2 &#8211;default
+rvm reload
+gem install bundler</p>
+
+<h1>Octopress</h1>
+
+<p>git clone git://github.com/imathis/octopress.git octopress
+cd octopress
+yes
+bundle install
+rake setup_github_pages
+git@github.com:alivedise/alivedise.github.com.git
+git pull</p>
+
+<p>完成！</p>
+
+<h1>讓vim支援octopress語法</h1>
+
+<h2>安裝pathogen</h2>
+
+<p>(https://github.com/tpope/vim-pathogen)</p>
+
+<h2>安裝vim-octopress</h2>
+
+<p>(https://github.com/vim-scripts/vim-octopress)</p>
+</div>
+  
+  
+
+
+</div>
+
+      </article>
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2012/02/09/multiline-tooltip/">[HTML] 多行tooltip(title)</a></h1>
     
     
@@ -2272,6 +2378,10 @@ person.Class.shortName; //-&gt; 'Person'
     <ul class="recent_posts">
       
         <li>
+          <a href="/blog/2013/07/05/one-year-at-mozilla/">My first year at Mozilla</a>
+        </li>
+      
+        <li>
           <a href="/blog/2013/06/18/alvitr/">Recent side projects: Alvitr, Lucifer, GaiaSystemAPIDOC</a>
         </li>
       
@@ -2285,10 +2395,6 @@ person.Class.shortName; //-&gt; 'Person'
       
         <li>
           <a href="/blog/2013/02/23/mock-moz-activity/">Mocha: MockMozActivity與global leak</a>
-        </li>
-      
-        <li>
-          <a href="/blog/2012/12/22/javascript-memorization/">Javascript memorization</a>
         </li>
       
     </ul>

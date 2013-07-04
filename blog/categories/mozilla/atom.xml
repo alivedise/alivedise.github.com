@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: mozilla | Ascheriit]]></title>
+  <link href="http://alivedise.github.com/blog/categories/mozilla/atom.xml" rel="self"/>
+  <link href="http://alivedise.github.com/"/>
+  <updated>2013-07-05T04:04:19+08:00</updated>
+  <id>http://alivedise.github.com/</id>
+  <author>
+    <name><![CDATA[Alive Kuo]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[My first year at Mozilla]]></title>
+    <link href="http://alivedise.github.com/blog/2013/07/05/one-year-at-mozilla/"/>
+    <updated>2013-07-05T02:31:00+08:00</updated>
+    <id>http://alivedise.github.com/blog/2013/07/05/one-year-at-mozilla</id>
+    <content type="html"><![CDATA[<h3>Achievements</h3>
+
+<ul>
+<li>第一次出國，第一次出差。</li>
+<li>工作關係出差四次去了三個國家（美國兩次，德國，西班牙），自己自助旅行去了日本。</li>
+<li><a href="https://wiki.mozilla.org/Modules/FirefoxOS#System">變成module peer</a>。</li>
+<li>參與了一些以前沒有被發明過的WebAPI的設計或討論。</li>
+<li>有了當面試官的經驗。</li>
+<li>第一次參加全公司的出遊活動。</li>
+<li>對Firefox的layout engine: Gecko送了幾次patch，<a href="http://www.mozilla.org/hacking/committer/">簽了Level 1 Committer賣身契</a>。</li>
+<li>寫了數百個各種patch，解了數百個各種bug。</li>
+<li>看到很多以前沒有遇過的pattern，現在回去看一年前寫的東西感覺又不同了。</li>
+<li>當然也看到一些不好的設計，很希望有機會能夠改變它。</li>
+<li>認識一些除了我之外在工作之餘還是對技術玩意很有熱忱的人。</li>
+<li>目前身分是自由球員，理論上被允許去做任何我想做的事，不太被干涉，我非常，非常喜歡這件事。也很感謝我的主管"縱容"我。</li>
+<li>養了叫bug的貓。<img src="http://i.imgur.com/JPR0wzu.jpg"></li>
+<li><a href="http://coscup.org/2012/en/program/">在COSCUP 2012給過talk</a>。</li>
+<li><a href="http://coscup.org/2013/zh-tw/program/">今年還有一次跟FxOS有關的talk</a>。</li>
+<li>在柏林的時候人生第一次看到雪。<img src="http://i.imgur.com/ffpaudD.jpg"></li>
+</ul>
+
+
+<h3>Canvas</h3>
+
+<h4>MountainView</h4>
+
+<p><img src="http://i.imgur.com/V1mXfJf.jpg">
+<img src="http://i.imgur.com/ytFnxpi.jpg">
+<img src="http://i.imgur.com/pCGMHcF.jpg"></p>
+
+<h4>California</h4>
+
+<p><img src="http://i.imgur.com/2WElJM1.jpg">
+<img src="http://i.imgur.com/OBv99Ty.jpg">
+<img src="http://i.imgur.com/7u3g8IC.jpg"></p>
+
+<h4>Berlin - Snow!</h4>
+
+<p><img src="http://i.imgur.com/cO74ubC.jpg">
+<img src="http://i.imgur.com/EULi3MV.jpg">
+<img src="http://i.imgur.com/tSer20f.jpg">
+<img src="http://i.imgur.com/FEtE2wg.jpg"></p>
+
+<h4>Spain</h4>
+
+<p><img src="http://i.imgur.com/eufuWlp.jpg">
+<img src="http://i.imgur.com/tbjIL9m.jpg">
+<img src="http://i.imgur.com/GkWfumD.jpg">
+<img src="http://i.imgur.com/v8Y3472.jpg"></p>
+
+<h4>Japan</h4>
+
+<ul>
+<li>自助旅行 - 是的，這其實跟工作無關，不過也因為是在這裡，請長假出國玩絕對不是太困難的事情。</li>
+<li>我在日本期間去了日本Mozilla辦公室 - 位在六本木，一個很棒的空間。
+<img src="http://i.imgur.com/z4ekB4W.jpg">
+<img src="http://i.imgur.com/2ErLpTd.jpg">
+<img src="http://i.imgur.com/qtQGJuH.jpg">
+<img src="http://i.imgur.com/BTRD67c.jpg">
+<img src="http://i.imgur.com/q27j5yp.jpg"></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

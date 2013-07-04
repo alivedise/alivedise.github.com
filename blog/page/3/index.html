@@ -128,6 +128,89 @@
 
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2012/05/05/excel-web/">讓Excel與網頁互相溝通</a></h1>
+    
+    
+      <p class="meta">
+        
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-05T11:10:00+08:00" pubdate data-updated="true">May 5<span>th</span>, 2012</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/web/'>Web</a>
+  
+</span>
+
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h1>前言</h1>
+
+<p>同事在做一個Excel的應用，主要使用VBA，
+這語言真是一個十年沒長進的東西，
+不過我嘗試做了一個網頁，讓VBA可以透過Office內建的WebBrowser元件跟網頁之間互相溝通，
+以達到利用Excel表格內容控制網頁行為的效果。</p>
+
+<h1>網頁 -> Excel</h1>
+
+<p>其實能用的方法很少，我想到的是利用TitleChange，
+把網頁要告訴Excel的訊息寫進document.title，這樣Excel內的WebBrowser會觸發TitleChange</p>
+
+<pre><code>Private Sub WebBrowser1_TitleChange(ByVal Text As String)
+    If Text &lt;&gt; "loading" Then
+        ...
+    End If
+End Sub
+</code></pre>
+
+<h1>Excel -> 網頁</h1>
+
+<p>Excel可以去寫某個DOM的內容，寫完之後可以去操作某個按鈕讓網頁知道訊息寫完了</p>
+
+<pre><code>ActiveSheet.WebBrowser1.Document.getElementById("excel").innerHtml = "test"
+ActiveSheet.WebBrowser1.Document.getElementById("import").Click
+</code></pre>
+</div>
+  
+  
+
+
+</div>
+
+      </article>
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2012/05/05/gaia/">Setup Gaia on Mac With Firefox Nightly Build</a></h1>
     
     
@@ -1572,112 +1655,6 @@ git merge origin master
 
       </article>
     
-    
-      <article class="span4">
-        <div class="article-format">
-
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/02/10/octopress-on-ubuntu-lazy/">[Octopress] 重來懶人包</a></h1>
-    
-    
-      <p class="meta">
-        
-  
-
-
-  
-    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
-  
-
- - 
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-02-10T15:36:00+08:00" pubdate data-updated="true">Feb 10<span>th</span>, 2012</time> - 
-        
-
-posted in
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/octopress/'>octopress</a>, <a class='category' href='/blog/categories/ubuntu/'>ubuntu</a>
-  
-</span>
-
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>在ubuntu上架設octopress環境的懶人包：</p>
-
-<h1>Git</h1>
-
-<p>略過</p>
-
-<h1>rvm/ruby系列</h1>
-
-<h2>事前準備</h2>
-
-<pre><code>apt-get install libssl-dev
-apt-get install libtool
-sudo apt-get install libyaml-0-2 libyaml-dev
-</code></pre>
-
-<h2>開始</h2>
-
-<p>bash -s stable &lt; &lt;(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)
-echo &#8216;[[ -s &#8220;$HOME/.rvm/scripts/rvm&#8221; ]] &amp;&amp; . &#8220;$HOME/.rvm/scripts/rvm&#8221; # Load RVM function&#8217; >> ~/.bash_profile
-source ~/.bash_profile
-rvm pkg install openssl
-rvm pkg install iconv
-rvm install 1.9.2 -C &#8211;with-openssl-dir=$HOME/.rvm/usr,&#8211;with-iconv-dir=$HOME/.rvm/usr
-rvm rubygems latest
-rvm use 1.9.2 &#8211;default
-rvm reload
-gem install bundler</p>
-
-<h1>Octopress</h1>
-
-<p>git clone git://github.com/imathis/octopress.git octopress
-cd octopress
-yes
-bundle install
-rake setup_github_pages
-git@github.com:alivedise/alivedise.github.com.git
-git pull</p>
-
-<p>完成！</p>
-
-<h1>讓vim支援octopress語法</h1>
-
-<h2>安裝pathogen</h2>
-
-<p>(https://github.com/tpope/vim-pathogen)</p>
-
-<h2>安裝vim-octopress</h2>
-
-<p>(https://github.com/vim-scripts/vim-octopress)</p>
-</div>
-  
-  
-
-
-</div>
-
-      </article>
-    
     </div>
       <div class="row">
         <ul class="pager">
@@ -1705,6 +1682,10 @@ git pull</p>
     <ul class="recent_posts">
       
         <li>
+          <a href="/blog/2013/07/05/one-year-at-mozilla/">My first year at Mozilla</a>
+        </li>
+      
+        <li>
           <a href="/blog/2013/06/18/alvitr/">Recent side projects: Alvitr, Lucifer, GaiaSystemAPIDOC</a>
         </li>
       
@@ -1718,10 +1699,6 @@ git pull</p>
       
         <li>
           <a href="/blog/2013/02/23/mock-moz-activity/">Mocha: MockMozActivity與global leak</a>
-        </li>
-      
-        <li>
-          <a href="/blog/2012/12/22/javascript-memorization/">Javascript memorization</a>
         </li>
       
     </ul>
