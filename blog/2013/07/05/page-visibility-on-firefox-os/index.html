@@ -205,22 +205,36 @@ Gaia System Architecture Diagram (source from https://docs.google.com/drawings/d
 <p>這部份我們可以用一個實例說明：
 「裝置從進入閒置狀態，到使用者按下電源鍵，之後解開鎖定螢幕 (LockScreen)」對 visibility 影響的過程：</p>
 
-<p>Screen is off by idle timeout:
-* (Gaia) [Screen Manager] mozPower.screenEnabled = false
-* (Gaia) [Screen Manager] send custom &#8216;screenchange&#8217; event
-* (Gaia) [Lockscreen] get &#8216;screenchange&#8217; event, check the settings of &#8220;lockscreen.enabled&#8221; and dispatch custom &#8216;lock&#8217; event
-* (Gaia) [Window Manager] get &#8216;lock&#8217; event, and then set visibility = false for current app(focused one).
-* (Gonk) [/sys/power] See mozPower.screenEnabled is modified and send &#8216;sizemodechange&#8217; to simulate the content window is minimized.
-* (Gecko) [shell] Get &#8216;sizemodechange&#8217; event, set visibility = false for the whole system app
-Turn on screen:
-* (Gecko) Get keypress event of sleep-button, and then send mozChromeEvent to gaia
-* (Gaia) [Hardware Button Manager] Get mozChromeEvent with type = &#8220;sleep-button-press&#8221;, wrap the event to &#8216;wake&#8217; event
-* (Gaia) [Screen Manager] mozPower.screenEnabled = true
-* (Gecko) [shell] Get &#8216;sizemodechange&#8217; event, set visibility = true for the whole system app
-<em>NOTE</em> the current app is still invisible now, but the system app is visible.
- Unlock the lockscreen:
-* (Gaia) [Lockscreen] Send custom &#8216;unlock&#8217; event.
-* (Gaia) [Widow Manager] Get &#8216;unlock&#8217; event and turn on the active app&#8217;s visibility.</p>
+<h5>Screen is off by idle timeout:</h5>
+
+<ul>
+<li>(Gaia) [Screen Manager] mozPower.screenEnabled = false</li>
+<li>(Gaia) [Screen Manager] send custom &#8216;screenchange&#8217; event</li>
+<li>(Gaia) [Lockscreen] get &#8216;screenchange&#8217; event, check the settings of &#8220;lockscreen.enabled&#8221; and dispatch custom &#8216;lock&#8217; event</li>
+<li>(Gaia) [Window Manager] get &#8216;lock&#8217; event, and then set visibility = false for current app(focused one).</li>
+<li>(Gonk) [/sys/power] See mozPower.screenEnabled is modified and send &#8216;sizemodechange&#8217; to simulate the content window is minimized.</li>
+<li>(Gecko) [shell] Get &#8216;sizemodechange&#8217; event, set visibility = false for the whole system app</li>
+</ul>
+
+
+<h5>Turn on screen:</h5>
+
+<ul>
+<li>(Gecko) Get keypress event of sleep-button, and then send mozChromeEvent to gaia</li>
+<li>(Gaia) [Hardware Button Manager] Get mozChromeEvent with type = &#8220;sleep-button-press&#8221;, wrap the event to &#8216;wake&#8217; event</li>
+<li>(Gaia) [Screen Manager] mozPower.screenEnabled = true</li>
+<li>(Gecko) [shell] Get &#8216;sizemodechange&#8217; event, set visibility = true for the whole system app
+[NOTE] the current app is still invisible now, but the system app is visible.</li>
+</ul>
+
+
+<h5>Unlock the lockscreen:</h5>
+
+<ul>
+<li>(Gaia) [Lockscreen] Send custom &#8216;unlock&#8217; event.</li>
+<li>(Gaia) [Widow Manager] Get &#8216;unlock&#8217; event and turn on the active app&#8217;s visibility.</li>
+</ul>
+
 
 <p>對 App 開發者來說，其實你只要適當地註冊 visibilitychange event handler 去分別處理前景與背景的任務，而維持 visibility state 的正確性與一致性則是作業系統的責任，這也是開發 website/web application 與 web-based OS 之間最大的不同吧：必須同時考慮到過去（已經存在的網頁）/現在（我們正在開發中的內建app）/未來（即將到來的 FirefoxOS app）。</p>
 
