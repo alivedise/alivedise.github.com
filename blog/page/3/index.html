@@ -128,6 +128,76 @@
 
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2012/05/09/animation-cross-deferred/">[jQuery] jQuery Animation * jQuery Deferred</a></h1>
+    
+    
+      <p class="meta">
+        
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-09T17:53:00+08:00" pubdate data-updated="true">May 9<span>th</span>, 2012</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/jquery/'>jquery</a>
+  
+</span>
+
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>jQuery 1.6開始animation也支援Deferred操作了!</p>
+
+<pre><code>$.when($('#timeline').animate({ left: 100 }),  $.ajax({
+    url: 'fake.json', dataType: 'json'
+})).done(function(){
+    $('#result').text('done!');
+});
+</code></pre>
+
+<p>測試用的jsfiddle：</p>
+
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/wLHaG/embedded/js,resources,html,css,result/light/"></iframe>
+
+</div>
+  
+  
+
+
+</div>
+
+      </article>
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2012/05/05/excel-web/">讓Excel與網頁互相溝通</a></h1>
     
     
@@ -1535,126 +1605,6 @@ posted in
 
       </article>
     
-    
-      <article class="span4">
-        <div class="article-format">
-
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/02/15/git-submodule/">[Git] 心得(1) Submodule, Bitbucket</a></h1>
-    
-    
-      <p class="meta">
-        
-  
-
-
-  
-    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
-  
-
- - 
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-02-15T23:32:00+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2012</time> - 
-        
-
-posted in
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/github/'>github</a>
-  
-</span>
-
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h1>Bitbucker</h1>
-
-<h1>偶然間發現這個github的競爭者<a href="http://bitbucket.com">Bitbucket</a>推出了無限免費私有倉庫+無限硬碟空間，</h1>
-
-<p>title: &#8220;[git] 心得(1) Submodule, Bitbucker&#8221;
-date: 2012-02-15 23:32
-comments: true</p>
-
-<h2>categories: git,github </h2>
-
-<h1>Bitbucker</h1>
-
-<p>偶然間發現這個github的競爭者<a href="http://bitbucker.com">Bitbucker</a>推出了無限免費私有倉庫+無限硬碟空間，</p>
-
-<blockquote><blockquote><blockquote><blockquote><blockquote><blockquote><blockquote><p>origin/master
-於是有了一個想法：把不能說得project放到bitbucker，把好玩的open source放在github，兩者透過submodule互通！
-畢竟工作上要用到大量的open source project，每次更新都要cp實在很累人。
-在大部分專案都在github，而且他的介面也真的很好用的狀況下，在github上開repo還是有必要得！
-而且還要能夠隨時跟原作者的repo同步！</p></blockquote></blockquote></blockquote></blockquote></blockquote></blockquote></blockquote>
-
-<h1>Git submodule</h1>
-
-<p>要達成這個目的還是得先了解一下submodule的用法，
-以下是學到的事情。</p>
-
-<h2>本地端起submodule</h2>
-
-<pre><code>cd my_existing_repo
-git add submodule git@github.com:alivedise/lab.git
-git submodule init #啟動submodule
-git submodule update #把submodule內容抓回本地端
-git commit -a -m 'commited with submodule lab added!' #commit submodule的設定回自己的git remote
-</code></pre>
-
-<h2>別人更新他的repo時</h2>
-
-<pre><code>git submodule update
-#確認是你想要得內容
-git commit -a -m 'commited with submodule lab updated.' #commit submodule新的版本號回去自己的git remote
-</code></pre>
-
-<h2>問題來了，如果別人的repo你自己會作修改該怎麼辦？</h2>
-
-<p>我的作法：直接fork回自己的repo，將submodule重新指向自己的repo，自己來維護這份repo。</p>
-
-<h2>別人跟自己同時都有更新repo時</h2>
-
-<p>很簡單，利用add remote->fetch->merge->commit</p>
-
-<pre><code>cd my_forked_submodule
-git add remote upstream git@github.com:alivedise/lab.git
-git fetch upstream
-git merge origin master
-</code></pre>
-
-<h1>Reference</h1>
-
-<ul>
-<li><a href="http://blog.wu-boy.com/2011/09/introduction-to-git-submodule/">Git Submodule 介紹與使用</a></li>
-<li><a href="http://www.slideshare.net/littlebtc/git-5528339">slideshare</a></li>
-<li><a href="https://github.com/ginatrapani/ThinkUp/wiki/Developer-Guide%3A-Get-the-Source-Code-from-GitHub-and-Keep-It-Updated">Developer Guide: Get the Source Code from GitHub and Keep It Updated</a> 推薦！</li>
-</ul>
-
-</div>
-  
-  
-
-
-</div>
-
-      </article>
-    
     </div>
       <div class="row">
         <ul class="pager">
@@ -1682,6 +1632,10 @@ git merge origin master
     <ul class="recent_posts">
       
         <li>
+          <a href="/blog/2013/07/05/page-visibility-on-firefox-os/">HTML5 Page visibility on Fx OS</a>
+        </li>
+      
+        <li>
           <a href="/blog/2013/07/05/one-year-at-mozilla/">My first year at Mozilla</a>
         </li>
       
@@ -1695,10 +1649,6 @@ git merge origin master
       
         <li>
           <a href="/blog/2013/02/23/from-browser-to-browser/">From browser to browser. (1)</a>
-        </li>
-      
-        <li>
-          <a href="/blog/2013/02/23/mock-moz-activity/">Mocha: MockMozActivity與global leak</a>
         </li>
       
     </ul>

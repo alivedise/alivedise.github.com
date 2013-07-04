@@ -128,6 +128,108 @@
 
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2012/06/10/function-hoisting-appliance/">[Javascript] Function Hoisting應用</a></h1>
+    
+    
+      <p class="meta">
+        
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-06-10T16:17:00+08:00" pubdate data-updated="true">Jun 10<span>th</span>, 2012</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascript/'>javascript</a>
+  
+</span>
+
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h1>function hoisting是什麼？</h1>
+
+<p>一個不說你也不會知道的js語言特性，是指js看到function xxx(){}這種宣告時會把定義搬到scope最頂端
+的行為，hoisting的意思是提昇。</p>
+
+<p>自從在Javascript Patterns這本書上面看到hoisting的時候，就一直在想到底有什麼場合可以用到這個奇妙的語言特性？想不到還真的遇到了，雖然其實是個反例XD</p>
+
+<p>原文出自PTT Web_Design版「<a href="http://www.ptt.cc/bbs/Ajax/M.1339127132.A.226.html">[問題] jQuery 參數的問題~</a>」，這名網友問為什麼下面的js不能用？</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#test&quot;</span><span class="p">).</span><span class="nx">bind</span><span class="p">(</span><span class="s2">&quot;click&quot;</span><span class="p">,</span> <span class="nx">aaa</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">aaa</span><span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;yo&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>好傻好天真？</h2>
+
+<p>雖然不知道為什麼提問者堅持要把函數宣告放在用它之前，不過既然他問了，剛好這情況可以利用function hoisting來做，只是要修改一些小地方。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#test&quot;</span><span class="p">).</span><span class="nx">bind</span><span class="p">(</span><span class="s2">&quot;click&quot;</span><span class="p">,</span> <span class="nx">aaa</span><span class="p">);</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">aaa</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;yo&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="cm">/* function expression instead of function declaration */</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>我另外寫了一個jsfiddle來測試：</p>
+
+<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/Ytmqw/embedded/js,resources,html,css,result/light/"></iframe>
+
+
+<h1>做的到，只不過真的有必要嗎？</h1>
+
+<p>真的有太多理由不建議這樣做。原po在我回文後也沒出現，看來也無從得知他這樣做的理由了。</p>
+</div>
+  
+  
+
+
+</div>
+
+      </article>
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2012/05/31/underline-to-json/">把assignment變數轉成JSON格式</a></h1>
     
     
@@ -1317,76 +1419,6 @@ posted in
 
       </article>
     
-    
-      <article class="span4">
-        <div class="article-format">
-
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/05/09/animation-cross-deferred/">[jQuery] jQuery Animation * jQuery Deferred</a></h1>
-    
-    
-      <p class="meta">
-        
-  
-
-
-  
-    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
-  
-
- - 
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-05-09T17:53:00+08:00" pubdate data-updated="true">May 9<span>th</span>, 2012</time> - 
-        
-
-posted in
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/jquery/'>jquery</a>
-  
-</span>
-
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>jQuery 1.6開始animation也支援Deferred操作了!</p>
-
-<pre><code>$.when($('#timeline').animate({ left: 100 }),  $.ajax({
-    url: 'fake.json', dataType: 'json'
-})).done(function(){
-    $('#result').text('done!');
-});
-</code></pre>
-
-<p>測試用的jsfiddle：</p>
-
-<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/wLHaG/embedded/js,resources,html,css,result/light/"></iframe>
-
-</div>
-  
-  
-
-
-</div>
-
-      </article>
-    
     </div>
       <div class="row">
         <ul class="pager">
@@ -1414,6 +1446,10 @@ posted in
     <ul class="recent_posts">
       
         <li>
+          <a href="/blog/2013/07/05/page-visibility-on-firefox-os/">HTML5 Page visibility on Fx OS</a>
+        </li>
+      
+        <li>
           <a href="/blog/2013/07/05/one-year-at-mozilla/">My first year at Mozilla</a>
         </li>
       
@@ -1427,10 +1463,6 @@ posted in
       
         <li>
           <a href="/blog/2013/02/23/from-browser-to-browser/">From browser to browser. (1)</a>
-        </li>
-      
-        <li>
-          <a href="/blog/2013/02/23/mock-moz-activity/">Mocha: MockMozActivity與global leak</a>
         </li>
       
     </ul>
