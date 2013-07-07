@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | Ascheriit]]></title>
   <link href="http://alivedise.github.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-07T16:18:29+08:00</updated>
+  <updated>2013-07-07T16:59:12+08:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -394,8 +394,9 @@ _setTransition: function aw__setTransition(type, transition) {
 ```</p>
 
 <p>The state machine's usage:
- 1. A single app window instance would send 'open' and 'close' event due to user action:
- ``` js</p>
+ 1. A single app window instance would send 'open' and 'close' event due to user action:</p>
+
+<p> ``` js</p>
 
 <pre><code>transitionStateMachine._processEvent('open');
 transitionStateMachine._processEvent('close');
@@ -403,20 +404,17 @@ transitionStateMachine._processEvent('close');
 
 <p> ```</p>
 
-<pre><code>Note, app window doesn't need to know current state of the state machine.
+<p>  Note, app window doesn't need to know current state of the state machine.
+ 2. The state machine itself is the one who creates/removes the timer which triggers timeout event. I am also thinking about moving this out of the state machine and do this in another mixin, only have the callback functions provided by the state machine. But I am not sure.
+ 3. The state machine has some callback for others(other state machine!) listed below:</p>
+
+<pre><code>* Enter a state successfully.
+* Leave a state successfully.
+* When an event triggers state switch successfully.
+In all these callback we would get the previous state and current state, and the event who triggers them.
 </code></pre>
 
 <ol>
-<li>The state machine itself is the one who creates/removes the timer which triggers timeout event. I am also thinking about moving this out of the state machine and do this in another mixin, only have the callback functions provided by the state machine. But I am not sure.</li>
-<li>The state machine has some callback for others(other state machine!) listed below:
-
-<ul>
-<li>Enter a state successfully.</li>
-<li>Leave a state successfully.</li>
-<li>When an event triggers state switch successfully.
-In all these callback we would get the previous state and current state, and the event who triggers them.</li>
-</ul>
-</li>
 <li>The CSS class for real UI closing animation is added in <code><em>enterClosing</code> and removed in <code></em>enterClosed</code>. Or else we could do that in <code><em>leaveOpened</code> and <code></em>leaveClosing</code>. I have no strong opinion here.
 Maybe we could define the level of the callback into three here, according to the callback order.</li>
 <li>The CSS class for real UI opening animation is added in <code><em>enterOpening</code> and removed in <code></em>enterOpened</code>.</li>
