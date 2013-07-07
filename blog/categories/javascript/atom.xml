@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | Ascheriit]]></title>
   <link href="http://alivedise.github.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-07T16:59:12+08:00</updated>
+  <updated>2013-07-07T17:26:23+08:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -396,13 +396,13 @@ _setTransition: function aw__setTransition(type, transition) {
 <p>The state machine's usage:
  1. A single app window instance would send 'open' and 'close' event due to user action:</p>
 
-<p> ``` js</p>
+<p>```js</p>
 
 <pre><code>transitionStateMachine._processEvent('open');
 transitionStateMachine._processEvent('close');
 </code></pre>
 
-<p> ```</p>
+<p>```</p>
 
 <p>  Note, app window doesn't need to know current state of the state machine.
  2. The state machine itself is the one who creates/removes the timer which triggers timeout event. I am also thinking about moving this out of the state machine and do this in another mixin, only have the callback functions provided by the state machine. But I am not sure.

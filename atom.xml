@@ -4,7 +4,7 @@
   <title><![CDATA[Ascheriit]]></title>
   <link href="http://alivedise.github.com/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-07T16:59:12+08:00</updated>
+  <updated>2013-07-07T17:26:23+08:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -698,13 +698,12 @@ the second event would be ignored.
 <p>The state machine&#8217;s usage:
  1. A single app window instance would send &#8216;open&#8217; and &#8216;close&#8217; event due to user action:</p>
 
-<p> &#8220;` js</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">transitionStateMachine</span><span class="p">.</span><span class="nx">_processEvent</span><span class="p">(</span><span class="s1">&#39;open&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">transitionStateMachine</span><span class="p">.</span><span class="nx">_processEvent</span><span class="p">(</span><span class="s1">&#39;close&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<pre><code>transitionStateMachine._processEvent('open');
-transitionStateMachine._processEvent('close');
-</code></pre>
-
-<p> &#8220;`</p>
 
 <p>  Note, app window doesn&#8217;t need to know current state of the state machine.
  2. The state machine itself is the one who creates/removes the timer which triggers timeout event. I am also thinking about moving this out of the state machine and do this in another mixin, only have the callback functions provided by the state machine. But I am not sure.
