@@ -128,6 +128,142 @@
 
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2012/06/10/web-application-core/">[WEB] Web Application Core</a></h1>
+    
+    
+      <p class="meta">
+        
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-06-10T17:06:00+08:00" pubdate data-updated="true">Jun 10<span>th</span>, 2012</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascript/'>javascript</a>
+  
+</span>
+
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>最近看到這篇文章<a href="http://addyosmani.github.com/backbone-aura/">Backbone Aura</a>難得的有提到一個web application core該做些什麼事情？跟我想的蠻相似的，這邊將他列出來：
+* 管理widget的life cycle的能力。
+* 低階DOM操作處理
+* 提供publish/subscribe的溝通管道給應用程式的各部位互相溝通</p>
+
+<p>以下是我流解析。</p>
+
+<h2>管理widget的life cycle</h2>
+
+<p>Core是應用程式的進入點(entry poing)，它必須在適當的時機init需要的widget/application part起來做事情，也只有Core才知道什麼時候必須做這些事情。當然也包括在適當的時機讓widget沈睡或消滅。</p>
+
+<h2>低階DOM操作</h2>
+
+<p>這有點像jQuery library主要在做的事情，不過世界上不是只有jQuery一種library，也不是任何情況下都可以用jQuery，有一個可以快速操作DOM的方法是必要的。</p>
+
+<h2>提供publish/subscribe的溝通方式</h2>
+
+<p>解耦後的application part/widget當然不能直接呼叫別人的attribute function（不然還解什麼耦），那要怎麼叫別人做事？行之有年的publish/subscribe機制在jmvc已經被整合進去，backbone上面還欠缺方法，backbone aura把這件事做出來了。</p>
+
+<p>然後因為好奇它怎麼做的就看了一下source，在<code>aura/www/js/aura/mediator.js</code>裡面定義了：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Subscribe to an event</span>
+</span><span class='line'><span class="cm"> * @param {string} channel Event name</span>
+</span><span class='line'><span class="cm"> * @param {object} subscription Module callback</span>
+</span><span class='line'><span class="cm"> * @param {object} context Context in which to execute the module</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="nx">obj</span><span class="p">.</span><span class="nx">subscribe</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">channel</span><span class="p">,</span> <span class="nx">callback</span><span class="p">,</span> <span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">channels</span><span class="p">[</span><span class="nx">channel</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="o">!</span><span class="nx">channels</span><span class="p">[</span><span class="nx">channel</span><span class="p">])</span> <span class="o">?</span> <span class="p">[]</span> <span class="o">:</span> <span class="nx">channels</span><span class="p">[</span><span class="nx">channel</span><span class="p">];</span>
+</span><span class='line'>    <span class="nx">channels</span><span class="p">[</span><span class="nx">channel</span><span class="p">].</span><span class="nx">push</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">util</span><span class="p">.</span><span class="nx">method</span><span class="p">(</span><span class="nx">callback</span><span class="p">,</span> <span class="nx">context</span><span class="p">));</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Publish an event, passing arguments to subscribers. Will</span>
+</span><span class='line'><span class="cm"> * call start if the channel is not already registered.</span>
+</span><span class='line'><span class="cm"> * @param {string} channel Event name</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="nx">obj</span><span class="p">.</span><span class="nx">publish</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">channel</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">l</span><span class="p">,</span> <span class="nx">args</span> <span class="o">=</span> <span class="p">[].</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arguments</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">channels</span><span class="p">[</span><span class="nx">channel</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">obj</span><span class="p">.</span><span class="nx">start</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">l</span> <span class="o">=</span> <span class="nx">channels</span><span class="p">[</span><span class="nx">channel</span><span class="p">].</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">l</span><span class="p">;</span> <span class="nx">i</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">channels</span><span class="p">[</span><span class="nx">channel</span><span class="p">][</span><span class="nx">i</span><span class="p">].</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">args</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>看起來是利用一個變數來根據widget name儲存callback function進array裡面。</p>
+</div>
+  
+  
+
+
+</div>
+
+      </article>
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2012/06/10/function-hoisting-appliance/">[Javascript] Function Hoisting應用</a></h1>
     
     
@@ -1227,198 +1363,6 @@ MyClass.getData(showDataFunc);
 
       </article>
     
-    
-      <article class="span4">
-        <div class="article-format">
-
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/05/15/class-code-trace/">javascriptMVC原始碼分析 - Class實作（上）</a></h1>
-    
-    
-      <p class="meta">
-        
-  
-
-
-  
-    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
-  
-
- - 
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-05-15T09:58:00+08:00" pubdate data-updated="true">May 15<span>th</span>, 2012</time> - 
-        
-
-posted in
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/javascriptmvc/'>javascriptMVC</a>
-  
-</span>
-
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3>前言</h3>
-
-<p>這系列文章將從javascript patterns的角度來看javascriptMVC的實作方式。</p>
-
-<p>藉此更了解jsMVC的架構，以及javascript的語言特性。</p>
-
-<h3>最初的$.Class</h3>
-
-<p>javascript有許多種關於類別繼承的實作方式，jMVC中的$.Class實作來自於<a href="http://ejohn.org/blog/simple-javascript-inheritance/">http://ejohn.org/blog/simple-javascript-inheritance/</a></p>
-
-<p>而作者又聲稱他的實作想法來自Base2(http://code.google.com/p/base2/)與Prototype(http://prototypejs.org/)</p>
-
-<p>這個最初的實作的要點如下：</p>
-
-<ol>
-<li>支援overriden(原作者說這最有挑戰性)。提供this._super存取父類別的同名函數。</li>
-<li>所有類別都是Class這個物件的延伸。</li>
-<li>創造一個新類別必須從已經存在的類別做延伸(extend)。</li>
-<li>建構子內容很簡潔(init)</li>
-</ol>
-
-
-<p>以下是實作的程式碼：</p>
-
-<pre><code>/* Simple JavaScript Inheritance
- * By John Resig http://ejohn.org/
- * MIT Licensed.
- */
-// Inspired by base2 and Prototype
-(function(){
-  var initializing = false, fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
-  // The base Class implementation (does nothing)
-  this.Class = function(){};
-
-  // Create a new Class that inherits from this class
-  Class.extend = function(prop) {
-    var _super = this.prototype;
-
-    // Instantiate a base class (but only create the instance,
-    // don't run the init constructor)
-    initializing = true;
-    var prototype = new this();
-    initializing = false;
-
-    // Copy the properties over onto the new prototype
-    for (var name in prop) {
-      // Check if we're overwriting an existing function
-      prototype[name] = typeof prop[name] == "function" &amp;&amp; 
-        typeof _super[name] == "function" &amp;&amp; fnTest.test(prop[name]) ?
-        (function(name, fn){
-          return function() {
-            var tmp = this._super;
-
-            // Add a new ._super() method that is the same method
-            // but on the super-class
-            this._super = _super[name];
-
-            // The method only need to be bound temporarily, so we
-            // remove it when we're done executing
-            var ret = fn.apply(this, arguments);        
-            this._super = tmp;
-
-            return ret;
-          };
-        })(name, prop[name]) :
-        prop[name];
-    }
-
-    // The dummy class constructor
-    function Class() {
-      // All construction is actually done in the init method
-      if ( !initializing &amp;&amp; this.init )
-        this.init.apply(this, arguments);
-    }
-
-    // Populate our constructed prototype object
-    Class.prototype = prototype;
-
-    // Enforce the constructor to be what we expect
-    Class.prototype.constructor = Class;
-
-    // And make this class extendable
-    Class.extend = arguments.callee;
-
-    return Class;
-  };
-})();
-</code></pre>
-
-<ol>
-<li>為了避免污染全域變數先用immediate function包起來。</li>
-<li>single var pattern, 將區域變數宣告在函式最上面。</li>
-<li>this.Class = function(){};
- 這邊的this是全域物件，所以這一行結束後全域物件會多一個Class的屬性，值是一個空函數。</li>
-<li>var _super = this.prototype;  //把prototype存起來</li>
-<li>接下來是John認為比較trick的步驟：要先產生一個實體方便後面使用，但不去執行真正的建構子。
- 所以他使用了initializing這個變數來使這件事可以實現。
- 正常的instance化中initializing會是false，所以會執行init。
- 非正常，也就是拿來定義新Class時initializing是true，不會執行init。</li>
-<li><p>遍歷新定義的屬性物件，找到其中值為function屬性。
- 在每一個function object中添加_super這個屬性指到原本的value。
- 下面這一段在使用immediate function(self-invoking function)，同時回傳一個function object來取代原本的function</p>
-
-<pre><code>     (function(name, fn){
-       return function() {
-         var tmp = this._super;
-
-         // Add a new ._super() method that is the same method
-         // but on the super-class
-         this._super = _super[name];
-
-         // The method only need to be bound temporarily, so we
-         // remove it when we're done executing
-         var ret = fn.apply(this, arguments);        
-         this._super = tmp;
-
-         return ret;
-       };
-     })(name, prop[name])
-</code></pre></li>
-<li>定義一個function叫Class，覆蓋掉它的prototype屬性，同時也要把prototype.constructor蓋掉，否則產生instance時會有問題。</li>
-<li>使新的類別定義都能繼續擁有extend這個方法。</li>
-</ol>
-
-
-<h3>$.Class新功能</h3>
-
-<p>看完原初的類別實作後，其實$.Class也就是再多了以下功能：</p>
-
-<ol>
-<li>區分static與prototype</li>
-<li>給出proxy function</li>
-<li>給出this.callback function obj</li>
-</ol>
-
-</div>
-  
-  
-
-
-</div>
-
-      </article>
-    
     </div>
       <div class="row">
         <ul class="pager">
@@ -1446,6 +1390,10 @@ posted in
     <ul class="recent_posts">
       
         <li>
+          <a href="/blog/2013/07/05/transition-state-machine/">[Window Management] Transition state machine</a>
+        </li>
+      
+        <li>
           <a href="/blog/2013/07/05/page-visibility-on-firefox-os/">HTML5 Page visibility on Fx OS</a>
         </li>
       
@@ -1459,10 +1407,6 @@ posted in
       
         <li>
           <a href="/blog/2013/05/27/rotation-matrix/">Javascript從變形矩陣反推scale以及rotate</a>
-        </li>
-      
-        <li>
-          <a href="/blog/2013/02/23/from-browser-to-browser/">From browser to browser. (1)</a>
         </li>
       
     </ul>

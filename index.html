@@ -128,6 +128,789 @@
 
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2013/07/05/transition-state-machine/">[Window Management] Transition State Machine</a></h1>
+    
+    
+      <p class="meta">
+        
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-05T14:53:00+08:00" pubdate data-updated="true">Jul 5<span>th</span>, 2013</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/css-/'>css,</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>
+  
+</span>
+
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>The article is inspired by Tim&#8217;s <a href="http://blog.timc.idv.tw/posts/css-classes-state-machine-puzzle/">CSS Classes State Machine Puzzle</a>.</p>
+
+<p>We had some frustrations all the times, on animating a window correctly.</p>
+
+<p>Recently I try to dedicate on solving the puzzle.
+But at first I need to apologize for my poor knowledge and thought about css transitions using class names.</p>
+
+<p>In the past I usually thought it was stupid to use class list to control the style.
+I thought it was ambiguous and strange if we ran into a situation that there&#8217;re more than one classes of same type put on one element. And an element full of different class names for different purposes may conflict. Recently I see <a href="https://github.com/h5bp/Effeckt.css">Effeckt</a> and know this is the trend: a simple class name stands for a kind of animation.</p>
+
+<p>The real problem is that we should never put wrong class on the DOM element, in javascript. So this now turns to be a pure javascript puzzle.</p>
+
+<p>We know, that, in certain moment, the app window is always in a specific state A, not B nor C. So what&#8217;s the problem? It&#8217;s how could we switch the state correctly.</p>
+
+<p>Let&#8217;s create a real state machine in javascript!</p>
+
+<p>So far it doesn&#8217;t take times for us to figure out that a window should have 4 basic transition state: <code>closed</code>, <code>opening</code>, <code>opened</code>, <code>closing</code>.</p>
+
+<p>A basic transition life cycle of a window could be:</p>
+
+<blockquote><p>(initial) -> closed -> opening -> opened &#8212;&#8212;> closing -> opening &#8212;&#8212;> &#8230;.</p></blockquote>
+
+
+<p>Now we have 4 states, the next is what&#8217;s the trigger to states switching?</p>
+
+<p>In finite state machine, what triggers state change is named for <a href="https://en.wikipedia.org/wiki/Finite-state_machine">&#8216;event&#8217;</a>.</p>
+
+<p>We know that at least we have 2 events: &#8216;open&#8217; and &#8216;close&#8217;.</p>
+
+<ul>
+<li>&#8216;open&#8217; would trigger <code>closed</code> switches to <code>opening</code></li>
+<li>&#8216;close&#8217; would trigger <code>opened</code> switches to <code>closing</code></li>
+<li>If we sends &#8216;open&#8217; event into the state machine continously,
+the second event would be ignored.
+(Exactly it depends on what policy we choose. For example, we could devide &#8216;opening&#8217; state into &#8216;opening-part-1&#8217; and &#8216;opening-part-2&#8217; states. And implement the async state change. But if we need s two-state opening, it sounds like a CSS design problem to me. Let&#8217;s discuss this later if necessary.)</li>
+<li>In order to gurantee the transition does really end and thus being independent from the &#8216;animationend&#8217; event(The event here is HTML DOM Event), we need to add a timer between &#8216;opening&#8217; and &#8216;opened&#8217; state. Also between &#8216;closing&#8217; and &#8216;closed&#8217; state.</li>
+<li>Let&#8217;s call the new event &#8216;timeout&#8217;, the timing we set the timer is right after the transitioning from &#8216;closed&#8217; to &#8216;opening&#8217;, and from &#8216;opened&#8217; to &#8216;closing&#8217; successfully occurs.</li>
+<li>For some use case we may want to cancel the transition. The &#8216;cancel&#8217; event is only valid in &#8216;opening&#8217; and &#8216;closing&#8217; state.</li>
+</ul>
+
+
+<p>So far, the state machine for transition we have:
+<img src="http://i.imgur.com/MmBj2pY.jpg"></p>
+
+<p>Now the problem is, how to represent this machine in javascript?</p>
+
+<p>My anwser is put every transition relevant functions/attributes in another mixin object, which would be mixed into appWindow.prototype:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+<span class='line-number'>161</span>
+<span class='line-number'>162</span>
+<span class='line-number'>163</span>
+<span class='line-number'>164</span>
+<span class='line-number'>165</span>
+<span class='line-number'>166</span>
+<span class='line-number'>167</span>
+<span class='line-number'>168</span>
+<span class='line-number'>169</span>
+<span class='line-number'>170</span>
+<span class='line-number'>171</span>
+<span class='line-number'>172</span>
+<span class='line-number'>173</span>
+<span class='line-number'>174</span>
+<span class='line-number'>175</span>
+<span class='line-number'>176</span>
+<span class='line-number'>177</span>
+<span class='line-number'>178</span>
+<span class='line-number'>179</span>
+<span class='line-number'>180</span>
+<span class='line-number'>181</span>
+<span class='line-number'>182</span>
+<span class='line-number'>183</span>
+<span class='line-number'>184</span>
+<span class='line-number'>185</span>
+<span class='line-number'>186</span>
+<span class='line-number'>187</span>
+<span class='line-number'>188</span>
+<span class='line-number'>189</span>
+<span class='line-number'>190</span>
+<span class='line-number'>191</span>
+<span class='line-number'>192</span>
+<span class='line-number'>193</span>
+<span class='line-number'>194</span>
+<span class='line-number'>195</span>
+<span class='line-number'>196</span>
+<span class='line-number'>197</span>
+<span class='line-number'>198</span>
+<span class='line-number'>199</span>
+<span class='line-number'>200</span>
+<span class='line-number'>201</span>
+<span class='line-number'>202</span>
+<span class='line-number'>203</span>
+<span class='line-number'>204</span>
+<span class='line-number'>205</span>
+<span class='line-number'>206</span>
+<span class='line-number'>207</span>
+<span class='line-number'>208</span>
+<span class='line-number'>209</span>
+<span class='line-number'>210</span>
+<span class='line-number'>211</span>
+<span class='line-number'>212</span>
+<span class='line-number'>213</span>
+<span class='line-number'>214</span>
+<span class='line-number'>215</span>
+<span class='line-number'>216</span>
+<span class='line-number'>217</span>
+<span class='line-number'>218</span>
+<span class='line-number'>219</span>
+<span class='line-number'>220</span>
+<span class='line-number'>221</span>
+<span class='line-number'>222</span>
+<span class='line-number'>223</span>
+<span class='line-number'>224</span>
+<span class='line-number'>225</span>
+<span class='line-number'>226</span>
+<span class='line-number'>227</span>
+<span class='line-number'>228</span>
+<span class='line-number'>229</span>
+<span class='line-number'>230</span>
+<span class='line-number'>231</span>
+<span class='line-number'>232</span>
+<span class='line-number'>233</span>
+<span class='line-number'>234</span>
+<span class='line-number'>235</span>
+<span class='line-number'>236</span>
+<span class='line-number'>237</span>
+<span class='line-number'>238</span>
+<span class='line-number'>239</span>
+<span class='line-number'>240</span>
+<span class='line-number'>241</span>
+<span class='line-number'>242</span>
+<span class='line-number'>243</span>
+<span class='line-number'>244</span>
+<span class='line-number'>245</span>
+<span class='line-number'>246</span>
+<span class='line-number'>247</span>
+<span class='line-number'>248</span>
+<span class='line-number'>249</span>
+<span class='line-number'>250</span>
+<span class='line-number'>251</span>
+<span class='line-number'>252</span>
+<span class='line-number'>253</span>
+<span class='line-number'>254</span>
+<span class='line-number'>255</span>
+<span class='line-number'>256</span>
+<span class='line-number'>257</span>
+<span class='line-number'>258</span>
+<span class='line-number'>259</span>
+<span class='line-number'>260</span>
+<span class='line-number'>261</span>
+<span class='line-number'>262</span>
+<span class='line-number'>263</span>
+<span class='line-number'>264</span>
+<span class='line-number'>265</span>
+<span class='line-number'>266</span>
+<span class='line-number'>267</span>
+<span class='line-number'>268</span>
+<span class='line-number'>269</span>
+<span class='line-number'>270</span>
+<span class='line-number'>271</span>
+<span class='line-number'>272</span>
+<span class='line-number'>273</span>
+<span class='line-number'>274</span>
+<span class='line-number'>275</span>
+<span class='line-number'>276</span>
+<span class='line-number'>277</span>
+<span class='line-number'>278</span>
+<span class='line-number'>279</span>
+<span class='line-number'>280</span>
+<span class='line-number'>281</span>
+<span class='line-number'>282</span>
+<span class='line-number'>283</span>
+<span class='line-number'>284</span>
+<span class='line-number'>285</span>
+<span class='line-number'>286</span>
+<span class='line-number'>287</span>
+<span class='line-number'>288</span>
+<span class='line-number'>289</span>
+<span class='line-number'>290</span>
+<span class='line-number'>291</span>
+<span class='line-number'>292</span>
+<span class='line-number'>293</span>
+<span class='line-number'>294</span>
+<span class='line-number'>295</span>
+<span class='line-number'>296</span>
+<span class='line-number'>297</span>
+<span class='line-number'>298</span>
+<span class='line-number'>299</span>
+<span class='line-number'>300</span>
+<span class='line-number'>301</span>
+<span class='line-number'>302</span>
+<span class='line-number'>303</span>
+<span class='line-number'>304</span>
+<span class='line-number'>305</span>
+<span class='line-number'>306</span>
+<span class='line-number'>307</span>
+<span class='line-number'>308</span>
+<span class='line-number'>309</span>
+<span class='line-number'>310</span>
+<span class='line-number'>311</span>
+<span class='line-number'>312</span>
+<span class='line-number'>313</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nb">window</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">function</span> <span class="nx">capitalize</span><span class="p">(</span><span class="nx">string</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">string</span><span class="p">.</span><span class="nx">charAt</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="nx">toUpperCase</span><span class="p">()</span> <span class="o">+</span> <span class="nx">string</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="cm">/**</span>
+</span><span class='line'><span class="cm">   * This object declares all transition event enum:</span>
+</span><span class='line'><span class="cm">   *</span>
+</span><span class='line'><span class="cm">   * * OPEN</span>
+</span><span class='line'><span class="cm">   * * CLOSE</span>
+</span><span class='line'><span class="cm">   * * FINISH</span>
+</span><span class='line'><span class="cm">   * * END</span>
+</span><span class='line'><span class="cm">   * * CANCEL</span>
+</span><span class='line'><span class="cm">   *</span>
+</span><span class='line'><span class="cm">   * @static</span>
+</span><span class='line'><span class="cm">   * @namespace TransitionEvent</span>
+</span><span class='line'><span class="cm">   * @type {Object}</span>
+</span><span class='line'><span class="cm">   */</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">EVT</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">OPEN</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">CLOSE</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">FINISH</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">END</span><span class="o">:</span> <span class="mi">3</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">CANCEL</span><span class="o">:</span> <span class="mi">4</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">_EVTARRAY</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;OPEN&#39;</span><span class="p">,</span> <span class="s1">&#39;CLOSE&#39;</span><span class="p">,</span> <span class="s1">&#39;FINISH&#39;</span><span class="p">,</span> <span class="s1">&#39;END&#39;</span><span class="p">,</span> <span class="s1">&#39;CANCEL&#39;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="cm">/**</span>
+</span><span class='line'><span class="cm">   * Describe the transition state table.</span>
+</span><span class='line'><span class="cm">   *</span>
+</span><span class='line'><span class="cm">   * @example</span>
+</span><span class='line'><span class="cm">   * var toState = transitionTable[currentState][event];</span>
+</span><span class='line'><span class="cm">   *</span>
+</span><span class='line'><span class="cm">   * The value &quot;null&quot; indicates that the transition won&#39;t happen.</span>
+</span><span class='line'><span class="cm">   * </span>
+</span><span class='line'><span class="cm">   * @type {Object}</span>
+</span><span class='line'><span class="cm">   */</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">transitionTable</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>              <span class="cm">/* OPEN|CLOSE|FINISH|END|CANCEL */</span>
+</span><span class='line'>    <span class="s1">&#39;closed&#39;</span><span class="o">:</span>  <span class="p">[</span><span class="s1">&#39;opening&#39;</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="kc">null</span><span class="p">],</span>
+</span><span class='line'>    <span class="s1">&#39;opened&#39;</span><span class="o">:</span>  <span class="p">[</span><span class="kc">null</span><span class="p">,</span> <span class="s1">&#39;closing&#39;</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="kc">null</span><span class="p">],</span>
+</span><span class='line'>    <span class="s1">&#39;closing&#39;</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;opened&#39;</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="s1">&#39;closed&#39;</span><span class="p">,</span> <span class="s1">&#39;closed&#39;</span><span class="p">,</span> <span class="s1">&#39;opened&#39;</span><span class="p">],</span>
+</span><span class='line'>    <span class="s1">&#39;opening&#39;</span><span class="o">:</span> <span class="p">[</span><span class="kc">null</span><span class="p">,</span> <span class="s1">&#39;closed&#39;</span><span class="p">,</span> <span class="s1">&#39;opened&#39;</span><span class="p">,</span> <span class="s1">&#39;opened&#39;</span><span class="p">,</span> <span class="s1">&#39;closed&#39;</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="cm">/**</span>
+</span><span class='line'><span class="cm">   * This provides methods and attributes used for transition state handling. It&#39;s not meant to</span>
+</span><span class='line'><span class="cm">   * be used directly.</span>
+</span><span class='line'><span class="cm">   *</span>
+</span><span class='line'><span class="cm">   * The finite state machine of transition is working as(being from normal state):</span>
+</span><span class='line'><span class="cm">   * </span>
+</span><span class='line'><span class="cm">   * * `closed`  ---*event* **OPEN** ----------------&gt; `opening`</span>
+</span><span class='line'><span class="cm">   * * `opening` ---*event* **END/FINISH/CANCEL** ---&gt; `opened`</span>
+</span><span class='line'><span class="cm">   * * `opened`  ---*event* **CLOSE** ---------------&gt; `closing`</span>
+</span><span class='line'><span class="cm">   * * `closing` ---*event* **END/FINISH/CANCEL** ---&gt; `closed`</span>
+</span><span class='line'><span class="cm">   *</span>
+</span><span class='line'><span class="cm">   * If you want to reuse this mixin in your object, you need to define these attributes: `this.element`</span>
+</span><span class='line'><span class="cm">   *</span>
+</span><span class='line'><span class="cm">   * And these method: `this.setVisible()` `this.publish()`</span>
+</span><span class='line'><span class="cm">   *</span>
+</span><span class='line'><span class="cm">   * The following callback functions are executed only when the transition state are successfully switched:</span>
+</span><span class='line'><span class="cm">   * `_onOpen`</span>
+</span><span class='line'><span class="cm">   * `_onClose`</span>
+</span><span class='line'><span class="cm">   * `_onEnd`</span>
+</span><span class='line'><span class="cm">   * `_onFinish`</span>
+</span><span class='line'><span class="cm">   * `_onCancel`</span>
+</span><span class='line'><span class="cm">   * `_leaveOpened`</span>
+</span><span class='line'><span class="cm">   * `_enterOpened`</span>
+</span><span class='line'><span class="cm">   * `_leaveClosed`</span>
+</span><span class='line'><span class="cm">   * `_enterClosed`</span>
+</span><span class='line'><span class="cm">   * `_leaveClosing`</span>
+</span><span class='line'><span class="cm">   * `_enterClosing`</span>
+</span><span class='line'><span class="cm">   * `_leaveOpening`</span>
+</span><span class='line'><span class="cm">   * `_enterOpening`</span>
+</span><span class='line'><span class="cm">   *</span>
+</span><span class='line'><span class="cm">   * Every callback here is for internal usage and would be executed only once.</span>
+</span><span class='line'><span class="cm">   *</span>
+</span><span class='line'><span class="cm">   * However you could utilize inner event in other functions.</span>
+</span><span class='line'><span class="cm">   * </span>
+</span><span class='line'><span class="cm">   *</span>
+</span><span class='line'><span class="cm">   * @mixin WindowTransition</span>
+</span><span class='line'><span class="cm">   */</span>
+</span><span class='line'>  <span class="cm">/**</span>
+</span><span class='line'><span class="cm">   * @event AppWindow#_onTransitionOpen</span>
+</span><span class='line'><span class="cm">   * @private</span>
+</span><span class='line'><span class="cm">   * @memberof AppWindow</span>
+</span><span class='line'><span class="cm">   */</span>
+</span><span class='line'>  <span class="cm">/**</span>
+</span><span class='line'><span class="cm">   * @event AppWindow#_onTransitionClose</span>
+</span><span class='line'><span class="cm">   * @private</span>
+</span><span class='line'><span class="cm">   * @memberof AppWindow</span>
+</span><span class='line'><span class="cm">   */</span>
+</span><span class='line'>  <span class="cm">/**</span>
+</span><span class='line'><span class="cm">   * @event AppWindow#_onTransitionEnd</span>
+</span><span class='line'><span class="cm">   * @private</span>
+</span><span class='line'><span class="cm">   * @memberof AppWindow</span>
+</span><span class='line'><span class="cm">   */</span>
+</span><span class='line'>  <span class="cm">/**</span>
+</span><span class='line'><span class="cm">   * @event AppWindow#_onTransitionFinish</span>
+</span><span class='line'><span class="cm">   * @private</span>
+</span><span class='line'><span class="cm">   * @memberof AppWindow</span>
+</span><span class='line'><span class="cm">   */</span>
+</span><span class='line'>  <span class="cm">/**</span>
+</span><span class='line'><span class="cm">   * @event AppWindow#_onTransitionCancel</span>
+</span><span class='line'><span class="cm">   * @private</span>
+</span><span class='line'><span class="cm">   * @memberof AppWindow</span>
+</span><span class='line'><span class="cm">   */</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">WindowTransition</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">TRANSITION_EVENT</span><span class="o">:</span> <span class="nx">EVT</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * _transitionState indicates current transition state of appWindow.</span>
+</span><span class='line'><span class="cm">     *</span>
+</span><span class='line'><span class="cm">     * @memberOf WindowTransition</span>
+</span><span class='line'><span class="cm">     * @default</span>
+</span><span class='line'><span class="cm">     * @type {String}</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="nx">_transitionState</span><span class="o">:</span> <span class="s1">&#39;closed&#39;</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * Record the previous transition state.</span>
+</span><span class='line'><span class="cm">     *</span>
+</span><span class='line'><span class="cm">     * **Only updated if the state changes successfully.**</span>
+</span><span class='line'><span class="cm">     * </span>
+</span><span class='line'><span class="cm">     * @type {String|null}</span>
+</span><span class='line'><span class="cm">     * @memberOf WindowTransition</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="nx">_previousTransitionState</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * Handle the transition event.</span>
+</span><span class='line'><span class="cm">     * @memberOf WindowTransition</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="nx">_transitionHandler</span><span class="o">:</span> <span class="kd">function</span> <span class="nx">aw__transitionHandler</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">_cancelTransition</span><span class="p">();</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">_processTransitionEvent</span><span class="p">(</span><span class="nx">EVT</span><span class="p">.</span><span class="nx">FINISH</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">_cancelTransition</span><span class="o">:</span> <span class="kd">function</span> <span class="nx">aw__cancelTransition</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">className</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="sr">/\s+/</span><span class="p">).</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">className</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="nx">className</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">&#39;transition-&#39;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="nx">className</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>      <span class="p">},</span> <span class="k">this</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">_enterOpening</span><span class="o">:</span> <span class="kd">function</span> <span class="nx">aw__enterOpening</span><span class="p">(</span><span class="nx">from</span><span class="p">,</span> <span class="nx">to</span><span class="p">,</span> <span class="nx">evt</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="cm">/**</span>
+</span><span class='line'><span class="cm">       * @todo set this._unloaded</span>
+</span><span class='line'><span class="cm">       */</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">resize</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_unloaded</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">//this.element.style.backgroundImage = &#39;url(&#39; + this._splash + &#39;)&#39;;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// Turn of visibility once we&#39;re entering opening state.</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">setVisible</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// Make sure the transition is terminated.</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">_openingTransitionTimer</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_previousTransitionState</span> <span class="o">&amp;&amp;</span>
+</span><span class='line'>            <span class="k">this</span><span class="p">.</span><span class="nx">_previousTransitionState</span> <span class="o">==</span> <span class="nx">from</span> <span class="o">&amp;&amp;</span>
+</span><span class='line'>            <span class="k">this</span><span class="p">.</span><span class="nx">_transitionState</span> <span class="o">==</span> <span class="nx">to</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="k">this</span><span class="p">.</span><span class="nx">_processTransitionEvent</span><span class="p">(</span><span class="nx">EVT</span><span class="p">.</span><span class="nx">END</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>      <span class="p">}.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">),</span> <span class="k">this</span><span class="p">.</span><span class="nx">_transitionTimeout</span><span class="o">*</span><span class="mf">1.2</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="cm">/**</span>
+</span><span class='line'><span class="cm">       * @event AppWindow#appwillopen</span>
+</span><span class='line'><span class="cm">       * @memberof AppWindow</span>
+</span><span class='line'><span class="cm">       */</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">from</span> <span class="o">!==</span> <span class="s1">&#39;opened&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// Only publish |willopen| event when previous state is &quot;closed&quot;.</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">publish</span><span class="p">(</span><span class="s1">&#39;willopen&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="s1">&#39;transition-opening&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_transition</span><span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">]);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">_enterClosing</span><span class="o">:</span> <span class="kd">function</span> <span class="nx">aw__enterClosing</span><span class="p">(</span><span class="nx">from</span><span class="p">,</span> <span class="nx">to</span><span class="p">,</span> <span class="nx">evt</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="c1">// Make sure the transition is terminated.</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">_closingTransitionTimer</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_previousTransitionState</span> <span class="o">&amp;&amp;</span>
+</span><span class='line'>            <span class="k">this</span><span class="p">.</span><span class="nx">_previousTransitionState</span> <span class="o">==</span> <span class="nx">from</span> <span class="o">&amp;&amp;</span>
+</span><span class='line'>            <span class="k">this</span><span class="p">.</span><span class="nx">_transitionState</span> <span class="o">==</span> <span class="nx">to</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="k">this</span><span class="p">.</span><span class="nx">_processTransitionEvent</span><span class="p">(</span><span class="nx">EVT</span><span class="p">.</span><span class="nx">END</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>      <span class="p">}.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">),</span> <span class="k">this</span><span class="p">.</span><span class="nx">_transitionTimeout</span><span class="o">*</span><span class="mf">1.2</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="cm">/**</span>
+</span><span class='line'><span class="cm">       * @event AppWindow#appwillclose</span>
+</span><span class='line'><span class="cm">       * @memberof AppWindow</span>
+</span><span class='line'><span class="cm">       */</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">from</span> <span class="o">!==</span> <span class="s1">&#39;opened&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// Only publish |willclose| event when previous state is &quot;opened&quot;.</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">publish</span><span class="p">(</span><span class="s1">&#39;willclose&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="s1">&#39;transition-closing&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_transition</span><span class="p">[</span><span class="s1">&#39;close&#39;</span><span class="p">]);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">_processTransitionEvent</span><span class="o">:</span> <span class="kd">function</span> <span class="nx">aw__processTransitionEvent</span><span class="p">(</span><span class="nx">evt</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">to</span> <span class="o">=</span> <span class="nx">transitionTable</span><span class="p">[</span><span class="k">this</span><span class="p">.</span><span class="nx">_transitionState</span><span class="p">][</span><span class="nx">evt</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">to</span> <span class="o">===</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">from</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_transitionState</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">leaveState</span><span class="p">(</span><span class="nx">from</span><span class="p">,</span> <span class="nx">to</span><span class="p">,</span> <span class="nx">evt</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">onEvent</span><span class="p">(</span><span class="nx">from</span><span class="p">,</span> <span class="nx">to</span><span class="p">,</span> <span class="nx">evt</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">enterState</span><span class="p">(</span><span class="nx">from</span><span class="p">,</span> <span class="nx">to</span><span class="p">,</span> <span class="nx">evt</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">_previousTransitionState</span> <span class="o">=</span> <span class="nx">from</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">_transitionState</span> <span class="o">=</span> <span class="nx">to</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">enterState</span><span class="o">:</span> <span class="kd">function</span> <span class="nx">aw_enterState</span><span class="p">(</span><span class="nx">from</span><span class="p">,</span> <span class="nx">to</span><span class="p">,</span> <span class="nx">evt</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">funcName</span> <span class="o">=</span> <span class="s1">&#39;_enter&#39;</span> <span class="o">+</span> <span class="nx">capitalize</span><span class="p">(</span><span class="nx">to</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">());</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="k">this</span><span class="p">[</span><span class="nx">funcName</span><span class="p">])</span> <span class="o">==</span> <span class="s1">&#39;function&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>          <span class="k">this</span><span class="p">[</span><span class="nx">funcName</span><span class="p">](</span><span class="nx">from</span><span class="p">,</span> <span class="nx">to</span><span class="p">,</span> <span class="nx">evt</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">),</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">[</span><span class="nx">funcName</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="k">this</span><span class="p">[</span><span class="nx">funcName</span><span class="p">]))</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">[</span><span class="nx">funcName</span><span class="p">].</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">func</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>            <span class="nx">func</span><span class="p">(</span><span class="nx">from</span><span class="p">,</span> <span class="nx">to</span><span class="p">,</span> <span class="nx">evt</span><span class="p">);</span>
+</span><span class='line'>          <span class="p">}.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">),</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">},</span> <span class="k">this</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">leaveState</span><span class="o">:</span> <span class="kd">function</span> <span class="nx">aw_leaveState</span><span class="p">(</span><span class="nx">from</span><span class="p">,</span> <span class="nx">to</span><span class="p">,</span> <span class="nx">evt</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">funcName</span> <span class="o">=</span> <span class="s1">&#39;_leave&#39;</span> <span class="o">+</span> <span class="nx">capitalize</span><span class="p">(</span><span class="nx">from</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">());</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="k">this</span><span class="p">[</span><span class="nx">funcName</span><span class="p">])</span> <span class="o">==</span> <span class="s1">&#39;function&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>          <span class="k">this</span><span class="p">[</span><span class="nx">funcName</span><span class="p">](</span><span class="nx">from</span><span class="p">,</span> <span class="nx">to</span><span class="p">,</span> <span class="nx">evt</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">),</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">[</span><span class="nx">funcName</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="k">this</span><span class="p">[</span><span class="nx">funcName</span><span class="p">]))</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">[</span><span class="nx">funcName</span><span class="p">].</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">func</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>            <span class="nx">func</span><span class="p">(</span><span class="nx">from</span><span class="p">,</span> <span class="nx">to</span><span class="p">,</span> <span class="nx">evt</span><span class="p">);</span>
+</span><span class='line'>          <span class="p">}.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">),</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">},</span> <span class="k">this</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">onEvent</span><span class="o">:</span> <span class="kd">function</span> <span class="nx">aw_onEvent</span><span class="p">(</span><span class="nx">from</span><span class="p">,</span> <span class="nx">to</span><span class="p">,</span> <span class="nx">evt</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">funcName</span> <span class="o">=</span> <span class="s1">&#39;_onTransition&#39;</span> <span class="o">+</span> <span class="nx">capitalize</span><span class="p">(</span><span class="nx">_EVTARRAY</span><span class="p">[</span><span class="nx">evt</span><span class="p">].</span><span class="nx">toLowerCase</span><span class="p">());</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">_invoke</span><span class="p">(</span><span class="nx">funcName</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">_enterOpened</span><span class="o">:</span> <span class="kd">function</span> <span class="nx">aw__enterOpened</span><span class="p">(</span><span class="nx">from</span><span class="p">,</span> <span class="nx">to</span><span class="p">,</span> <span class="nx">evt</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">_cancelTransition</span><span class="p">();</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_openingTransitionTimer</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nb">window</span><span class="p">.</span><span class="nx">clearTimeout</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_openingTransitionTimer</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">_openingTransitionTimer</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="s1">&#39;active&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="cm">/**</span>
+</span><span class='line'><span class="cm">       * @event AppWindow#appopen</span>
+</span><span class='line'><span class="cm">       * @memberOf AppWindow</span>
+</span><span class='line'><span class="cm">       */</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">from</span> <span class="o">==</span> <span class="s1">&#39;opening&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// Only publish |open| event when previous state is &quot;opening&quot;.</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">publish</span><span class="p">(</span><span class="s1">&#39;open&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">_enterClosed</span><span class="o">:</span> <span class="kd">function</span> <span class="nx">aw__enterClosed</span><span class="p">(</span><span class="nx">from</span><span class="p">,</span> <span class="nx">to</span><span class="p">,</span> <span class="nx">evt</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">_cancelTransition</span><span class="p">();</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_closingTransitionTimer</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nb">window</span><span class="p">.</span><span class="nx">clearTimeout</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_closingTransitionTimer</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">_closingTransitionTimer</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="s1">&#39;active&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">setVisible</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="cm">/**</span>
+</span><span class='line'><span class="cm">       * @event AppWindow#appclose</span>
+</span><span class='line'><span class="cm">       * @memberof AppWindow</span>
+</span><span class='line'><span class="cm">       */</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">from</span> <span class="o">==</span> <span class="s1">&#39;closing&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// Only publish |close| event when previous state is &quot;closing&quot;.</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">publish</span><span class="p">(</span><span class="s1">&#39;close&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * Set the transition way of opening or closing transition.</span>
+</span><span class='line'><span class="cm">     * @param  {String} type       &#39;open&#39; or &#39;close&#39;</span>
+</span><span class='line'><span class="cm">     * @param  {String} transition The CSS rule name about window transition.</span>
+</span><span class='line'><span class="cm">     * @memberOf WindowTransition</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="nx">_setTransition</span><span class="o">:</span> <span class="kd">function</span> <span class="nx">aw__setTransition</span><span class="p">(</span><span class="nx">type</span><span class="p">,</span> <span class="nx">transition</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">type</span> <span class="o">!=</span> <span class="s1">&#39;open&#39;</span> <span class="o">&amp;&amp;</span> <span class="nx">type</span> <span class="o">!=</span> <span class="s1">&#39;close&#39;</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">_transition</span><span class="p">[</span><span class="nx">type</span><span class="p">]</span> <span class="o">=</span> <span class="nx">transition</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">AppWindow</span><span class="p">.</span><span class="nx">addMixin</span><span class="p">(</span><span class="nx">WindowTransition</span><span class="p">);</span>
+</span><span class='line'><span class="p">}(</span><span class="k">this</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The state machine&#8217;s usage:
+ 1. A single app window instance would send &#8216;open&#8217; and &#8216;close&#8217; event due to user action:
+ &#8220;` js</p>
+
+<pre><code>transitionStateMachine._processEvent('open');
+transitionStateMachine._processEvent('close');
+</code></pre>
+
+<p> &#8220;`</p>
+
+<pre><code>Note, app window doesn't need to know current state of the state machine.
+</code></pre>
+
+<ol>
+<li>The state machine itself is the one who creates/removes the timer which triggers timeout event. I am also thinking about moving this out of the state machine and do this in another mixin, only have the callback functions provided by the state machine. But I am not sure.</li>
+<li>The state machine has some callback for others(other state machine!) listed below:
+
+<ul>
+<li>Enter a state successfully.</li>
+<li>Leave a state successfully.</li>
+<li>When an event triggers state switch successfully.
+In all these callback we would get the previous state and current state, and the event who triggers them.</li>
+</ul>
+</li>
+<li>The CSS class for real UI closing animation is added in <code><em>enterClosing</code> and removed in <code></em>enterClosed</code>. Or else we could do that in <code><em>leaveOpened</code> and <code></em>leaveClosing</code>. I have no strong opinion here.
+Maybe we could define the level of the callback into three here, according to the callback order.</li>
+<li>The CSS class for real UI opening animation is added in <code><em>enterOpening</code> and removed in <code></em>enterOpened</code>.</li>
+<li>We could also move out (4) and (5) to another mixin to purify the state machine.</li>
+</ol>
+
+
+<p>Finally, back to the problems addressed in Tim&#8217;s article:</p>
+
+<ul>
+<li>Do we need intermediate state?
+
+<ul>
+<li>I don&#8217;t think so, at least for now. If we really need to goto next state when we successfully from state A to state B, we could call <code>_processEvent</code> again in the inner callback of the state machine. This doesn&#8217;t violate the policy that only state machine ifself could decide its next state.</li>
+<li>If the intermediate state needs to acquire other type of state &#8211; just fetch the current state of the other state machine. Or, if we need, register an one-time callback if the current state doesn&#8217;t meet our requirement.</li>
+</ul>
+</li>
+<li>How about state conflict between two apps?
+
+<ul>
+<li>That won&#8217;t happen if we deal with the state changes correctly and independently in each app&#8217;s scope. I hope so.</li>
+</ul>
+</li>
+</ul>
+
+</div>
+  
+  
+
+
+</div>
+
+      </article>
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2013/07/05/page-visibility-on-firefox-os/">HTML5 Page Visibility on Fx OS</a></h1>
     
     
@@ -1794,142 +2577,6 @@ posted in
 
       </article>
     
-    
-      <article class="span4">
-        <div class="article-format">
-
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/06/10/web-application-core/">[WEB] Web Application Core</a></h1>
-    
-    
-      <p class="meta">
-        
-  
-
-
-  
-    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
-  
-
- - 
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-06-10T17:06:00+08:00" pubdate data-updated="true">Jun 10<span>th</span>, 2012</time> - 
-        
-
-posted in
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/javascript/'>javascript</a>
-  
-</span>
-
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>最近看到這篇文章<a href="http://addyosmani.github.com/backbone-aura/">Backbone Aura</a>難得的有提到一個web application core該做些什麼事情？跟我想的蠻相似的，這邊將他列出來：
-* 管理widget的life cycle的能力。
-* 低階DOM操作處理
-* 提供publish/subscribe的溝通管道給應用程式的各部位互相溝通</p>
-
-<p>以下是我流解析。</p>
-
-<h2>管理widget的life cycle</h2>
-
-<p>Core是應用程式的進入點(entry poing)，它必須在適當的時機init需要的widget/application part起來做事情，也只有Core才知道什麼時候必須做這些事情。當然也包括在適當的時機讓widget沈睡或消滅。</p>
-
-<h2>低階DOM操作</h2>
-
-<p>這有點像jQuery library主要在做的事情，不過世界上不是只有jQuery一種library，也不是任何情況下都可以用jQuery，有一個可以快速操作DOM的方法是必要的。</p>
-
-<h2>提供publish/subscribe的溝通方式</h2>
-
-<p>解耦後的application part/widget當然不能直接呼叫別人的attribute function（不然還解什麼耦），那要怎麼叫別人做事？行之有年的publish/subscribe機制在jmvc已經被整合進去，backbone上面還欠缺方法，backbone aura把這件事做出來了。</p>
-
-<p>然後因為好奇它怎麼做的就看了一下source，在<code>aura/www/js/aura/mediator.js</code>裡面定義了：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> * Subscribe to an event</span>
-</span><span class='line'><span class="cm"> * @param {string} channel Event name</span>
-</span><span class='line'><span class="cm"> * @param {object} subscription Module callback</span>
-</span><span class='line'><span class="cm"> * @param {object} context Context in which to execute the module</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="nx">obj</span><span class="p">.</span><span class="nx">subscribe</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">channel</span><span class="p">,</span> <span class="nx">callback</span><span class="p">,</span> <span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">channels</span><span class="p">[</span><span class="nx">channel</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="o">!</span><span class="nx">channels</span><span class="p">[</span><span class="nx">channel</span><span class="p">])</span> <span class="o">?</span> <span class="p">[]</span> <span class="o">:</span> <span class="nx">channels</span><span class="p">[</span><span class="nx">channel</span><span class="p">];</span>
-</span><span class='line'>    <span class="nx">channels</span><span class="p">[</span><span class="nx">channel</span><span class="p">].</span><span class="nx">push</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">util</span><span class="p">.</span><span class="nx">method</span><span class="p">(</span><span class="nx">callback</span><span class="p">,</span> <span class="nx">context</span><span class="p">));</span>
-</span><span class='line'><span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> * Publish an event, passing arguments to subscribers. Will</span>
-</span><span class='line'><span class="cm"> * call start if the channel is not already registered.</span>
-</span><span class='line'><span class="cm"> * @param {string} channel Event name</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="nx">obj</span><span class="p">.</span><span class="nx">publish</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">channel</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">l</span><span class="p">,</span> <span class="nx">args</span> <span class="o">=</span> <span class="p">[].</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arguments</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">channels</span><span class="p">[</span><span class="nx">channel</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">obj</span><span class="p">.</span><span class="nx">start</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
-</span><span class='line'>        <span class="k">return</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">l</span> <span class="o">=</span> <span class="nx">channels</span><span class="p">[</span><span class="nx">channel</span><span class="p">].</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">l</span><span class="p">;</span> <span class="nx">i</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">channels</span><span class="p">[</span><span class="nx">channel</span><span class="p">][</span><span class="nx">i</span><span class="p">].</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">args</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">};</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>看起來是利用一個變數來根據widget name儲存callback function進array裡面。</p>
-</div>
-  
-  
-
-
-</div>
-
-      </article>
-    
     </div>
       <div class="row">
         <ul class="pager">
@@ -1953,6 +2600,10 @@ posted in
     <ul class="recent_posts">
       
         <li>
+          <a href="/blog/2013/07/05/transition-state-machine/">[Window Management] Transition state machine</a>
+        </li>
+      
+        <li>
           <a href="/blog/2013/07/05/page-visibility-on-firefox-os/">HTML5 Page visibility on Fx OS</a>
         </li>
       
@@ -1966,10 +2617,6 @@ posted in
       
         <li>
           <a href="/blog/2013/05/27/rotation-matrix/">Javascript從變形矩陣反推scale以及rotate</a>
-        </li>
-      
-        <li>
-          <a href="/blog/2013/02/23/from-browser-to-browser/">From browser to browser. (1)</a>
         </li>
       
     </ul>
