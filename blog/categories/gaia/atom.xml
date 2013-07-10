@@ -4,7 +4,7 @@
   <title><![CDATA[Category: gaia | Ascheriit]]></title>
   <link href="http://alivedise.github.com/blog/categories/gaia/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-07T17:36:34+08:00</updated>
+  <updated>2013-07-10T20:35:00+08:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -12,6 +12,169 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Proposal: System Modulization Plan]]></title>
+    <link href="http://alivedise.github.com/blog/2013/07/10/system-modulization-plan/"/>
+    <updated>2013-07-10T18:04:00+08:00</updated>
+    <id>http://alivedise.github.com/blog/2013/07/10/system-modulization-plan</id>
+    <content type="html"><![CDATA[<h4>Source</h4>
+
+<p><a href="https://github.com/mozilla-b2g/gaia/tree/master/apps/system">https://github.com/mozilla-b2g/gaia/tree/master/apps/system</a></p>
+
+<h4>Issues with Modulization-less</h4>
+
+<ol>
+<li>Some modules directly invokes others.</li>
+<li><code>'LockScreen is undefined.'</code> message appears oftenly right after device boots up.</li>
+<li>Memory concern - Most of the modules are not always needed. Most of the UI view doesn't need to live in the DOM tree at first.</li>
+<li>Performance concern - device bootup time is getting longer and longer.</li>
+</ol>
+
+
+<h4>Proposal: Core modules and side modules</h4>
+
+<p>We could figure out what's definitely necessary in an operating system and what's not.
+For example, <code>Window Management</code> relevant modules should be a core module but <code>Captive Portal</code> shouldn't be.
+The following are current modules list:</p>
+
+<ul>
+<li>accessibility.js</li>
+<li>activities.js</li>
+<li>airplane_mode.js</li>
+<li>app_install_manager.js</li>
+<li>app_window_manager.js</li>
+<li>applications.js</li>
+<li>attention_screen.js</li>
+<li>authentication_dialog.js</li>
+<li>battery_manager.js</li>
+<li>bluetooth.js</li>
+<li>bluetooth_transfer.js</li>
+<li>bootstrap.js</li>
+<li>browser_frame.js</li>
+<li>call_forwarding.js</li>
+<li>captive_portal.js</li>
+<li>cards_view.js</li>
+<li>cell_broadcast_system.js</li>
+<li>context_menu.js</li>
+<li>cost_control.js</li>
+<li>crash_reporter.js</li>
+<li>entry_sheet.js</li>
+<li>fake_window_manager.js</li>
+<li>ftu_launcher.js</li>
+<li>gridview.js</li>
+<li>hardware_buttons.js</li>
+<li>icc.js</li>
+<li>icc_events.js</li>
+<li>icc_worker.js</li>
+<li>identity.js</li>
+<li>init_logo_handler.js</li>
+<li>internet_sharing.js</li>
+<li>keyboard_manager.js</li>
+<li>list_menu.js</li>
+<li>lockscreen.js</li>
+<li>logo_loader.js</li>
+<li>modal_dialog.js</li>
+<li>modulelist.txt</li>
+<li>mouse2touch.js</li>
+<li>notifications.js</li>
+<li>operator_variant</li>
+<li>orientation_observer.js</li>
+<li>payment.js</li>
+<li>permission_manager.js</li>
+<li>popup_manager.js</li>
+<li>quick_settings.js</li>
+<li>remote_debugger.js</li>
+<li>screen_manager.js</li>
+<li>screenshot.js</li>
+<li>sim_lock.js</li>
+<li>simcard_dialog.js</li>
+<li>sleep_menu.js</li>
+<li>software_button_manager.js</li>
+<li>sound_manager.js</li>
+<li>source_view.js</li>
+<li>statusbar.js</li>
+<li>storage.js</li>
+<li>storage_watcher.js</li>
+<li>system_banner.js</li>
+<li>system_dialog.js</li>
+<li>trusted_ui.js</li>
+<li>ttlview.js</li>
+<li>updatable.js</li>
+<li>update_manager.js</li>
+<li>utility_tray.js</li>
+<li>value_selector</li>
+<li>voicemail.js</li>
+<li>wifi.js</li>
+<li>window.js</li>
+<li>window_load_time.js</li>
+<li>window_manager.js</li>
+<li>wrapper.js</li>
+</ul>
+
+
+<p>The main idea is the same as any other app performanace tuning:</p>
+
+<p>&lt;% blockquote %>
+Lazy load anything on demand.
+&lt;% endblockquote %></p>
+
+<p>The key to this idea would be to establish the following rules:
+* Any side module would have a main event by interest.
+* An event dispatcher as a core module to gather all main events of side modules and then lazy load them.
+For example, lazy load the Captive Portal:</p>
+
+<p>``` js
+window.addEventListener('mozChromeEvent', function(e) {
+  if (e.detail.type == 'captive-portal-login' &amp;&amp; typeof(CaptivePortal) == 'undefined') {</p>
+
+<pre><code>lazy-load('captive-portal', function onReadyCallback() {   // lazy load captive portal and its HTML part.
+  CaptivePortal.handleEvent(e);  // Pass the event
+}); 
+</code></pre>
+
+<p>  }  // If we have already load the CaptivePortal, the event listener inside CP would catch the event by itself.
+});
+```
+So another rule would be:
+* expose handleEvent in any side module for Event Dispatcher to invoke when they are firt time loaded by Event Dispatcher.</p>
+
+<p>With this, we could even lazy load lockscreen,
+because if lockscreen is disabled by the user, we don't need to load it when the device boots.</p>
+
+<p>IMO there're only few core modules now:
+* Window Management
+  * App Window
+  * Browser Frame
+* Utility-tray
+* Statusbar
+* Init Logo Handler (But this is useless after device boot finishes.)
+* Screen Management (Exactly, it's indeed Wake Lock Management)
+* Applications.js (API Wrapper for mozApp)</p>
+
+<p>The following are API wrappers which I believe is also important enough to be a core module.
+* Hardware Button Management (Many other modules' execution route is started here.)
+* Battery Management (UI-less but more like an API wrapper for mozBattery so I would put this into core module.)
+* Airplane Mode (API Wrapper of mozSettings: radio.enabled)
+* Bluetooth (API Wrapper for mozBluetooth)
+* Cost Control (It already lives inside an iframe.)
+* Ftu Launcher (Necessary only for one time when device is first time booted.)
+* Keyboard Management
+* mouse2touch
+* Notifications
+* Orientation observer (API Wrapper for deviceorientation event)
+* Sound manager (There are too many events involed here.)
+* Update Management</p>
+
+<h5>Chanllenge</h5>
+
+<p>If we want to "unload" the module and its view using iframe,
+we need a way for modules inside iframe to communicate.
+The first thing come to my mind is <code>window.parent.postMessage</code></p>
+
+<p>Second, we need to consider dependency problems if it's too complex.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[From browser to browser. (1)]]></title>

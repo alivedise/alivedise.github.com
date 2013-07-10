@@ -128,6 +128,222 @@
 
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2012/05/15/class-code-trace-2/">javascriptMVC原始碼分析 - Class實作（中）</a></h1>
+    
+    
+      <p class="meta">
+        
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-15T10:44:00+08:00" pubdate data-updated="true">May 15<span>th</span>, 2012</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascriptmvc/'>javascriptMVC</a>
+  
+</span>
+
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>fnText Magic</h3>
+
+<p>上一篇忘了提這個很特別的function</p>
+
+<pre><code>fnTest = /xyz/.test(function() {
+    xyz;
+}) ? /\b_super\b/ : /.*/,
+
+//after several lines
+
+prototype[name] = typeof prop[name] == "function" &amp;&amp; typeof _super[name] == "function" &amp;&amp; fnTest.test(prop[name]) ?
+</code></pre>
+
+<p>大概可以推測他想做的是從字串找到._super，但是那個詭異的fnTest實在不容易懂。</p>
+
+<p>後來在一個對岸熱血青年(他把所有js lib的類別實作都研究過了，這也是我之後想做的事)的文章中看到了曙光：<a href="http://www.cnblogs.com/sanshi/archive/2009/07/09/1519585.html">http://www.cnblogs.com/sanshi/archive/2009/07/09/1519585.html</a></p>
+
+<p>簡單的說利用了隱含型別轉換來作regExp測試，測試什麼？新的類別定義中，所有函數裡面有寫到this.<em>super的話，去把this.</em>super替換掉，變成舊類別的同名函數。</p>
+
+<h3>proxy</h3>
+
+<p>以下節錄自<a href="http://www.javascriptmvc.com/docs.html#!jQuery.Class.static.proxy">jmvcdoc中proxy的說明</a>:</p>
+
+<h4>jQuery.Class.static.proxy</h4>
+
+<h5>Source</h5>
+
+<p>Returns a callback function for a function on this Class. Proxy ensures that &#8216;this&#8217; is set appropriately.</p>
+
+<pre><code>$.Class("MyClass",{
+    getData: function() {
+    this.showing = null;
+    $.get("data.json",this.proxy('gotData'),'json')
+    },
+    gotData: function( data ) {
+    this.showing = data;
+    }
+},{});
+MyClass.showData();
+</code></pre>
+
+<h5>Currying Arguments</h5>
+
+<p>Additional arguments to proxy will fill in arguments on the returning function.</p>
+
+<pre><code>$.Class("MyClass",{
+   getData: function( callback ) {
+     $.get("data.json",this.proxy('process',callback),'json');
+   },
+   process: function( callback, jsonData ) { //callback is added as first argument
+       jsonData.processed = true;
+       callback(jsonData);
+   }
+},{});
+MyClass.getData(showDataFunc)
+</code></pre>
+
+<h5>Nesting Functions</h5>
+
+<p>Proxy can take an array of functions to call as the first argument. When the returned callback function is called each function in the array is passed the return value of the prior function. This is often used to eliminate currying initial arguments.</p>
+
+<pre><code>$.Class("MyClass",{
+   getData: function( callback ) {
+     //calls process, then callback with value from process
+     $.get("data.json",this.proxy(['process2',callback]),'json') 
+   },
+   process2: function( type,jsonData ) {
+       jsonData.processed = true;
+       return [jsonData];
+   }
+},{});
+MyClass.getData(showDataFunc);
+</code></pre>
+
+<h4>Currying是什麼？</h4>
+
+<p>在javascript pattern一書中有提到Currying，
+這個名詞來自於一個數學家Haskell Curry，Currying指的是函式轉換（的過程）。</p>
+
+<h4>Code Trace to proxy</h4>
+
+<p>proxy source code如下：</p>
+
+<pre><code>proxy: function(funcs) {
+
+    //args that should be curried
+    var args = makeArray(arguments),
+    self;
+
+    // get the functions to callback
+    funcs = args.shift();
+
+    // if there is only one function, make funcs into an array
+    if (!isArray(funcs)) {
+    funcs = [funcs];
+    }
+
+    // keep a reference to us in self
+    self = this;
+
+    return function class_cb() {
+    // add the arguments after the curried args
+    var cur = concatArgs(args, arguments),
+        isString, length = funcs.length,
+        f = 0,
+        func;
+
+    // go through each function to call back
+    for (; f &lt; length; f++) {
+        func = funcs[f];
+        if (!func) {
+            continue;
+        }
+
+        // set called with the name of the function on self (this is how this.view works)
+        isString = typeof func == "string";
+        if (isString &amp;&amp; self._set_called) {
+            self.called = func;
+        }
+
+        // call the function
+        cur = (isString ? self[func] : func).apply(self, cur || []);
+
+        // pass the result to the next function (if there is a next function)
+        if (f &lt; length - 1) {
+            cur = !isArray(cur) || cur._use_call ? [cur] : cur
+        }
+    }
+    return cur;
+    }
+}
+</code></pre>
+
+<ol>
+<li><code>funcs = args.shift();</code> //this.proxy的第一個參數會是函數名稱字串或函數名稱字串的陣列。取出後剩下的是要傳給這些函數的參數。</li>
+<li><code>return function class_cb(){...}</code> //這邊就是在做Currying: 用另一個函數回傳取代原本的函數。同時將此函數取名class_cb</li>
+<li><code> if (isString &amp;&amp; self._set_called) {
+
+<pre><code>         self.called = func;
+</code></pre>
+
+<p>  } </code>  這一段目前看起來只有$.Controller才用的到，先不管他。</p></li>
+<li>把字串轉成函數<code>self[func]</code></li>
+<li>重寫return，把一開始傳進來的參數再return給下一個函數用</li>
+</ol>
+
+
+<h4>callback</h4>
+
+<p>callback算是蠻常用Class功能，主要用在Ajax回傳結果時，需要連續傳遞給一個或多個以上的函數時使用。
+而callback的實作就來自於proxy:</p>
+
+<pre><code>clss.callback = clss[STR_PROTOTYPE].callback = clss[STR_PROTOTYPE].proxy = clss.proxy;
+</code></pre>
+
+<h5>Static 與 Prototype</h5>
+
+<p>$.Class中的prototype其實就是John實作的部份，而jmvc又加入對整個Class操作的static scope。
+這部份實現蠻長，留給最後一篇$.Class專門討論。</p>
+</div>
+  
+  
+
+
+</div>
+
+      </article>
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2012/05/15/class-code-trace/">javascriptMVC原始碼分析 - Class實作（上）</a></h1>
     
     
@@ -1255,410 +1471,6 @@ posted in
 
       </article>
     
-    
-      <article class="span4">
-        <div class="article-format">
-
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/02/17/javascriptmvc-stealjs/">[javascriptMVC] stealJS - Steal Anything</a></h1>
-    
-    
-      <p class="meta">
-        
-  
-
-
-  
-    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
-  
-
- - 
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-02-17T13:44:00+08:00" pubdate data-updated="true">Feb 17<span>th</span>, 2012</time> - 
-        
-
-posted in
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/javascriptmvc/'>javascriptmvc</a>
-  
-</span>
-
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><strong>steal</strong> is a function that loads scripts, css, and  other resources into your application.</p>
-
-<pre><code>steal(FILE_or_FUNCTION, ...)
-</code></pre>
-
-<h2>Quick Walkthrough</h2>
-
-<p>Add a script tag that loads<code>steal/steal.js</code> and add the path to the first file to load in the query string like:</p>
-
-<p> &lt;script type=&#8217;text/javascript&#8217;</p>
-
-<pre><code> src='../steal/steal.js?myapp/myapp.js'&gt;
-</code></pre>
-
-<p> &lt;/script></p>
-
-<p>Then, start loading things and using them like:</p>
-
-<pre><code> steal('myapp/tabs.js',
-       'myapp/slider.js', 
-       'myapp/style.css',function(){
-
-    // tabs and slider have loaded 
-    $('#tabs').tabs();
-    $('#slider').slider()
- })
-</code></pre>
-
-<p>Make sure your widgets load their dependencies too:</p>
-
-<pre><code> // myapp/tabs.js
- steal('jquery', function(){
-   $.fn.tabs = function(){
-    ...
-   }
- })
-</code></pre>
-
-<h2>Examples:</h2>
-
-<pre><code> // Loads ROOT/jquery/controller/controller.js
- steal('jquery/controller')
- steal('jquery/controller/controller.js')
-
- // Loads coffee script type and a coffee file relative to
- // the current file
- steal('steal/coffee').then('./mycoffee.coffee')
-
- // Load 2 files and dependencies in parallel and
- // callback when both have completed
- steal('jquery/controller','jquery/model', function(){
-   // $.Controller and $.Model are available
- })
-
- // Loads a coffee script with a non-standard extension (cf)
- // relative to the current page and instructs the build
- // system to not package it (but it will still be loaded).
- steal({
-    src: "./foo.cf",
-    packaged: false,
-    type: "coffee"
-  })
-</code></pre>
-
-<p>The following is a longer walkthrough of how to install
- and use steal:</p>
-
-<h2>Adding steal to a page</h2>
-
-<p>After installing StealJS (or JavaScriptMVC),
-find the <code>steal</code> folder with
- <code>steal/steal.js</code>.</p>
-
-<p>To use steal, add a script tag
-to <code>steal/steal.js</code> to your
-html pages.</p>
-
-<p>This walkthrough assumes you have the steal script in <code>public/steal/steal.js</code> and a directory structure like:</p>
-
-<p> @codestart text
- /public</p>
-
-<pre><code> /steal
- /pages
-     myapp.html
- /myapp
-     myapp.js
-     jquery.js
-     jquery.ui.tabs.js
-</code></pre>
-
-<p> @codeend</p>
-
-<p> To use steal in <code>public/pages/myapp.html</code>,
- add a script tag in <code>myapp.html</code>:</p>
-
-<p> @codestart html
- &lt;script type=&#8217;text/javascript&#8217;</p>
-
-<pre><code> src='../steal/steal.js'&gt;
-</code></pre>
-
-<p> &lt;/script>
- @codeend</p>
-
-<p> <div class='whisper'>PRO TIP: Bottom load your scripts. It
- will increase your application&#8217;s percieved response time.</div></p>
-
-<h2>Loading the First Script</h2>
-
-<p> Once steal has been added to your page, it&#8217;s time
- to load scripts. We want to load <code>myapp.js</code>
- and have it load <code>jquery.js</code> and
- <code>jquery.ui.tabs.js</code>.</p>
-
-<p> By default, steal likes your scripts
- to be within in the [steal.static.root steal.root] folder.  The [steal.root] the
- folder contains the <code>steal</code> folder.  In this example,
- it is the <code>public</code> folder.</p>
-
-<p> To load <code>myapp/myapp.js</code>, we have two options:</p>
-
-<h4>Add a script tag</h4>
-
-<p> Add a script tag after the steal
- script that &#8216;steals&#8217; <code>myapp.js</code> like:</p>
-
-<p> @codestart html
- &lt;script type=&#8217;text/javascript&#8217;>
-   steal(&#8216;myapp/myapp.js&#8217;)
- &lt;/script>
- @codeend</p>
-
-<h4>Add the script parameter</h4>
-
-<p> The most common (and shortest) way to load <code>myapp.js</code>
- is to add the script path to the steal script&#8217;s src after in the
- query params.  So, instead of adding a script, we change
- the steal script from:</p>
-
-<p> @codestart html
- &lt;script type=&#8217;text/javascript&#8217;</p>
-
-<pre><code> src='../steal/steal.js'&gt;
-</code></pre>
-
-<p> &lt;/script>
- @codeend</p>
-
-<p> To</p>
-
-<p> @codestart html
- &lt;script type=&#8217;text/javascript&#8217;</p>
-
-<pre><code> src='../steal/steal.js?&lt;b&gt;myapp/myapp.js&lt;/b&gt;'&gt;
-</code></pre>
-
-<p> &lt;/script>
- @codeend</p>
-
-<p> <div class='whisper'>PRO TIP: You can also just add
- <code>?myapp</code> to the query string.</div></p>
-
-<h2>Loading Scripts</h2>
-
-<p> We want to load <code>jquery.js</code> and
- <code>jquery.ui.tabs.js</code> into the page and then
- add then create a tabs widget.  First we need to load
- <code>jquery.js</code>.</p>
-
-<p> By default, steal loads script relative to [steal.root]. To
- load <code>myapp/jquery.js</code> we can the following to
- <code>myapp.js</code>:</p>
-
-<pre><code> steal('myapp/jquery.js');
-</code></pre>
-
-<p> But, we can also load relative to <code>myapp.js</code> like:</p>
-
-<pre><code> steal('./jquery.js');
-</code></pre>
-
-<p> Next, we need to load <code>jquery.ui.tabs.js</code>.  You
- might expect something like:</p>
-
-<pre><code> steal('./jquery.js','./jquery.ui.tabs.js')
-</code></pre>
-
-<p> to work.  But there are two problems / complications:</p>
-
-<ul>
-<li> steal loads scripts in parallel and runs out of order</li>
-<li> <code>jquery.ui.tabs.js</code> depends on jQuery being loaded</li>
-</ul>
-
-
-<p> This means that steal might load <code>jquery.ui.tabs.js</code>
- before <code>jquery.js</code>.  But this is easily fixed.</p>
-
-<p> [steal.static.then] waits until all previous scripts have loaded and
- run before loading scripts after it.  We can load <code>jquery.ui.tabs.js</code>
- after <code>jquery.js</code> like:</p>
-
-<pre><code> steal('./jquery.js').then('./jquery.ui.tabs.js')
-</code></pre>
-
-<p> Finally, we need to add tabs to the page after
- the tabs&#8217;s widget has loaded.  We can add a callback function to
- steal that will get called when all previous scripts have finished
- loading:</p>
-
-<pre><code> steal('./jquery.js').then('./jquery.ui.tabs.js', function($){
-   $('#tabs').tabs();
- })
-</code></pre>
-
-<h2>Other Info</h2>
-
-<h3>Exclude Code Blocks From Production</h3>
-
-<p> To exclude code blocks from being included in
- production builds, add the following around
- the code blocks.</p>
-
-<pre><code> //!steal-remove-start
-     code to be removed at build
- //!steal-remove-end
-</code></pre>
-
-<h3>Lookup Paths</h3>
-
-<p> By default steal loads resources relative
- to [steal.static.root steal.root].  For example, the following
- loads foo.js in <code>steal.root</code>:</p>
-
-<pre><code> steal('foo.js'); // loads //foo.js
-</code></pre>
-
-<p> This is the same as writing:</p>
-
-<pre><code> steal('//foo.js');
-</code></pre>
-
-<p> Steal uses <code>'//'</code> to designate the [steal.static.root steal.root]
- folder.</p>
-
-<p> To load relative to the current file, add <code>"./"</code> or
-  <code>"../"</code>:</p>
-
-<pre><code> steal("./bar.js","../folder/zed.js");
-</code></pre>
-
-<p> Often, scripts can be found in a folder within the same
- name. For example, [jQuery.Controller $.Controller] is
- in <code>//jquery/controller/controller.js</code>. For convience,
- if steal is provided a path without an extension like:</p>
-
-<pre><code> steal('FOLDER/PLUGIN');
-</code></pre>
-
-<p> It is the same as writing:</p>
-
-<pre><code> steal('FOLDER/PLUGIN/PLUGIN.js')
-</code></pre>
-
-<p> This means that <code>//jquery/controller/controller.js</code>
- can be loaded like:</p>
-
-<pre><code>  steal('jquery/controller')
-</code></pre>
-
-<h3>Types</h3>
-
-<p> steal can load resources other than JavaScript.</p>
-
-<p> @constructor</p>
-
-<p> Loads resources specified by each argument.  By default, resources
- are loaded in parallel and run in any order.</p>
-
-<p> @param {String|Function|Object} resource&#8230;</p>
-
-<p> Each argument specifies a resource.  Resources can
- be given as a:</p>
-
-<h3>Object</h3>
-
-<p> An object that specifies the loading and build
- behavior of a resource.</p>
-
-<pre><code>  steal({
-    src: "myfile.cf",
-    type: "coffee",
-    packaged: true,
-    unique: true,
-    ignore: false,
-    waits: false
-  })
-</code></pre>
-
-<p> The available options are:</p>
-
-<ul>
-<li><p><strong>src</strong> {<em>String</em>} - the path to the resource.</p></li>
-<li><p><strong>waits</strong> {<em>Boolean default=false</em>} - true the resource should wait
-for prior steals to load and run. False if the resource should load and run in
-parallel.  This defaults to true for functions.</p></li>
-<li><p><strong>unique</strong> {<em>Boolean default=true</em>} - true if this is a unique resource
-that &#8216;owns&#8217; this url.  This is true for files, false for functions.</p></li>
-<li><p><strong>ignore</strong> {<em>Boolean default=false</em>} - true if this resource should
-not be built into a production file and not loaded in
-production.  This is great for script that should only be available
-in development mode.</p></li>
-<li><p><strong>packaged</strong> {<em>Boolean default=true</em>} - true if the script should be built
-into the production file. false if the script should not be built
-into the production file, but still loaded.  This is useful for
-loading &#8216;packages&#8217;.</p></li>
-<li><p><strong>type</strong> {<em>String default=&#8221;js&#8221;</em>} - the type of the resource.  This
-is typically inferred from the src.</p></li>
-</ul>
-
-
-<h3><strong>String</strong></h3>
-
-<p> Specifies src of the resource.  For example:</p>
-
-<pre><code>   steal('./file.js')
-</code></pre>
-
-<p> Is the same as calling:</p>
-
-<pre><code>   steal({src: './file.js'})
-</code></pre>
-
-<h3><strong>Function</strong></h3>
-
-<p> A callback function that runs when all previous steals
- have completed.</p>
-
-<pre><code> steal('jquery', 'foo',function(){
-   // jquery and foo have finished loading
-   // and runing
- })
-</code></pre>
-
-<p> @return {steal} the steal object for chaining
-/</p>
-</div>
-  
-  
-
-
-</div>
-
-      </article>
-    
     </div>
       <div class="row">
         <ul class="pager">
@@ -1686,6 +1498,10 @@ is typically inferred from the src.</p></li>
     <ul class="recent_posts">
       
         <li>
+          <a href="/blog/2013/07/10/system-modulization-plan/">Proposal: System Modulization Plan</a>
+        </li>
+      
+        <li>
           <a href="/blog/2013/07/05/transition-state-machine/">[Window Management] Transition state machine</a>
         </li>
       
@@ -1699,10 +1515,6 @@ is typically inferred from the src.</p></li>
       
         <li>
           <a href="/blog/2013/06/18/alvitr/">Recent side projects: Alvitr, Lucifer, GaiaSystemAPIDOC</a>
-        </li>
-      
-        <li>
-          <a href="/blog/2013/05/27/rotation-matrix/">Javascript從變形矩陣反推scale以及rotate</a>
         </li>
       
     </ul>

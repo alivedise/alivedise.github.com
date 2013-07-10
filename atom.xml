@@ -4,7 +4,7 @@
   <title><![CDATA[Ascheriit]]></title>
   <link href="http://alivedise.github.com/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-07T17:36:34+08:00</updated>
+  <updated>2013-07-10T20:35:00+08:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -12,6 +12,174 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Proposal: System Modulization Plan]]></title>
+    <link href="http://alivedise.github.com/blog/2013/07/10/system-modulization-plan/"/>
+    <updated>2013-07-10T18:04:00+08:00</updated>
+    <id>http://alivedise.github.com/blog/2013/07/10/system-modulization-plan</id>
+    <content type="html"><![CDATA[<h4>Source</h4>
+
+<p><a href="https://github.com/mozilla-b2g/gaia/tree/master/apps/system">https://github.com/mozilla-b2g/gaia/tree/master/apps/system</a></p>
+
+<h4>Issues with Modulization-less</h4>
+
+<ol>
+<li>Some modules directly invokes others.</li>
+<li><code>'LockScreen is undefined.'</code> message appears oftenly right after device boots up.</li>
+<li>Memory concern - Most of the modules are not always needed. Most of the UI view doesn&#8217;t need to live in the DOM tree at first.</li>
+<li>Performance concern - device bootup time is getting longer and longer.</li>
+</ol>
+
+
+<h4>Proposal: Core modules and side modules</h4>
+
+<p>We could figure out what&#8217;s definitely necessary in an operating system and what&#8217;s not.
+For example, <code>Window Management</code> relevant modules should be a core module but <code>Captive Portal</code> shouldn&#8217;t be.
+The following are current modules list:</p>
+
+<ul>
+<li>accessibility.js</li>
+<li>activities.js</li>
+<li>airplane_mode.js</li>
+<li>app_install_manager.js</li>
+<li>app_window_manager.js</li>
+<li>applications.js</li>
+<li>attention_screen.js</li>
+<li>authentication_dialog.js</li>
+<li>battery_manager.js</li>
+<li>bluetooth.js</li>
+<li>bluetooth_transfer.js</li>
+<li>bootstrap.js</li>
+<li>browser_frame.js</li>
+<li>call_forwarding.js</li>
+<li>captive_portal.js</li>
+<li>cards_view.js</li>
+<li>cell_broadcast_system.js</li>
+<li>context_menu.js</li>
+<li>cost_control.js</li>
+<li>crash_reporter.js</li>
+<li>entry_sheet.js</li>
+<li>fake_window_manager.js</li>
+<li>ftu_launcher.js</li>
+<li>gridview.js</li>
+<li>hardware_buttons.js</li>
+<li>icc.js</li>
+<li>icc_events.js</li>
+<li>icc_worker.js</li>
+<li>identity.js</li>
+<li>init_logo_handler.js</li>
+<li>internet_sharing.js</li>
+<li>keyboard_manager.js</li>
+<li>list_menu.js</li>
+<li>lockscreen.js</li>
+<li>logo_loader.js</li>
+<li>modal_dialog.js</li>
+<li>modulelist.txt</li>
+<li>mouse2touch.js</li>
+<li>notifications.js</li>
+<li>operator_variant</li>
+<li>orientation_observer.js</li>
+<li>payment.js</li>
+<li>permission_manager.js</li>
+<li>popup_manager.js</li>
+<li>quick_settings.js</li>
+<li>remote_debugger.js</li>
+<li>screen_manager.js</li>
+<li>screenshot.js</li>
+<li>sim_lock.js</li>
+<li>simcard_dialog.js</li>
+<li>sleep_menu.js</li>
+<li>software_button_manager.js</li>
+<li>sound_manager.js</li>
+<li>source_view.js</li>
+<li>statusbar.js</li>
+<li>storage.js</li>
+<li>storage_watcher.js</li>
+<li>system_banner.js</li>
+<li>system_dialog.js</li>
+<li>trusted_ui.js</li>
+<li>ttlview.js</li>
+<li>updatable.js</li>
+<li>update_manager.js</li>
+<li>utility_tray.js</li>
+<li>value_selector</li>
+<li>voicemail.js</li>
+<li>wifi.js</li>
+<li>window.js</li>
+<li>window_load_time.js</li>
+<li>window_manager.js</li>
+<li>wrapper.js</li>
+</ul>
+
+
+<p>The main idea is the same as any other app performanace tuning:</p>
+
+<p>&lt;% blockquote %>
+Lazy load anything on demand.
+&lt;% endblockquote %></p>
+
+<p>The key to this idea would be to establish the following rules:
+* Any side module would have a main event by interest.
+* An event dispatcher as a core module to gather all main events of side modules and then lazy load them.
+For example, lazy load the Captive Portal:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;mozChromeEvent&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">detail</span><span class="p">.</span><span class="nx">type</span> <span class="o">==</span> <span class="s1">&#39;captive-portal-login&#39;</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span><span class="p">(</span><span class="nx">CaptivePortal</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">lazy</span><span class="o">-</span><span class="nx">load</span><span class="p">(</span><span class="s1">&#39;captive-portal&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="nx">onReadyCallback</span><span class="p">()</span> <span class="p">{</span>   <span class="c1">// lazy load captive portal and its HTML part.</span>
+</span><span class='line'>      <span class="nx">CaptivePortal</span><span class="p">.</span><span class="nx">handleEvent</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>  <span class="c1">// Pass the event</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>  <span class="p">}</span>  <span class="c1">// If we have already load the CaptivePortal, the event listener inside CP would catch the event by itself.</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So another rule would be:
+* expose handleEvent in any side module for Event Dispatcher to invoke when they are firt time loaded by Event Dispatcher.</p>
+
+<p>With this, we could even lazy load lockscreen,
+because if lockscreen is disabled by the user, we don&#8217;t need to load it when the device boots.</p>
+
+<p>IMO there&#8217;re only few core modules now:
+* Window Management
+  * App Window
+  * Browser Frame
+* Utility-tray
+* Statusbar
+* Init Logo Handler (But this is useless after device boot finishes.)
+* Screen Management (Exactly, it&#8217;s indeed Wake Lock Management)
+* Applications.js (API Wrapper for mozApp)</p>
+
+<p>The following are API wrappers which I believe is also important enough to be a core module.
+* Hardware Button Management (Many other modules&#8217; execution route is started here.)
+* Battery Management (UI-less but more like an API wrapper for mozBattery so I would put this into core module.)
+* Airplane Mode (API Wrapper of mozSettings: radio.enabled)
+* Bluetooth (API Wrapper for mozBluetooth)
+* Cost Control (It already lives inside an iframe.)
+* Ftu Launcher (Necessary only for one time when device is first time booted.)
+* Keyboard Management
+* mouse2touch
+* Notifications
+* Orientation observer (API Wrapper for deviceorientation event)
+* Sound manager (There are too many events involed here.)
+* Update Management</p>
+
+<h5>Chanllenge</h5>
+
+<p>If we want to &#8220;unload&#8221; the module and its view using iframe,
+we need a way for modules inside iframe to communicate.
+The first thing come to my mind is <code>window.parent.postMessage</code></p>
+
+<p>Second, we need to consider dependency problems if it&#8217;s too complex.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[[Window Management] Transition state machine]]></title>
@@ -2554,173 +2722,6 @@ JMVC除了MVC還提供其他的case solution，而Backbone只專注在MVC身上�
     <content type="html"><![CDATA[<h1>Instantiation</h1>
 
 <p>這篇開始先跳出JMVC，從語言來看物件化，類別化，初始化這幾件事。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[javascriptMVC原始碼分析 - Class實作（中）]]></title>
-    <link href="http://alivedise.github.com/blog/2012/05/15/class-code-trace-2/"/>
-    <updated>2012-05-15T10:44:00+08:00</updated>
-    <id>http://alivedise.github.com/blog/2012/05/15/class-code-trace-2</id>
-    <content type="html"><![CDATA[<h3>fnText Magic</h3>
-
-<p>上一篇忘了提這個很特別的function</p>
-
-<pre><code>fnTest = /xyz/.test(function() {
-    xyz;
-}) ? /\b_super\b/ : /.*/,
-
-//after several lines
-
-prototype[name] = typeof prop[name] == "function" &amp;&amp; typeof _super[name] == "function" &amp;&amp; fnTest.test(prop[name]) ?
-</code></pre>
-
-<p>大概可以推測他想做的是從字串找到._super，但是那個詭異的fnTest實在不容易懂。</p>
-
-<p>後來在一個對岸熱血青年(他把所有js lib的類別實作都研究過了，這也是我之後想做的事)的文章中看到了曙光：<a href="http://www.cnblogs.com/sanshi/archive/2009/07/09/1519585.html">http://www.cnblogs.com/sanshi/archive/2009/07/09/1519585.html</a></p>
-
-<p>簡單的說利用了隱含型別轉換來作regExp測試，測試什麼？新的類別定義中，所有函數裡面有寫到this.<em>super的話，去把this.</em>super替換掉，變成舊類別的同名函數。</p>
-
-<h3>proxy</h3>
-
-<p>以下節錄自<a href="http://www.javascriptmvc.com/docs.html#!jQuery.Class.static.proxy">jmvcdoc中proxy的說明</a>:</p>
-
-<h4>jQuery.Class.static.proxy</h4>
-
-<h5>Source</h5>
-
-<p>Returns a callback function for a function on this Class. Proxy ensures that &#8216;this&#8217; is set appropriately.</p>
-
-<pre><code>$.Class("MyClass",{
-    getData: function() {
-    this.showing = null;
-    $.get("data.json",this.proxy('gotData'),'json')
-    },
-    gotData: function( data ) {
-    this.showing = data;
-    }
-},{});
-MyClass.showData();
-</code></pre>
-
-<h5>Currying Arguments</h5>
-
-<p>Additional arguments to proxy will fill in arguments on the returning function.</p>
-
-<pre><code>$.Class("MyClass",{
-   getData: function( callback ) {
-     $.get("data.json",this.proxy('process',callback),'json');
-   },
-   process: function( callback, jsonData ) { //callback is added as first argument
-       jsonData.processed = true;
-       callback(jsonData);
-   }
-},{});
-MyClass.getData(showDataFunc)
-</code></pre>
-
-<h5>Nesting Functions</h5>
-
-<p>Proxy can take an array of functions to call as the first argument. When the returned callback function is called each function in the array is passed the return value of the prior function. This is often used to eliminate currying initial arguments.</p>
-
-<pre><code>$.Class("MyClass",{
-   getData: function( callback ) {
-     //calls process, then callback with value from process
-     $.get("data.json",this.proxy(['process2',callback]),'json') 
-   },
-   process2: function( type,jsonData ) {
-       jsonData.processed = true;
-       return [jsonData];
-   }
-},{});
-MyClass.getData(showDataFunc);
-</code></pre>
-
-<h4>Currying是什麼？</h4>
-
-<p>在javascript pattern一書中有提到Currying，
-這個名詞來自於一個數學家Haskell Curry，Currying指的是函式轉換（的過程）。</p>
-
-<h4>Code Trace to proxy</h4>
-
-<p>proxy source code如下：</p>
-
-<pre><code>proxy: function(funcs) {
-
-    //args that should be curried
-    var args = makeArray(arguments),
-    self;
-
-    // get the functions to callback
-    funcs = args.shift();
-
-    // if there is only one function, make funcs into an array
-    if (!isArray(funcs)) {
-    funcs = [funcs];
-    }
-
-    // keep a reference to us in self
-    self = this;
-
-    return function class_cb() {
-    // add the arguments after the curried args
-    var cur = concatArgs(args, arguments),
-        isString, length = funcs.length,
-        f = 0,
-        func;
-
-    // go through each function to call back
-    for (; f &lt; length; f++) {
-        func = funcs[f];
-        if (!func) {
-            continue;
-        }
-
-        // set called with the name of the function on self (this is how this.view works)
-        isString = typeof func == "string";
-        if (isString &amp;&amp; self._set_called) {
-            self.called = func;
-        }
-
-        // call the function
-        cur = (isString ? self[func] : func).apply(self, cur || []);
-
-        // pass the result to the next function (if there is a next function)
-        if (f &lt; length - 1) {
-            cur = !isArray(cur) || cur._use_call ? [cur] : cur
-        }
-    }
-    return cur;
-    }
-}
-</code></pre>
-
-<ol>
-<li><code>funcs = args.shift();</code> //this.proxy的第一個參數會是函數名稱字串或函數名稱字串的陣列。取出後剩下的是要傳給這些函數的參數。</li>
-<li><code>return function class_cb(){...}</code> //這邊就是在做Currying: 用另一個函數回傳取代原本的函數。同時將此函數取名class_cb</li>
-<li><code> if (isString &amp;&amp; self._set_called) {
-
-<pre><code>         self.called = func;
-</code></pre>
-
-<p>  } </code>  這一段目前看起來只有$.Controller才用的到，先不管他。</p></li>
-<li>把字串轉成函數<code>self[func]</code></li>
-<li>重寫return，把一開始傳進來的參數再return給下一個函數用</li>
-</ol>
-
-
-<h4>callback</h4>
-
-<p>callback算是蠻常用Class功能，主要用在Ajax回傳結果時，需要連續傳遞給一個或多個以上的函數時使用。
-而callback的實作就來自於proxy:</p>
-
-<pre><code>clss.callback = clss[STR_PROTOTYPE].callback = clss[STR_PROTOTYPE].proxy = clss.proxy;
-</code></pre>
-
-<h5>Static 與 Prototype</h5>
-
-<p>$.Class中的prototype其實就是John實作的部份，而jmvc又加入對整個Class操作的static scope。
-這部份實現蠻長，留給最後一篇$.Class專門討論。</p>
 ]]></content>
   </entry>
   
