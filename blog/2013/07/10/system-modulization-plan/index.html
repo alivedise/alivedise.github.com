@@ -259,28 +259,28 @@ For example, lazy load the Captive Portal:</p>
 because if lockscreen is disabled by the user, we don&#8217;t need to load it when the device boots.</p>
 
 <p>IMO there&#8217;re only few core modules now:
-* Window Management
+ * Window Management
   * App Window
   * Browser Frame
-* Utility-tray
-* Statusbar
-* Init Logo Handler (But this is useless after device boot finishes.)
-* Screen Management (Exactly, it&#8217;s indeed Wake Lock Management)
-* Applications.js (API Wrapper for mozApp)</p>
+ * Utility-tray
+ * Statusbar
+ * Init Logo Handler (But this is useless after device boot finishes.)
+ * Screen Management (Exactly, it&#8217;s indeed Wake Lock Management)
+ * Applications.js (API Wrapper for mozApp)</p>
 
 <p>The following are API wrappers which I believe is also important enough to be a core module.
-* Hardware Button Management (Many other modules&#8217; execution route is started here.)
-* Battery Management (UI-less but more like an API wrapper for mozBattery so I would put this into core module.)
-* Airplane Mode (API Wrapper of mozSettings: radio.enabled)
-* Bluetooth (API Wrapper for mozBluetooth)
-* Cost Control (It already lives inside an iframe.)
-* Ftu Launcher (Necessary only for one time when device is first time booted.)
-* Keyboard Management
-* mouse2touch
-* Notifications
-* Orientation observer (API Wrapper for deviceorientation event)
-* Sound manager (There are too many events involed here.)
-* Update Management</p>
+ * Hardware Button Management (Many other modules&#8217; execution route is started here.)
+ * Battery Management (UI-less but more like an API wrapper for mozBattery so I would put this into core module.)
+ * Airplane Mode (API Wrapper of mozSettings: radio.enabled)
+ * Bluetooth (API Wrapper for mozBluetooth)
+ * Cost Control (It already lives inside an iframe.)
+ * Ftu Launcher (Necessary only for one time when device is first time booted.)
+ * Keyboard Management
+ * mouse2touch
+ * Notifications
+ * Orientation observer (API Wrapper for deviceorientation event)
+ * Sound manager (There are too many events involed here.)
+ * Update Management</p>
 
 <h5>Chanllenge</h5>
 
