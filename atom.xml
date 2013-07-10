@@ -4,7 +4,7 @@
   <title><![CDATA[Ascheriit]]></title>
   <link href="http://alivedise.github.com/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-10T20:35:00+08:00</updated>
+  <updated>2013-07-10T20:37:37+08:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -113,11 +113,8 @@ The following are current modules list:</p>
 </ul>
 
 
-<p>The main idea is the same as any other app performanace tuning:</p>
-
-<p>&lt;% blockquote %>
-Lazy load anything on demand.
-&lt;% endblockquote %></p>
+<p>The main idea is the same as any other app performanace tuning:
+Lazy load anything on demand.</p>
 
 <p>The key to this idea would be to establish the following rules:
 * Any side module would have a main event by interest.
