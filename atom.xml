@@ -4,7 +4,7 @@
   <title><![CDATA[Ascheriit]]></title>
   <link href="http://alivedise.github.com/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-16T21:26:49+08:00</updated>
+  <updated>2013-07-16T21:28:18+08:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -91,6 +91,9 @@ and the page/app is the current displayed one.</li>
 
 
 <p>Please keep in mind you need relevant channel permission.</p>
+
+<blockquote><p>Note: It&#8217;s <code>mozaudiochannel</code> instead of <code>mozaudiopchanneltype</code> here.</p></blockquote>
+
 
 <h2>[Dynamically] Javascript</h2>
 
