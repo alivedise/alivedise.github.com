@@ -129,7 +129,7 @@
 
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/07/16/audio-competing-in-fxos/">[Fx OS] Audio Competing in FirefoxOS</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/07/16/audio-competing-in-fxos/">[Fx OS] Background Media Play</a></h1>
     
     
       <p class="meta">
@@ -174,9 +174,9 @@ posted in
   <div class="entry-content"><p><img src="https://blog.mozilla.org/press/files/2012/09/FXOS_Music_Grid.jpg"></p>
 
 <p>If you want to have you own media playing app to be able to run at background,
-and has the ability to interrupt other playing audio, please view this article for what to do.</p>
+and/or has the ability to interrupt other playing audio, please view this article for what to do.</p>
 
-<h4>Audio Channel Permission</h4>
+<h2>Audio Channel Permission</h2>
 
 <p>You need to specify this permission in the manifest of your app.</p>
 
@@ -193,7 +193,9 @@ and has the ability to interrupt other playing audio, please view this article f
 
 <p>The <code>content</code> represents the name of the audio channel.</p>
 
-<h5>Audio Channel Types</h5>
+<p>Note: Video&#8217;s permission also uses the same <code>audio-channel-content</code>.</p>
+
+<h3>Audio Channel Types</h3>
 
 <p>We have five audio channels currently:</p>
 
@@ -203,15 +205,20 @@ and has the ability to interrupt other playing audio, please view this article f
 <li>Notification: Include desktop-notification sounds</li>
 <li>Ringer: Incoming call ringer</li>
 <li>Alarm: Alarm has a specific requirement to interrupt any other channel above.</li>
-<li>telephony: Voice</li>
+<li>telephony: Voice.</li>
 </ul>
 
 
-<p>Normal and content channel are sharing the same volume settings.</p>
+<h4>Volume Settings</h4>
 
-<p>Notification and ringer are another set.</p>
+<ul>
+<li>Normal and content channel are sharing the same volume settings.</li>
+<li>Notification and ringer are another set.</li>
+<li>Other has its own settings key.</li>
+</ul>
 
-<h5>Audio Competing Rules</h5>
+
+<h3>Audio Competing Rules</h3>
 
 <ol>
 <li>We&#8217;re interrupting the lower channel when higher channel occurs.</li>
@@ -225,7 +232,7 @@ and the page/app is the current displayed one.</li>
 
 <p>I would explain the rules more in another article ;)</p>
 
-<h4>[Statically] HTML Media Element</h4>
+<h2>[Statically] HTML Media Element</h2>
 
 <p>You could assign audio channel type to the media elements in HTML.</p>
 
@@ -238,7 +245,7 @@ and the page/app is the current displayed one.</li>
 
 <p>Please keep in mind you need relevant channel permission.</p>
 
-<h4>[Dynamically] Javascript</h4>
+<h2>[Dynamically] Javascript</h2>
 
 <p>Sometimes we need to dynamically generate the player element:</p>
 
@@ -259,7 +266,7 @@ and the page/app is the current displayed one.</li>
 
 <p>You should create another audio/video instance if you want to be played in another channel.</p>
 
-<h4>(OPTIONAL) If you want to know you&#8217;re interrupted by higher channel</h4>
+<h2>(OPTIONAL) If you want to know you&#8217;re interrupted by higher channel</h2>
 
 <p>Add mozinterruptbegin/mozinterruptend event handler if you need to do something with interruptions.</p>
 
@@ -278,10 +285,22 @@ and the page/app is the current displayed one.</li>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h4>Reference</h4>
+<h2>Notices</h2>
 
-<p><a href="https://wiki.mozilla.org/WebAPI/AudioChannels">Mozilla WIKI: Audio Channel</a>
-<a href="https://groups.google.com/forum/?fromgroups=#!topic/mozilla.dev.gaia/HyAlHdFdX68">B2G Maillist</a></p>
+<ul>
+<li>Even if your are developing a HTML5 video playing app,
+and we all know that video shouldn&#8217;t be played at background due to strange UX,
+you should also consider to set content channel because video is expected to interrupt the current background playing media.</li>
+</ul>
+
+
+<h2>Reference</h2>
+
+<ul>
+<li><a href="https://wiki.mozilla.org/WebAPI/AudioChannels">Mozilla WIKI: Audio Channel</a></li>
+<li><a href="https://groups.google.com/forum/?fromgroups=#!topic/mozilla.dev.gaia/HyAlHdFdX68">B2G Maillist</a></li>
+</ul>
+
 </div>
   
   
@@ -2445,7 +2464,7 @@ But we have multiple arguments in this case, we then use stringilized JSON to be
     <ul class="recent_posts">
       
         <li>
-          <a href="/blog/2013/07/16/audio-competing-in-fxos/">[Fx OS] Audio Competing in FirefoxOS</a>
+          <a href="/blog/2013/07/16/audio-competing-in-fxos/">[Fx OS] Background media play</a>
         </li>
       
         <li>

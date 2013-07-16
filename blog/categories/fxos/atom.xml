@@ -4,7 +4,7 @@
   <title><![CDATA[Category: fxos | Ascheriit]]></title>
   <link href="http://alivedise.github.com/blog/categories/fxos/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-16T19:52:51+08:00</updated>
+  <updated>2013-07-16T21:24:13+08:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -14,16 +14,16 @@
 
   
   <entry>
-    <title type="html"><![CDATA[[Fx OS] Audio Competing in FirefoxOS]]></title>
+    <title type="html"><![CDATA[[Fx OS] Background media play]]></title>
     <link href="http://alivedise.github.com/blog/2013/07/16/audio-competing-in-fxos/"/>
     <updated>2013-07-16T19:16:00+08:00</updated>
     <id>http://alivedise.github.com/blog/2013/07/16/audio-competing-in-fxos</id>
     <content type="html"><![CDATA[<p><img src="https://blog.mozilla.org/press/files/2012/09/FXOS_Music_Grid.jpg"></p>
 
 <p>If you want to have you own media playing app to be able to run at background,
-and has the ability to interrupt other playing audio, please view this article for what to do.</p>
+and/or has the ability to interrupt other playing audio, please view this article for what to do.</p>
 
-<h4>Audio Channel Permission</h4>
+<h2>Audio Channel Permission</h2>
 
 <p>You need to specify this permission in the manifest of your app.</p>
 
@@ -37,7 +37,9 @@ and has the ability to interrupt other playing audio, please view this article f
 
 <p>The <code>content</code> represents the name of the audio channel.</p>
 
-<h5>Audio Channel Types</h5>
+<p>Note: Video's permission also uses the same <code>audio-channel-content</code>.</p>
+
+<h3>Audio Channel Types</h3>
 
 <p>We have five audio channels currently:</p>
 
@@ -47,15 +49,20 @@ and has the ability to interrupt other playing audio, please view this article f
 <li>Notification: Include desktop-notification sounds</li>
 <li>Ringer: Incoming call ringer</li>
 <li>Alarm: Alarm has a specific requirement to interrupt any other channel above.</li>
-<li>telephony: Voice</li>
+<li>telephony: Voice.</li>
 </ul>
 
 
-<p>Normal and content channel are sharing the same volume settings.</p>
+<h4>Volume Settings</h4>
 
-<p>Notification and ringer are another set.</p>
+<ul>
+<li>Normal and content channel are sharing the same volume settings.</li>
+<li>Notification and ringer are another set.</li>
+<li>Other has its own settings key.</li>
+</ul>
 
-<h5>Audio Competing Rules</h5>
+
+<h3>Audio Competing Rules</h3>
 
 <ol>
 <li>We're interrupting the lower channel when higher channel occurs.</li>
@@ -69,7 +76,7 @@ and the page/app is the current displayed one.</li>
 
 <p>I would explain the rules more in another article ;)</p>
 
-<h4>[Statically] HTML Media Element</h4>
+<h2>[Statically] HTML Media Element</h2>
 
 <p>You could assign audio channel type to the media elements in HTML.</p>
 
@@ -80,7 +87,7 @@ and the page/app is the current displayed one.</li>
 
 <p>Please keep in mind you need relevant channel permission.</p>
 
-<h4>[Dynamically] Javascript</h4>
+<h2>[Dynamically] Javascript</h2>
 
 <p>Sometimes we need to dynamically generate the player element:</p>
 
@@ -96,7 +103,7 @@ audio.src = 'xxx.ogg';
 
 <p>You should create another audio/video instance if you want to be played in another channel.</p>
 
-<h4>(OPTIONAL) If you want to know you're interrupted by higher channel</h4>
+<h2>(OPTIONAL) If you want to know you're interrupted by higher channel</h2>
 
 <p>Add mozinterruptbegin/mozinterruptend event handler if you need to do something with interruptions.</p>
 
@@ -109,10 +116,22 @@ audio.src = 'xxx.ogg';
   player.addEventListener('mozinterruptend', function onResumed() {// do sth....});
 ```</p>
 
-<h4>Reference</h4>
+<h2>Notices</h2>
 
-<p><a href="https://wiki.mozilla.org/WebAPI/AudioChannels">Mozilla WIKI: Audio Channel</a>
-<a href="https://groups.google.com/forum/?fromgroups=#!topic/mozilla.dev.gaia/HyAlHdFdX68">B2G Maillist</a></p>
+<ul>
+<li>Even if your are developing a HTML5 video playing app,
+and we all know that video shouldn't be played at background due to strange UX,
+you should also consider to set content channel because video is expected to interrupt the current background playing media.</li>
+</ul>
+
+
+<h2>Reference</h2>
+
+<ul>
+<li><a href="https://wiki.mozilla.org/WebAPI/AudioChannels">Mozilla WIKI: Audio Channel</a></li>
+<li><a href="https://groups.google.com/forum/?fromgroups=#!topic/mozilla.dev.gaia/HyAlHdFdX68">B2G Maillist</a></li>
+</ul>
+
 ]]></content>
   </entry>
   
