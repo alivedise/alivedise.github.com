@@ -129,6 +129,174 @@
 
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2013/07/16/audio-competing-in-fxos/">[Fx OS] Audio Competing in FirefoxOS</a></h1>
+    
+    
+      <p class="meta">
+        
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-16T19:16:00+08:00" pubdate data-updated="true">Jul 16<span>th</span>, 2013</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/audio/'>audio</a>, <a class='category' href='/blog/categories/fxos/'>fxos</a>
+  
+</span>
+
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="https://blog.mozilla.org/press/files/2012/09/FXOS_Music_Grid.jpg"></p>
+
+<p>If you want to have you own media playing app to be able to run at background,
+and has the ability to interrupt other playing audio, please view this article for what to do.</p>
+
+<h4>Audio Channel Permission</h4>
+
+<p>You need to specify this permission in the manifest of your app.</p>
+
+<p>And yes, this means we don&#8217;t allow a web page without the manifest to play at background.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="s2">&quot;permissions&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>  <span class="s2">&quot;audio-channel-content&quot;</span><span class="o">:</span> <span class="p">{}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The <code>content</code> represents the name of the audio channel.</p>
+
+<h5>Audio Channel Types</h5>
+
+<p>We have five audio channels currently:</p>
+
+<ul>
+<li>Normal: Default channel of any media element, including video.</li>
+<li>Content: Especailly stands for content like music.</li>
+<li>Notification: Include desktop-notification sounds</li>
+<li>Ringer: Incoming call ringer</li>
+<li>Alarm: Alarm has a specific requirement to interrupt any other channel above.</li>
+<li>telephony: Voice</li>
+</ul>
+
+
+<p>Normal and content channel are sharing the same volume settings.</p>
+
+<p>Notification and ringer are another set.</p>
+
+<h5>Audio Competing Rules</h5>
+
+<ol>
+<li>We&#8217;re interrupting the lower channel when higher channel occurs.</li>
+<li>If the same channel are playing and using content channel,
+the one who gets visibility (go to foreground) would be the winner.</li>
+<li>The foreground page/app is always playable. However the channel type decides it could interrupt background playing content or not.</li>
+<li>The background page/app is playable if and only if the background is causing by screen off,
+and the page/app is the current displayed one.</li>
+</ol>
+
+
+<p>I would explain the rules more in another article ;)</p>
+
+<h4>[Statically] HTML Media Element</h4>
+
+<p>You could assign audio channel type to the media elements in HTML.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;audio</span> <span class="na">mozaudiochannel=</span><span class="s">&quot;content&quot;</span><span class="nt">&gt;&lt;/audio&gt;</span>
+</span><span class='line'><span class="nt">&lt;video</span> <span class="na">mozaudiochannel=</span><span class="s">&quot;content&quot;</span><span class="nt">&gt;&lt;/video&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Please keep in mind you need relevant channel permission.</p>
+
+<h4>[Dynamically] Javascript</h4>
+
+<p>Sometimes we need to dynamically generate the player element:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">audio</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Audio</span><span class="p">();</span>
+</span><span class='line'><span class="nx">audio</span><span class="p">.</span><span class="nx">mozAudioChannelType</span> <span class="o">=</span> <span class="s1">&#39;content&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Set audio channel type before setting src to avoid decoder confuses.</span>
+</span><span class='line'><span class="nx">audio</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s1">&#39;xxx.ogg&#39;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Change the channel of the audio to another type is not allowed.</p>
+
+<p>You should create another audio/video instance if you want to be played in another channel.</p>
+
+<h4>(OPTIONAL) If you want to know you&#8217;re interrupted by higher channel</h4>
+
+<p>Add mozinterruptbegin/mozinterruptend event handler if you need to do something with interruptions.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>  <span class="kd">var</span> <span class="nx">player</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">&#39;audio#my-player&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// ...</span>
+</span><span class='line'>  <span class="c1">// The event is fired on the media element. </span>
+</span><span class='line'>  <span class="nx">player</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;mozinterruptbegin&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="nx">onInterrupted</span><span class="p">()</span> <span class="p">{</span><span class="c1">//do sth....}); </span>
+</span><span class='line'>  <span class="nx">player</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;mozinterruptend&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="nx">onResumed</span><span class="p">()</span> <span class="p">{</span><span class="c1">// do sth....}); </span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Reference</h4>
+
+<p><a href="https://wiki.mozilla.org/WebAPI/AudioChannels">Mozilla WIKI: Audio Channel</a>
+<a href="https://groups.google.com/forum/?fromgroups=#!topic/mozilla.dev.gaia/HyAlHdFdX68">B2G Maillist</a></p>
+</div>
+  
+  
+
+
+</div>
+
+      </article>
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2013/07/10/system-modulization-plan/">Proposal: System Modulization Plan</a></h1>
     
     
@@ -2254,238 +2422,6 @@ But we have multiple arguments in this case, we then use stringilized JSON to be
 
       </article>
     
-    
-      <article class="span4">
-        <div class="article-format">
-
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/09/04/web-activity/">Web Activity</a></h1>
-    
-    
-      <p class="meta">
-        
-  
-
-
-  
-    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
-  
-
- - 
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-04T15:45:00+08:00" pubdate data-updated="true">Sep 4<span>th</span>, 2012</time> - 
-        
-
-posted in
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/mozilla-javascript-html5/'>mozilla,javascript,html5</a>
-  
-</span>
-
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Web activity是由Mozilla設計並開發，用來使web app之間共享資源的框架。
-在Firefox OS中已經存在Platform/UI上的實作，並且有一些內建的主要Web app已經利用Web activity來達成跨應用程式溝通的目的。
-（如：Gallery使用它來讓其他程式從它挑選圖片，也用同一技術來實現圖片分享到不同應用）</p>
-
-<p>以下介紹如何使用這個新穎的技術。</p>
-
-<h3>Request</h3>
-
-<p>假設今天E-mail應用程式需要從圖片集中挑選圖片來寄送，
-那麼它必須新增一個Activity物件如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'>  <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MozActivity</span><span class="p">({</span>
-</span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;browse&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">data</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;image/png&#39;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;...&#39;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>  <span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>type欄位是用來當filter用的
-在data中的其他欄位可以傳你想要的資料給接收方。</p>
-
-<p>當收到資料後，處理回呼函數的方式：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'>  <span class="nx">a</span><span class="p">.</span><span class="nx">onsuccess</span> <span class="o">=</span> <span class="kd">function</span> <span class="nx">on_success</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">image</span> <span class="o">=</span> <span class="nx">a</span><span class="p">.</span><span class="nx">result</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">};</span>
-</span><span class='line'>  <span class="nx">a</span><span class="p">.</span><span class="nx">onerror</span> <span class="o">=</span> <span class="kd">function</span> <span class="nx">on_error</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">warn</span><span class="p">(</span><span class="s1">&#39;error when picking!&#39;</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Reciever</h3>
-
-<p>接受某個Activity的App必須在Manifest.webapp中宣告：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="s2">&quot;activities&quot;</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>   <span class="s2">&quot;pick&quot;</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>     <span class="s2">&quot;filters&quot;</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>       <span class="nx">type</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;image/png&quot;</span><span class="p">,</span> <span class="s2">&quot;image/gif&quot;</span><span class="p">],</span>
-</span><span class='line'>     <span class="p">},</span>
-</span><span class='line'>     <span class="s2">&quot;disposition&quot;</span><span class="o">:</span> <span class="s2">&quot;window&quot;</span>
-</span><span class='line'>   <span class="p">}</span>
-</span><span class='line'> <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>並且在自己的javascript檔中寫好當Activity產生時的處理函式</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">navigator</span><span class="p">.</span><span class="nx">setMozMessageHandler</span><span class="p">(</span><span class="s1">&#39;activity&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">image</span> <span class="o">=</span> <span class="nx">getImageToReturn</span><span class="p">();</span>
-</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">image</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">a</span><span class="p">.</span><span class="nx">postError</span><span class="p">(</span><span class="s2">&quot;NoImage&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">return</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="nx">a</span><span class="p">.</span><span class="nx">postResult</span><span class="p">({</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;image/png&quot;</span><span class="p">,</span> <span class="nx">url</span><span class="o">:</span> <span class="nx">image</span> <span class="p">});</span>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>data/type的用法</h4>
-
-<p>如聯絡人程式可以接受同一個叫做pick的Activity，
-但是電子郵件程式需要的是&#8217;email&#8217;這類資料，
-而電話程式需要的是&#8217;號碼&#8217;這類資料，
-對於這兩類資料需要呈現的UI與最後傳回去的資料當然會是不一樣的。</p>
-
-<p>解決方法就是利用不同的data type來區分同種activity的不同需求：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'>  <span class="c1">// Email app</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MozActivity</span><span class="p">({</span>
-</span><span class='line'>      <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;pick&#39;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nx">data</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;web-content/email&#39;</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>  <span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'>  <span class="c1">// Dialer app</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MozActivity</span><span class="p">({</span>
-</span><span class='line'>      <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;pick&#39;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nx">data</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;web-content/numbers&#39;</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>  <span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在聯絡人程式中</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">navigator</span><span class="p">.</span><span class="nx">setMozMessageHandler</span><span class="p">(</span><span class="s1">&#39;activity&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">switch</span><span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">source</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">case</span> <span class="s1">&#39;webcontacts/numbers&#39;</span><span class="o">:</span>
-</span><span class='line'>      <span class="c1">// ...</span>
-</span><span class='line'>      <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">case</span> <span class="s1">&#39;webcontacts/email&#39;</span><span class="o">:</span>
-</span><span class='line'>      <span class="c1">// ...</span>
-</span><span class='line'>      <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如此一來就可以分開處理UI變化及後續回傳資料的部分。</p>
-
-<h3>多於一個可以處理的Reciever?</h3>
-
-<p>比如圖片應用程式可以分享的對象有兩個以上的時候，
-Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
-<img src="http://i.imgur.com/V2rgq.jpg">
-<img src="http://i.imgur.com/xcgBK.png">
-<img src="http://i.imgur.com/UpaOC.png"></p>
-
-<h3>結論</h3>
-
-<p>Web activity是一個實驗中的新功能，雖然還有一些地方未盡完善，
-但是看著它從spec到platform implementation到UI implementation，
-就好像親身參與了網路/網頁進化的過程一樣。</p>
-</div>
-  
-  
-
-
-</div>
-
-      </article>
-    
     </div>
       <div class="row">
         <ul class="pager">
@@ -2509,6 +2445,10 @@ Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
     <ul class="recent_posts">
       
         <li>
+          <a href="/blog/2013/07/16/audio-competing-in-fxos/">[Fx OS] Audio Competing in FirefoxOS</a>
+        </li>
+      
+        <li>
           <a href="/blog/2013/07/10/system-modulization-plan/">Proposal: System Modulization Plan</a>
         </li>
       
@@ -2522,10 +2462,6 @@ Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
       
         <li>
           <a href="/blog/2013/07/05/one-year-at-mozilla/">My first year at Mozilla</a>
-        </li>
-      
-        <li>
-          <a href="/blog/2013/06/18/alvitr/">Recent side projects: Alvitr, Lucifer, GaiaSystemAPIDOC</a>
         </li>
       
     </ul>

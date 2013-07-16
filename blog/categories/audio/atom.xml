@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: audio | Ascheriit]]></title>
+  <link href="http://alivedise.github.com/blog/categories/audio/atom.xml" rel="self"/>
+  <link href="http://alivedise.github.com/"/>
+  <updated>2013-07-16T19:52:51+08:00</updated>
+  <id>http://alivedise.github.com/</id>
+  <author>
+    <name><![CDATA[Alive Kuo]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[[Fx OS] Audio Competing in FirefoxOS]]></title>
+    <link href="http://alivedise.github.com/blog/2013/07/16/audio-competing-in-fxos/"/>
+    <updated>2013-07-16T19:16:00+08:00</updated>
+    <id>http://alivedise.github.com/blog/2013/07/16/audio-competing-in-fxos</id>
+    <content type="html"><![CDATA[<p><img src="https://blog.mozilla.org/press/files/2012/09/FXOS_Music_Grid.jpg"></p>
+
+<p>If you want to have you own media playing app to be able to run at background,
+and has the ability to interrupt other playing audio, please view this article for what to do.</p>
+
+<h4>Audio Channel Permission</h4>
+
+<p>You need to specify this permission in the manifest of your app.</p>
+
+<p>And yes, this means we don't allow a web page without the manifest to play at background.</p>
+
+<p><code>js
+"permissions": {
+  "audio-channel-content": {}
+}
+</code></p>
+
+<p>The <code>content</code> represents the name of the audio channel.</p>
+
+<h5>Audio Channel Types</h5>
+
+<p>We have five audio channels currently:</p>
+
+<ul>
+<li>Normal: Default channel of any media element, including video.</li>
+<li>Content: Especailly stands for content like music.</li>
+<li>Notification: Include desktop-notification sounds</li>
+<li>Ringer: Incoming call ringer</li>
+<li>Alarm: Alarm has a specific requirement to interrupt any other channel above.</li>
+<li>telephony: Voice</li>
+</ul>
+
+
+<p>Normal and content channel are sharing the same volume settings.</p>
+
+<p>Notification and ringer are another set.</p>
+
+<h5>Audio Competing Rules</h5>
+
+<ol>
+<li>We're interrupting the lower channel when higher channel occurs.</li>
+<li>If the same channel are playing and using content channel,
+the one who gets visibility (go to foreground) would be the winner.</li>
+<li>The foreground page/app is always playable. However the channel type decides it could interrupt background playing content or not.</li>
+<li>The background page/app is playable if and only if the background is causing by screen off,
+and the page/app is the current displayed one.</li>
+</ol>
+
+
+<p>I would explain the rules more in another article ;)</p>
+
+<h4>[Statically] HTML Media Element</h4>
+
+<p>You could assign audio channel type to the media elements in HTML.</p>
+
+<p><code>html
+&lt;audio mozaudiochannel="content"&gt;&lt;/audio&gt;
+&lt;video mozaudiochannel="content"&gt;&lt;/video&gt;
+</code></p>
+
+<p>Please keep in mind you need relevant channel permission.</p>
+
+<h4>[Dynamically] Javascript</h4>
+
+<p>Sometimes we need to dynamically generate the player element:</p>
+
+<p>```js
+var audio = new Audio();
+audio.mozAudioChannelType = 'content';</p>
+
+<p>// Set audio channel type before setting src to avoid decoder confuses.
+audio.src = 'xxx.ogg';
+```</p>
+
+<p>Change the channel of the audio to another type is not allowed.</p>
+
+<p>You should create another audio/video instance if you want to be played in another channel.</p>
+
+<h4>(OPTIONAL) If you want to know you're interrupted by higher channel</h4>
+
+<p>Add mozinterruptbegin/mozinterruptend event handler if you need to do something with interruptions.</p>
+
+<p>```js
+  var player = document.getElementById('audio#my-player');</p>
+
+<p>  // ...
+  // The event is fired on the media element.
+  player.addEventListener('mozinterruptbegin', function onInterrupted() {//do sth....});
+  player.addEventListener('mozinterruptend', function onResumed() {// do sth....});
+```</p>
+
+<h4>Reference</h4>
+
+<p><a href="https://wiki.mozilla.org/WebAPI/AudioChannels">Mozilla WIKI: Audio Channel</a>
+<a href="https://groups.google.com/forum/?fromgroups=#!topic/mozilla.dev.gaia/HyAlHdFdX68">B2G Maillist</a></p>
+]]></content>
+  </entry>
+  
+</feed>

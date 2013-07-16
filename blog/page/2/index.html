@@ -129,6 +129,238 @@
 
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2012/09/04/web-activity/">Web Activity</a></h1>
+    
+    
+      <p class="meta">
+        
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-04T15:45:00+08:00" pubdate data-updated="true">Sep 4<span>th</span>, 2012</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/mozilla-javascript-html5/'>mozilla,javascript,html5</a>
+  
+</span>
+
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Web activity是由Mozilla設計並開發，用來使web app之間共享資源的框架。
+在Firefox OS中已經存在Platform/UI上的實作，並且有一些內建的主要Web app已經利用Web activity來達成跨應用程式溝通的目的。
+（如：Gallery使用它來讓其他程式從它挑選圖片，也用同一技術來實現圖片分享到不同應用）</p>
+
+<p>以下介紹如何使用這個新穎的技術。</p>
+
+<h3>Request</h3>
+
+<p>假設今天E-mail應用程式需要從圖片集中挑選圖片來寄送，
+那麼它必須新增一個Activity物件如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>  <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MozActivity</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;browse&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">data</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;image/png&#39;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;...&#39;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>type欄位是用來當filter用的
+在data中的其他欄位可以傳你想要的資料給接收方。</p>
+
+<p>當收到資料後，處理回呼函數的方式：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>  <span class="nx">a</span><span class="p">.</span><span class="nx">onsuccess</span> <span class="o">=</span> <span class="kd">function</span> <span class="nx">on_success</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">image</span> <span class="o">=</span> <span class="nx">a</span><span class="p">.</span><span class="nx">result</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>  <span class="nx">a</span><span class="p">.</span><span class="nx">onerror</span> <span class="o">=</span> <span class="kd">function</span> <span class="nx">on_error</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">warn</span><span class="p">(</span><span class="s1">&#39;error when picking!&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Reciever</h3>
+
+<p>接受某個Activity的App必須在Manifest.webapp中宣告：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="s2">&quot;activities&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>   <span class="s2">&quot;pick&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>     <span class="s2">&quot;filters&quot;</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>       <span class="nx">type</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;image/png&quot;</span><span class="p">,</span> <span class="s2">&quot;image/gif&quot;</span><span class="p">],</span>
+</span><span class='line'>     <span class="p">},</span>
+</span><span class='line'>     <span class="s2">&quot;disposition&quot;</span><span class="o">:</span> <span class="s2">&quot;window&quot;</span>
+</span><span class='line'>   <span class="p">}</span>
+</span><span class='line'> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>並且在自己的javascript檔中寫好當Activity產生時的處理函式</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">navigator</span><span class="p">.</span><span class="nx">setMozMessageHandler</span><span class="p">(</span><span class="s1">&#39;activity&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">image</span> <span class="o">=</span> <span class="nx">getImageToReturn</span><span class="p">();</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">image</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">a</span><span class="p">.</span><span class="nx">postError</span><span class="p">(</span><span class="s2">&quot;NoImage&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="nx">a</span><span class="p">.</span><span class="nx">postResult</span><span class="p">({</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;image/png&quot;</span><span class="p">,</span> <span class="nx">url</span><span class="o">:</span> <span class="nx">image</span> <span class="p">});</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>data/type的用法</h4>
+
+<p>如聯絡人程式可以接受同一個叫做pick的Activity，
+但是電子郵件程式需要的是&#8217;email&#8217;這類資料，
+而電話程式需要的是&#8217;號碼&#8217;這類資料，
+對於這兩類資料需要呈現的UI與最後傳回去的資料當然會是不一樣的。</p>
+
+<p>解決方法就是利用不同的data type來區分同種activity的不同需求：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>  <span class="c1">// Email app</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MozActivity</span><span class="p">({</span>
+</span><span class='line'>      <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;pick&#39;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">data</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;web-content/email&#39;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'>  <span class="c1">// Dialer app</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MozActivity</span><span class="p">({</span>
+</span><span class='line'>      <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;pick&#39;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">data</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;web-content/numbers&#39;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在聯絡人程式中</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">navigator</span><span class="p">.</span><span class="nx">setMozMessageHandler</span><span class="p">(</span><span class="s1">&#39;activity&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">switch</span><span class="p">(</span><span class="nx">a</span><span class="p">.</span><span class="nx">source</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">case</span> <span class="s1">&#39;webcontacts/numbers&#39;</span><span class="o">:</span>
+</span><span class='line'>      <span class="c1">// ...</span>
+</span><span class='line'>      <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">case</span> <span class="s1">&#39;webcontacts/email&#39;</span><span class="o">:</span>
+</span><span class='line'>      <span class="c1">// ...</span>
+</span><span class='line'>      <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如此一來就可以分開處理UI變化及後續回傳資料的部分。</p>
+
+<h3>多於一個可以處理的Reciever?</h3>
+
+<p>比如圖片應用程式可以分享的對象有兩個以上的時候，
+Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
+<img src="http://i.imgur.com/V2rgq.jpg">
+<img src="http://i.imgur.com/xcgBK.png">
+<img src="http://i.imgur.com/UpaOC.png"></p>
+
+<h3>結論</h3>
+
+<p>Web activity是一個實驗中的新功能，雖然還有一些地方未盡完善，
+但是看著它從spec到platform implementation到UI implementation，
+就好像親身參與了網路/網頁進化的過程一樣。</p>
+</div>
+  
+  
+
+
+</div>
+
+      </article>
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2012/07/05/gaia-window-shade/">[Gaia] HTML5 Window Shade</a></h1>
     
     
@@ -1401,66 +1633,6 @@ posted in
 
       </article>
     
-    
-      <article class="span4">
-        <div class="article-format">
-
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/05/17/class-code-trace-3/">javascriptMVC原始碼分析 - Class實作（下）</a></h1>
-    
-    
-      <p class="meta">
-        
-  
-
-
-  
-    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
-  
-
- - 
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-05-17T10:36:00+08:00" pubdate data-updated="true">May 17<span>th</span>, 2012</time> - 
-        
-
-posted in
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/javascriptmvc/'>javascriptMVC</a>
-  
-</span>
-
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h1>Instantiation</h1>
-
-<p>這篇開始先跳出JMVC，從語言來看物件化，類別化，初始化這幾件事。</p>
-</div>
-  
-  
-
-
-</div>
-
-      </article>
-    
     </div>
       <div class="row">
         <ul class="pager">
@@ -1488,6 +1660,10 @@ posted in
     <ul class="recent_posts">
       
         <li>
+          <a href="/blog/2013/07/16/audio-competing-in-fxos/">[Fx OS] Audio Competing in FirefoxOS</a>
+        </li>
+      
+        <li>
           <a href="/blog/2013/07/10/system-modulization-plan/">Proposal: System Modulization Plan</a>
         </li>
       
@@ -1501,10 +1677,6 @@ posted in
       
         <li>
           <a href="/blog/2013/07/05/one-year-at-mozilla/">My first year at Mozilla</a>
-        </li>
-      
-        <li>
-          <a href="/blog/2013/06/18/alvitr/">Recent side projects: Alvitr, Lucifer, GaiaSystemAPIDOC</a>
         </li>
       
     </ul>
