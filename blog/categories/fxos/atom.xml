@@ -4,7 +4,7 @@
   <title><![CDATA[Category: fxos | Ascheriit]]></title>
   <link href="http://alivedise.github.com/blog/categories/fxos/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-16T21:24:13+08:00</updated>
+  <updated>2013-07-16T21:26:49+08:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -44,12 +44,12 @@ and/or has the ability to interrupt other playing audio, please view this articl
 <p>We have five audio channels currently:</p>
 
 <ul>
-<li>Normal: Default channel of any media element, including video.</li>
-<li>Content: Especailly stands for content like music.</li>
-<li>Notification: Include desktop-notification sounds</li>
-<li>Ringer: Incoming call ringer</li>
-<li>Alarm: Alarm has a specific requirement to interrupt any other channel above.</li>
-<li>telephony: Voice.</li>
+<li><code>normal</code>: Default channel of any media element, including video.</li>
+<li><code>content</code>: Especailly stands for content like music.</li>
+<li><code>notification</code>: Include desktop-notification sounds</li>
+<li><code>ringer</code>: Incoming call ringer</li>
+<li><code>alarm</code>: Alarm has a specific requirement to interrupt any other channel above.</li>
+<li><code>telephony</code>: Voice.</li>
 </ul>
 
 
