@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>javascriptMVC原始碼分析 - Class實作（上） - Ascheriit</title>
+  <title>[FxOS] Plan: Window Management decoupling (CONT.) - Ascheriit</title>
   <meta name="author" content="Alive Kuo">
   <link rel="author" href="humans.txt">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -13,7 +13,8 @@
   
     
   
-  <meta name="description" content="前言 這系列文章將從javascript patterns的角度來看javascriptMVC的實作方式。 藉此更了解jsMVC的架構，以及javascript的語言特性。 最初的$.Class javascript有許多種關於類別繼承的實作方式，jMVC中的$.Class實作來自於http &hellip;">
+  <meta name="description" content="Following are the plan about why and how to split current Gaia:System:Window Manager. Sources/Links Window Manager source
+Window Manager testable &hellip;">
   
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -21,20 +22,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://alivedise.github.com/blog/2012/05/15/class-code-trace/">
+  <link rel="canonical" href="http://alivedise.github.com/blog/2013/07/18/window-manager-decoupling/">
   <link href="/favicon.png" rel="icon">
   <link href='http://fonts.googleapis.com/css?family=Cantarell' rel='stylesheet' type='text/css'>
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Ascheriit" type="application/atom+xml">
   <meta name="og:type" content="website" />
   <meta name="og:site_name" content="Ascheriit" />
-  <meta name="og:title" content="javascriptMVC原始碼分析 - Class實作（上）" />
-  <meta name="og:description" content="前言 這系列文章將從javascript patterns的角度來看javascriptMVC的實作方式。 藉此更了解jsMVC的架構，以及javascript的語言特性。 最初的$.Class javascript有許多種關於類別繼承的實作方式，jMVC中的$.Class實作來自於http &hellip;" />
-  <meta name="og:url" content="http://alivedise.github.com/blog/2012/05/15/class-code-trace/"/>
-  <meta name="url" content="http://alivedise.github.com/blog/2012/05/15/class-code-trace/">
+  <meta name="og:title" content="[FxOS] Plan: Window Management decoupling (CONT.)" />
+  <meta name="og:description" content="Following are the plan about why and how to split current Gaia:System:Window Manager. Sources/Links Window Manager source
+Window Manager testable &hellip;" />
+  <meta name="og:url" content="http://alivedise.github.com/blog/2013/07/18/window-manager-decoupling/"/>
+  <meta name="url" content="http://alivedise.github.com/blog/2013/07/18/window-manager-decoupling/">
   
-  <meta name="subject" content="javascriptMVC"/>
-  <meta name="category" content="javascriptMVC"/>
+  <meta name="subject" content="fxos"/>
+  <meta name="category" content="fxos"/>
   
   <meta name="distribution" content="global">
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
@@ -88,7 +90,7 @@
 
   <header>
     
-      <h1 class="entry-title">javascriptMVC原始碼分析 - Class實作（上）</h1>
+      <h1 class="entry-title">[FxOS] Plan: Window Management Decoupling (CONT.)</h1>
     
     
       <p class="meta">
@@ -113,13 +115,13 @@
   
 
 
-<time datetime="2012-05-15T09:58:00+08:00" pubdate data-updated="true">May 15<span>th</span>, 2012</time> - 
+<time datetime="2013-07-18T17:33:00+08:00" pubdate data-updated="true">Jul 18<span>th</span>, 2013</time> - 
         
 
 posted in
 <span class="categories">
   
-    <a class='category' href='/blog/categories/javascriptmvc/'>javascriptMVC</a>
+    <a class='category' href='/blog/categories/fxos/'>fxos</a>
   
 </span>
 
@@ -130,141 +132,156 @@ posted in
   </header>
 
 
-  <div class="entry-content"><h3>前言</h3>
+  <div class="entry-content"><p><img src="http://i.imgur.com/T0pyFFc.jpg"></p>
 
-<p>這系列文章將從javascript patterns的角度來看javascriptMVC的實作方式。</p>
+<p>Following are the plan about why and how to split current Gaia:System:Window Manager.</p>
 
-<p>藉此更了解jsMVC的架構，以及javascript的語言特性。</p>
+<h2>Sources/Links</h2>
 
-<h3>最初的$.Class</h3>
+<ul>
+<li><a href="https://github.com/mozilla-b2g/gaia/blob/master/apps/system/js/window_manager.js">Window Manager source</a></li>
+<li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=845251">Window Manager testable meta bug</a></li>
+</ul>
 
-<p>javascript有許多種關於類別繼承的實作方式，jMVC中的$.Class實作來自於<a href="http://ejohn.org/blog/simple-javascript-inheritance/">http://ejohn.org/blog/simple-javascript-inheritance/</a></p>
 
-<p>而作者又聲稱他的實作想法來自Base2(http://code.google.com/p/base2/)與Prototype(http://prototypejs.org/)</p>
+<h2>Current main functions in Window Manager</h2>
 
-<p>這個最初的實作的要點如下：</p>
+<ul>
+<li>App Window Management</li>
+<li>Crash Management</li>
+<li>Clear browser data</li>
+<li>Wrapper Window Management</li>
+<li>Inline Activity Management</li>
+<li>Homescreen Management</li>
+<li>MozBrowser Element Generation</li>
+<li>Orientation Management</li>
+<li>Visibility Management</li>
+<li>Resize Management</li>
+<li>App Screenshots Management [deprecated]</li>
+<li>System Message Handler</li>
+<li>Open app transition</li>
+<li>Close app transition</li>
+<li>System Message Handler</li>
+<li>FTU Management [deprecated! Become standalone FTU Launcher already!]</li>
+</ul>
+
+
+<p>So which could be pulled out to reduce the heavy weight?</p>
+
+<h3>Inline Activity Management -> App Window</h3>
+
+<p>Inline Activity Management should belong to the activity caller.</p>
+
+<p>If app A opens a page(open.html) of app B as an inline activity,
+the life cycle of activity callee is based on app A instead of app B.</p>
+
+<p>Thus, if app A is killed or closed, the activity opened by app A should be killed.</p>
+
+<p>But if app B(index.html) is killed, activity B(open.html) shouldn&#8217;t be affected.</p>
+
+<h3>Resize Management</h3>
+
+<p>Resize is another duty of the app window instance itself.</p>
+
+<p>If we&#8217;re moving the activity into the app window, we could</p>
 
 <ol>
-<li>支援overriden(原作者說這最有挑戰性)。提供this._super存取父類別的同名函數。</li>
-<li>所有類別都是Class這個物件的延伸。</li>
-<li>創造一個新類別必須從已經存在的類別做延伸(extend)。</li>
-<li>建構子內容很簡潔(init)</li>
+<li>Recursively call current activity callee&#8217;s resize function until the last callee is found.</li>
+<li>Resize all activity callee on top of current app window.</li>
 </ol>
 
 
-<p>以下是實作的程式碼：</p>
+<p>in the app window&#8217;s resize function.</p>
 
-<pre><code>/* Simple JavaScript Inheritance
- * By John Resig http://ejohn.org/
- * MIT Licensed.
- */
-// Inspired by base2 and Prototype
-(function(){
-  var initializing = false, fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
-  // The base Class implementation (does nothing)
-  this.Class = function(){};
+<h3>Visibility Management</h3>
 
-  // Create a new Class that inherits from this class
-  Class.extend = function(prop) {
-    var _super = this.prototype;
+<p>App window would have 2 kind of &#8220;child-like&#8221; window instance:
+* <code>var childWindow = window.open</code>
+* <code>new MozActivity</code></p>
 
-    // Instantiate a base class (but only create the instance,
-    // don't run the init constructor)
-    initializing = true;
-    var prototype = new this();
-    initializing = false;
+<p>Currently we don&#8217;t send of the caller correctly to background on these two cases.</p>
 
-    // Copy the properties over onto the new prototype
-    for (var name in prop) {
-      // Check if we're overwriting an existing function
-      prototype[name] = typeof prop[name] == "function" &amp;&amp; 
-        typeof _super[name] == "function" &amp;&amp; fnTest.test(prop[name]) ?
-        (function(name, fn){
-          return function() {
-            var tmp = this._super;
-
-            // Add a new ._super() method that is the same method
-            // but on the super-class
-            this._super = _super[name];
-
-            // The method only need to be bound temporarily, so we
-            // remove it when we're done executing
-            var ret = fn.apply(this, arguments);        
-            this._super = tmp;
-
-            return ret;
-          };
-        })(name, prop[name]) :
-        prop[name];
-    }
-
-    // The dummy class constructor
-    function Class() {
-      // All construction is actually done in the init method
-      if ( !initializing &amp;&amp; this.init )
-        this.init.apply(this, arguments);
-    }
-
-    // Populate our constructed prototype object
-    Class.prototype = prototype;
-
-    // Enforce the constructor to be what we expect
-    Class.prototype.constructor = Class;
-
-    // And make this class extendable
-    Class.extend = arguments.callee;
-
-    return Class;
-  };
-})();
-</code></pre>
+<p>The reasons are:</p>
 
 <ol>
-<li>為了避免污染全域變數先用immediate function包起來。</li>
-<li>single var pattern, 將區域變數宣告在函式最上面。</li>
-<li>this.Class = function(){};
- 這邊的this是全域物件，所以這一行結束後全域物件會多一個Class的屬性，值是一個空函數。</li>
-<li>var _super = this.prototype;  //把prototype存起來</li>
-<li>接下來是John認為比較trick的步驟：要先產生一個實體方便後面使用，但不去執行真正的建構子。
- 所以他使用了initializing這個變數來使這件事可以實現。
- 正常的instance化中initializing會是false，所以會執行init。
- 非正常，也就是拿來定義新Class時initializing是true，不會執行init。</li>
-<li><p>遍歷新定義的屬性物件，找到其中值為function屬性。
- 在每一個function object中添加_super這個屬性指到原本的value。
- 下面這一段在使用immediate function(self-invoking function)，同時回傳一個function object來取代原本的function</p>
-
-<pre><code>     (function(name, fn){
-       return function() {
-         var tmp = this._super;
-
-         // Add a new ._super() method that is the same method
-         // but on the super-class
-         this._super = _super[name];
-
-         // The method only need to be bound temporarily, so we
-         // remove it when we're done executing
-         var ret = fn.apply(this, arguments);        
-         this._super = tmp;
-
-         return ret;
-       };
-     })(name, prop[name])
-</code></pre></li>
-<li>定義一個function叫Class，覆蓋掉它的prototype屬性，同時也要把prototype.constructor蓋掉，否則產生instance時會有問題。</li>
-<li>使新的類別定義都能繼續擁有extend這個方法。</li>
+<li>Memory concern. Part of our memory management model relies on the page visibility state. Backgrounded app has higher possibility to be killed. We shall review and refine this soon. See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=892371">https://bugzilla.mozilla.org/show_bug.cgi?id=892371</a>.</li>
+<li>Backgrounded app is totally invisible instead of keeping the cached image frame. See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=825174">https://bugzilla.mozilla.org/show_bug.cgi?id=825174</a></li>
 </ol>
 
 
-<h3>$.Class新功能</h3>
+<h3>Oreintation Management</h3>
 
-<p>看完原初的類別實作後，其實$.Class也就是再多了以下功能：</p>
+<p>App could specify the native orientation from manifest&#8217;s orientation field.
+So from this point it is an instance specific value.</p>
+
+<p>What&#8217;s tricky here is:</p>
 
 <ol>
-<li>區分static與prototype</li>
-<li>給出proxy function</li>
-<li>給出this.callback function obj</li>
+<li>Orientation indeed isn&#8217;t app specific API. Any app at any time could call <code>lockOrientation</code> of &#8216;screen&#8217; object. Thus it would affect the other apps.</li>
+<li>What we should do is preventing app from locking/unlocking orientation when they&#8217;re background.</li>
+<li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=840147">Orientation behavior is bind to app transtion UX.</a></li>
+<li>We will discuss this more detailly in app window design.</li>
 </ol>
 
+
+<h3>Homescreen Management</h3>
+
+<p>Window Manager is the one who manipulates hardware or software home button event.</p>
+
+<p>We should leave this part in Window Manager but let Homescreen Window manages itself.</p>
+
+<p>To manage itself means that:
+* Generate the mozbrowser iframe by itself.
+* Fetch homescreen manifest by the manifestURL storing at settings on its own.
+* Revive itself when it&#8217;s killed in background. (Different behavior than other apps.)</p>
+
+<p>So it&#8217;s worthy to have an specific app window singleton for homescreen app.</p>
+
+<h3>Wrapper Management</h3>
+
+<p>This is another special type of app window.
+It&#8217;s opened via homescreen; it stands for the app who has no manifestURL but a pure web page.</p>
+
+<p>We should have a new WrapperWindow class inherited from AppWindow class.</p>
+
+<h3>mozbrowser iframe generation</h3>
+
+<p>All kind of window needs one mozbrowser iframe with different attributes fed to.</p>
+
+<p>The element should be generated in <code>BrowserFrame</code> in configuration pattern.</p>
+
+<h3>Open/Close transition</h3>
+
+<p>This is the most important part of a window UI.</p>
+
+<p>There&#8217;re many things relying on the transition state to take progress.</p>
+
+<p>We&#8217;re discussing it in previous article, and would review this implementation soon.</p>
+
+<h3>System Message Handler</h3>
+
+<p>Now system message is used for opening the target app if it&#8217;s not opened.
+There&#8217;re two cases: activity and non-activity.</p>
+
+<p>This should be left in Window Manager.</p>
+
+<h3>Crash management</h3>
+
+<ul>
+<li>For crash of app window, let it decides what it wants to do when it sees crash event.</li>
+<li>For crash of opened window or activivity, let its caller decides what to do.</li>
+</ul>
+
+
+<h3>Clear browser data</h3>
+
+<p>Totally safe enough to move to another module.
+Irrevalant to manage windows.</p>
+
+<h3>Screenshot Management</h3>
+
+<p>Since the screenshot now is only touched by app window and cards view,
+let app window expose its screenshot to cards view.</p>
 </div>
 
 
@@ -291,13 +308,13 @@ posted in
   
 
 
-<time datetime="2012-05-15T09:58:00+08:00" pubdate data-updated="true">May 15<span>th</span>, 2012</time>
+<time datetime="2013-07-18T17:33:00+08:00" pubdate data-updated="true">Jul 18<span>th</span>, 2013</time>
       
 
 posted in
 <span class="categories">
   
-    <a class='category' href='/blog/categories/javascriptmvc/'>javascriptMVC</a>
+    <a class='category' href='/blog/categories/fxos/'>fxos</a>
   
 </span>
 
@@ -320,10 +337,8 @@ posted in
 
     
     
-      <a class="pull-left" href="/blog/2012/05/09/animation-cross-deferred/" title="Previous Post: [jQuery] jQuery Animation * jQuery Deferred">&laquo; [jQuery] jQuery Animation * jQuery Deferred</a>
+      <a class="pull-left" href="/blog/2013/07/16/audio-competing-in-fxos/" title="Previous Post: [Fx OS] Background media play">&laquo; [Fx OS] Background media play</a>
     
-    
-      <a class="pull-right" href="/blog/2012/05/15/class-code-trace-2/" title="Next Post: javascriptMVC原始碼分析 - Class實作（中）">javascriptMVC原始碼分析 - Class實作（中） &raquo;</a>
     
   </footer>
 
@@ -438,8 +453,8 @@ posted in
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://alivedise.github.com/blog/2012/05/15/class-code-trace/';
-        var disqus_url = 'http://alivedise.github.com/blog/2012/05/15/class-code-trace/';
+        var disqus_identifier = 'http://alivedise.github.com/blog/2013/07/18/window-manager-decoupling/';
+        var disqus_url = 'http://alivedise.github.com/blog/2013/07/18/window-manager-decoupling/';
         var disqus_script = 'embed.js';
       
     (function () {

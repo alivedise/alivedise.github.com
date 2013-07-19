@@ -129,6 +129,79 @@
 
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2012/05/22/ie8-security/">你的IE8/9真的是IE8/9嗎？</a></h1>
+    
+    
+      <p class="meta">
+        
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-22T21:12:00+08:00" pubdate data-updated="true">May 22<span>nd</span>, 2012</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/iesucks/'>iesucks</a>
+  
+</span>
+
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>最近遇到一個問題，原本開發時看起來沒問題的網站，到了測試人員手中變得不堪一擊：包括出現JSON is undefined的script error alert，以及各種css錯亂問題。問過IE版本之後確實跟自己在用的同樣都是IE8沒錯。</p>
+
+<p>後來發現一條線索：當網際網路選項->安全性中將某個網站加入近端內部網路區域清單內的話，安全等級為何都會觸發上面那些怪bug。</p>
+
+<p>以<a href="http://secondstory.com">secondstory</a>為例，如下圖設定：
+<img src="http://i.imgur.com/waJfX.png"></p>
+
+<p>原本設定前用IE9開的長相：<img src="http://i.imgur.com/KFR5d.jpg"></p>
+
+<p>加入清單後：<img src="http://i.imgur.com/XndFx.jpg"></p>
+
+<p>排版都飛掉了。打開開發者工具一看，文件模式被強制改成IE7標準。自己手動改回IE8/IE9標準後網頁CSS才奏效。</p>
+
+<p><b>這件事可怕的地方在於使用者可能不知道他把這個網頁加入了限制清單，如同我們的測試人員。更可怕的地方是幾乎不會有人知道安全限制代表著網頁功能失效，人們看到的只會是一些不能用的功能以及錯亂的排版。</b></p>
+
+<p>永遠別小看IE！</p>
+</div>
+  
+  
+
+
+</div>
+
+      </article>
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2012/05/17/class-code-trace-3/">javascriptMVC原始碼分析 - Class實作（下）</a></h1>
     
     
@@ -1344,95 +1417,6 @@ posted in
 
       </article>
     
-    
-      <article class="span4">
-        <div class="article-format">
-
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/02/24/jmvc-class-instance-initial/">[javascriptMVC] Class Init</a></h1>
-    
-    
-      <p class="meta">
-        
-  
-
-
-  
-    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
-  
-
- - 
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-02-24T01:35:00+08:00" pubdate data-updated="true">Feb 24<span>th</span>, 2012</time> - 
-        
-
-posted in
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/javascriptmvc/'>javascriptmvc</a>
-  
-</span>
-
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">$</span><span class="p">.</span><span class="nx">Controller</span><span class="p">(</span><span class="s1">&#39;Alive&#39;</span><span class="p">,{</span>
-</span><span class='line'>  <span class="c1">//static init</span>
-</span><span class='line'>  <span class="nx">init</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
-</span><span class='line'>      <span class="nx">steal</span><span class="p">.</span><span class="nx">dev</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;The class init will be invoked whenever you declare a class&#39;</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">},{</span>
-</span><span class='line'>  <span class="nx">init</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
-</span><span class='line'>      <span class="nx">steal</span><span class="p">.</span><span class="nx">dev</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;The instance init will be invoked whenever you declare a new instance&#39;</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">/*Console: The class init will be invoked whenever you declare a class */</span>
-</span><span class='line'><span class="k">new</span> <span class="nx">alive</span><span class="p">(</span><span class="nx">element</span><span class="p">);</span>
-</span><span class='line'><span class="cm">/*Console: The instance init will be invoked whenever you declare a new instance */</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-</div>
-  
-  
-
-
-</div>
-
-      </article>
-    
     </div>
       <div class="row">
         <ul class="pager">
@@ -1460,6 +1444,10 @@ posted in
     <ul class="recent_posts">
       
         <li>
+          <a href="/blog/2013/07/18/window-manager-decoupling/">[FxOS] Plan: Window Management decoupling (CONT.)</a>
+        </li>
+      
+        <li>
           <a href="/blog/2013/07/16/audio-competing-in-fxos/">[Fx OS] Background media play</a>
         </li>
       
@@ -1473,10 +1461,6 @@ posted in
       
         <li>
           <a href="/blog/2013/07/05/page-visibility-on-firefox-os/">HTML5 Page visibility on Fx OS</a>
-        </li>
-      
-        <li>
-          <a href="/blog/2013/07/05/one-year-at-mozilla/">My first year at Mozilla</a>
         </li>
       
     </ul>

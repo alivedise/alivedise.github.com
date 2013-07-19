@@ -129,6 +129,118 @@
 
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2012/02/06/jquery-layout-cross-slick-grid/">[jQuery]UI.layout*SlickGrid - 使SlickGrid在layout改變大小時能自動filter高度</a></h1>
+    
+    
+      <p class="meta">
+        
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-02-06T13:42:00+08:00" pubdate data-updated="true">Feb 6<span>th</span>, 2012</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/jquery/'>jquery</a>
+  
+</span>
+
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>目前只有一種作法，利用publish/subscribe告訴SlickGrid要去追parent的高度</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">$</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">(</span><span class="s2">&quot;units/set_grid_height&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">new_height</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">grid_opts</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="nx">new_height</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">resize</span><span class="p">();</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ...</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// grid = the jQuery element that represents the SlickGrid</span>
+</span><span class='line'><span class="c1">// slick = the instantiated slickgrid</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">resize</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">grid</span><span class="p">.</span><span class="nx">css</span><span class="p">(</span><span class="s1">&#39;height&#39;</span><span class="p">,</span> <span class="nx">grid_opts</span><span class="p">.</span><span class="nx">height</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">slick</span><span class="p">.</span><span class="nx">resizeCanvas</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">layout</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">).</span><span class="nx">layout</span><span class="p">({</span>
+</span><span class='line'>  <span class="nx">center</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">onresize</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">el</span><span class="p">,</span> <span class="nx">state</span><span class="p">,</span> <span class="nx">opts</span><span class="p">,</span> <span class="nx">layout_name</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">$</span><span class="p">.</span><span class="nx">publish</span><span class="p">(</span><span class="s2">&quot;units/set_grid_height&quot;</span><span class="p">,</span> <span class="p">[</span><span class="nx">state</span><span class="p">.</span><span class="nx">innerHeight</span><span class="p">]);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">$</span><span class="p">.</span><span class="nx">publish</span><span class="p">(</span><span class="s2">&quot;units/set_grid_height&quot;</span><span class="p">,</span> <span class="p">[</span><span class="nx">layout</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">center</span><span class="p">.</span><span class="nx">innerHeight</span><span class="p">]);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+  
+  
+
+
+</div>
+
+      </article>
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2012/02/06/jquery-layout-cross-tabs/">[Jquery] jQuery Layout X jQuery UI Tabs的應用</a></h1>
     
     
@@ -1139,6 +1251,10 @@ person.Class.shortName; //-&gt; 'Person'
     <ul class="recent_posts">
       
         <li>
+          <a href="/blog/2013/07/18/window-manager-decoupling/">[FxOS] Plan: Window Management decoupling (CONT.)</a>
+        </li>
+      
+        <li>
           <a href="/blog/2013/07/16/audio-competing-in-fxos/">[Fx OS] Background media play</a>
         </li>
       
@@ -1152,10 +1268,6 @@ person.Class.shortName; //-&gt; 'Person'
       
         <li>
           <a href="/blog/2013/07/05/page-visibility-on-firefox-os/">HTML5 Page visibility on Fx OS</a>
-        </li>
-      
-        <li>
-          <a href="/blog/2013/07/05/one-year-at-mozilla/">My first year at Mozilla</a>
         </li>
       
     </ul>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: fxos | Ascheriit]]></title>
   <link href="http://alivedise.github.com/blog/categories/fxos/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-16T21:35:50+08:00</updated>
+  <updated>2013-07-19T18:07:10+08:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -12,6 +12,164 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[[FxOS] Plan: Window Management decoupling (CONT.)]]></title>
+    <link href="http://alivedise.github.com/blog/2013/07/18/window-manager-decoupling/"/>
+    <updated>2013-07-18T17:33:00+08:00</updated>
+    <id>http://alivedise.github.com/blog/2013/07/18/window-manager-decoupling</id>
+    <content type="html"><![CDATA[<p><img src="http://i.imgur.com/T0pyFFc.jpg"></p>
+
+<p>Following are the plan about why and how to split current Gaia:System:Window Manager.</p>
+
+<h2>Sources/Links</h2>
+
+<ul>
+<li><a href="https://github.com/mozilla-b2g/gaia/blob/master/apps/system/js/window_manager.js">Window Manager source</a></li>
+<li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=845251">Window Manager testable meta bug</a></li>
+</ul>
+
+
+<h2>Current main functions in Window Manager</h2>
+
+<ul>
+<li>App Window Management</li>
+<li>Crash Management</li>
+<li>Clear browser data</li>
+<li>Wrapper Window Management</li>
+<li>Inline Activity Management</li>
+<li>Homescreen Management</li>
+<li>MozBrowser Element Generation</li>
+<li>Orientation Management</li>
+<li>Visibility Management</li>
+<li>Resize Management</li>
+<li>App Screenshots Management [deprecated]</li>
+<li>System Message Handler</li>
+<li>Open app transition</li>
+<li>Close app transition</li>
+<li>System Message Handler</li>
+<li>FTU Management [deprecated! Become standalone FTU Launcher already!]</li>
+</ul>
+
+
+<p>So which could be pulled out to reduce the heavy weight?</p>
+
+<h3>Inline Activity Management -> App Window</h3>
+
+<p>Inline Activity Management should belong to the activity caller.</p>
+
+<p>If app A opens a page(open.html) of app B as an inline activity,
+the life cycle of activity callee is based on app A instead of app B.</p>
+
+<p>Thus, if app A is killed or closed, the activity opened by app A should be killed.</p>
+
+<p>But if app B(index.html) is killed, activity B(open.html) shouldn't be affected.</p>
+
+<h3>Resize Management</h3>
+
+<p>Resize is another duty of the app window instance itself.</p>
+
+<p>If we're moving the activity into the app window, we could</p>
+
+<ol>
+<li>Recursively call current activity callee's resize function until the last callee is found.</li>
+<li>Resize all activity callee on top of current app window.</li>
+</ol>
+
+
+<p>in the app window's resize function.</p>
+
+<h3>Visibility Management</h3>
+
+<p>App window would have 2 kind of "child-like" window instance:
+* <code>var childWindow = window.open</code>
+* <code>new MozActivity</code></p>
+
+<p>Currently we don't send of the caller correctly to background on these two cases.</p>
+
+<p>The reasons are:</p>
+
+<ol>
+<li>Memory concern. Part of our memory management model relies on the page visibility state. Backgrounded app has higher possibility to be killed. We shall review and refine this soon. See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=892371">https://bugzilla.mozilla.org/show_bug.cgi?id=892371</a>.</li>
+<li>Backgrounded app is totally invisible instead of keeping the cached image frame. See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=825174">https://bugzilla.mozilla.org/show_bug.cgi?id=825174</a></li>
+</ol>
+
+
+<h3>Oreintation Management</h3>
+
+<p>App could specify the native orientation from manifest's orientation field.
+So from this point it is an instance specific value.</p>
+
+<p>What's tricky here is:</p>
+
+<ol>
+<li>Orientation indeed isn't app specific API. Any app at any time could call <code>lockOrientation</code> of 'screen' object. Thus it would affect the other apps.</li>
+<li>What we should do is preventing app from locking/unlocking orientation when they're background.</li>
+<li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=840147">Orientation behavior is bind to app transtion UX.</a></li>
+<li>We will discuss this more detailly in app window design.</li>
+</ol>
+
+
+<h3>Homescreen Management</h3>
+
+<p>Window Manager is the one who manipulates hardware or software home button event.</p>
+
+<p>We should leave this part in Window Manager but let Homescreen Window manages itself.</p>
+
+<p>To manage itself means that:
+* Generate the mozbrowser iframe by itself.
+* Fetch homescreen manifest by the manifestURL storing at settings on its own.
+* Revive itself when it's killed in background. (Different behavior than other apps.)</p>
+
+<p>So it's worthy to have an specific app window singleton for homescreen app.</p>
+
+<h3>Wrapper Management</h3>
+
+<p>This is another special type of app window.
+It's opened via homescreen; it stands for the app who has no manifestURL but a pure web page.</p>
+
+<p>We should have a new WrapperWindow class inherited from AppWindow class.</p>
+
+<h3>mozbrowser iframe generation</h3>
+
+<p>All kind of window needs one mozbrowser iframe with different attributes fed to.</p>
+
+<p>The element should be generated in <code>BrowserFrame</code> in configuration pattern.</p>
+
+<h3>Open/Close transition</h3>
+
+<p>This is the most important part of a window UI.</p>
+
+<p>There're many things relying on the transition state to take progress.</p>
+
+<p>We're discussing it in previous article, and would review this implementation soon.</p>
+
+<h3>System Message Handler</h3>
+
+<p>Now system message is used for opening the target app if it's not opened.
+There're two cases: activity and non-activity.</p>
+
+<p>This should be left in Window Manager.</p>
+
+<h3>Crash management</h3>
+
+<ul>
+<li>For crash of app window, let it decides what it wants to do when it sees crash event.</li>
+<li>For crash of opened window or activivity, let its caller decides what to do.</li>
+</ul>
+
+
+<h3>Clear browser data</h3>
+
+<p>Totally safe enough to move to another module.
+Irrevalant to manage windows.</p>
+
+<h3>Screenshot Management</h3>
+
+<p>Since the screenshot now is only touched by app window and cards view,
+let app window expose its screenshot to cards view.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[[Fx OS] Background media play]]></title>

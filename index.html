@@ -129,6 +129,213 @@
 
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2013/07/18/window-manager-decoupling/">[FxOS] Plan: Window Management Decoupling (CONT.)</a></h1>
+    
+    
+      <p class="meta">
+        
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-18T17:33:00+08:00" pubdate data-updated="true">Jul 18<span>th</span>, 2013</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/fxos/'>fxos</a>
+  
+</span>
+
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="http://i.imgur.com/T0pyFFc.jpg"></p>
+
+<p>Following are the plan about why and how to split current Gaia:System:Window Manager.</p>
+
+<h2>Sources/Links</h2>
+
+<ul>
+<li><a href="https://github.com/mozilla-b2g/gaia/blob/master/apps/system/js/window_manager.js">Window Manager source</a></li>
+<li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=845251">Window Manager testable meta bug</a></li>
+</ul>
+
+
+<h2>Current main functions in Window Manager</h2>
+
+<ul>
+<li>App Window Management</li>
+<li>Crash Management</li>
+<li>Clear browser data</li>
+<li>Wrapper Window Management</li>
+<li>Inline Activity Management</li>
+<li>Homescreen Management</li>
+<li>MozBrowser Element Generation</li>
+<li>Orientation Management</li>
+<li>Visibility Management</li>
+<li>Resize Management</li>
+<li>App Screenshots Management [deprecated]</li>
+<li>System Message Handler</li>
+<li>Open app transition</li>
+<li>Close app transition</li>
+<li>System Message Handler</li>
+<li>FTU Management [deprecated! Become standalone FTU Launcher already!]</li>
+</ul>
+
+
+<p>So which could be pulled out to reduce the heavy weight?</p>
+
+<h3>Inline Activity Management -> App Window</h3>
+
+<p>Inline Activity Management should belong to the activity caller.</p>
+
+<p>If app A opens a page(open.html) of app B as an inline activity,
+the life cycle of activity callee is based on app A instead of app B.</p>
+
+<p>Thus, if app A is killed or closed, the activity opened by app A should be killed.</p>
+
+<p>But if app B(index.html) is killed, activity B(open.html) shouldn&#8217;t be affected.</p>
+
+<h3>Resize Management</h3>
+
+<p>Resize is another duty of the app window instance itself.</p>
+
+<p>If we&#8217;re moving the activity into the app window, we could</p>
+
+<ol>
+<li>Recursively call current activity callee&#8217;s resize function until the last callee is found.</li>
+<li>Resize all activity callee on top of current app window.</li>
+</ol>
+
+
+<p>in the app window&#8217;s resize function.</p>
+
+<h3>Visibility Management</h3>
+
+<p>App window would have 2 kind of &#8220;child-like&#8221; window instance:
+* <code>var childWindow = window.open</code>
+* <code>new MozActivity</code></p>
+
+<p>Currently we don&#8217;t send of the caller correctly to background on these two cases.</p>
+
+<p>The reasons are:</p>
+
+<ol>
+<li>Memory concern. Part of our memory management model relies on the page visibility state. Backgrounded app has higher possibility to be killed. We shall review and refine this soon. See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=892371">https://bugzilla.mozilla.org/show_bug.cgi?id=892371</a>.</li>
+<li>Backgrounded app is totally invisible instead of keeping the cached image frame. See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=825174">https://bugzilla.mozilla.org/show_bug.cgi?id=825174</a></li>
+</ol>
+
+
+<h3>Oreintation Management</h3>
+
+<p>App could specify the native orientation from manifest&#8217;s orientation field.
+So from this point it is an instance specific value.</p>
+
+<p>What&#8217;s tricky here is:</p>
+
+<ol>
+<li>Orientation indeed isn&#8217;t app specific API. Any app at any time could call <code>lockOrientation</code> of &#8216;screen&#8217; object. Thus it would affect the other apps.</li>
+<li>What we should do is preventing app from locking/unlocking orientation when they&#8217;re background.</li>
+<li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=840147">Orientation behavior is bind to app transtion UX.</a></li>
+<li>We will discuss this more detailly in app window design.</li>
+</ol>
+
+
+<h3>Homescreen Management</h3>
+
+<p>Window Manager is the one who manipulates hardware or software home button event.</p>
+
+<p>We should leave this part in Window Manager but let Homescreen Window manages itself.</p>
+
+<p>To manage itself means that:
+* Generate the mozbrowser iframe by itself.
+* Fetch homescreen manifest by the manifestURL storing at settings on its own.
+* Revive itself when it&#8217;s killed in background. (Different behavior than other apps.)</p>
+
+<p>So it&#8217;s worthy to have an specific app window singleton for homescreen app.</p>
+
+<h3>Wrapper Management</h3>
+
+<p>This is another special type of app window.
+It&#8217;s opened via homescreen; it stands for the app who has no manifestURL but a pure web page.</p>
+
+<p>We should have a new WrapperWindow class inherited from AppWindow class.</p>
+
+<h3>mozbrowser iframe generation</h3>
+
+<p>All kind of window needs one mozbrowser iframe with different attributes fed to.</p>
+
+<p>The element should be generated in <code>BrowserFrame</code> in configuration pattern.</p>
+
+<h3>Open/Close transition</h3>
+
+<p>This is the most important part of a window UI.</p>
+
+<p>There&#8217;re many things relying on the transition state to take progress.</p>
+
+<p>We&#8217;re discussing it in previous article, and would review this implementation soon.</p>
+
+<h3>System Message Handler</h3>
+
+<p>Now system message is used for opening the target app if it&#8217;s not opened.
+There&#8217;re two cases: activity and non-activity.</p>
+
+<p>This should be left in Window Manager.</p>
+
+<h3>Crash management</h3>
+
+<ul>
+<li>For crash of app window, let it decides what it wants to do when it sees crash event.</li>
+<li>For crash of opened window or activivity, let its caller decides what to do.</li>
+</ul>
+
+
+<h3>Clear browser data</h3>
+
+<p>Totally safe enough to move to another module.
+Irrevalant to manage windows.</p>
+
+<h3>Screenshot Management</h3>
+
+<p>Since the screenshot now is only touched by app window and cards view,
+let app window expose its screenshot to cards view.</p>
+</div>
+  
+  
+
+
+</div>
+
+      </article>
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2013/07/16/audio-competing-in-fxos/">[Fx OS] Background Media Play</a></h1>
     
     
@@ -2226,148 +2433,6 @@ posted in
 
       </article>
     
-    
-      <article class="span4">
-        <div class="article-format">
-
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/12/22/javascript-memorization/">Javascript Memorization</a></h1>
-    
-    
-      <p class="meta">
-        
-  
-
-
-  
-    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
-  
-
- - 
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-12-22T00:28:00+08:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2012</time> - 
-        
-
-posted in
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/javascript/'>javascript</a>
-  
-</span>
-
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>As you know, function in javascript is also an object,
-you could use a property of the object to keep function result.
-This is called <code>Memorization</code>.</p>
-
-<p>Today I have a chance to utilize this skill.</p>
-
-<p>Please read codes below first:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">getOffOrigin</span><span class="p">(</span><span class="nx">app</span><span class="p">.</span><span class="nx">frame</span><span class="p">.</span><span class="nx">dataset</span><span class="p">.</span><span class="nx">url</span> <span class="o">?</span> <span class="nx">app</span><span class="p">.</span><span class="nx">frame</span><span class="p">.</span><span class="nx">dataset</span><span class="p">.</span><span class="nx">url</span> <span class="o">:</span> <span class="nx">app</span><span class="p">.</span><span class="nx">frame</span><span class="p">.</span><span class="nx">src</span><span class="p">,</span> <span class="nx">origin</span><span class="p">))</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">subtitle</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">);</span>
-</span><span class='line'>  <span class="nx">subtitle</span><span class="p">.</span><span class="nx">textContent</span> <span class="o">=</span> <span class="nx">getOffOrigin</span><span class="p">(</span><span class="nx">app</span><span class="p">.</span><span class="nx">frame</span><span class="p">.</span><span class="nx">dataset</span><span class="p">.</span><span class="nx">url</span> <span class="o">?</span> <span class="nx">app</span><span class="p">.</span><span class="nx">frame</span><span class="p">.</span><span class="nx">dataset</span><span class="p">.</span><span class="nx">url</span> <span class="o">:</span> <span class="nx">app</span><span class="p">.</span><span class="nx">frame</span><span class="p">.</span><span class="nx">src</span><span class="p">,</span> <span class="nx">origin</span><span class="p">);</span>
-</span><span class='line'>  <span class="nx">card</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">subtitle</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>getOffOrigin</code> has to use some logic to compare the two arguments and return a string.
-The result wouldn&#8217;t change if the arguments are the same.
-Therefore, to avoid calling the function many times, the result could be stored in the function itself.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">getOffOrigin</span><span class="p">(</span><span class="nx">src</span><span class="p">,</span> <span class="nx">origin</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="c1">// Use src and origin as cache key</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">cacheKey</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arguments</span><span class="p">));</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">getOffOrigin</span><span class="p">.</span><span class="nx">cache</span><span class="p">[</span><span class="nx">cacheKey</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="kr">native</span> <span class="o">=</span> <span class="nx">getOriginObject</span><span class="p">(</span><span class="nx">origin</span><span class="p">);</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">current</span> <span class="o">=</span> <span class="nx">getOriginObject</span><span class="p">(</span><span class="nx">src</span><span class="p">);</span>
-</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">current</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">==</span> <span class="s1">&#39;http:&#39;</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">// Display http:// protocol anyway</span>
-</span><span class='line'>        <span class="nx">getOffOrigin</span><span class="p">.</span><span class="nx">cache</span><span class="p">[</span><span class="nx">cacheKey</span><span class="p">]</span> <span class="o">=</span> <span class="nx">current</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">+</span> <span class="s1">&#39;//&#39;</span> <span class="o">+</span> <span class="nx">current</span><span class="p">.</span><span class="nx">hostname</span><span class="p">;</span>
-</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="kr">native</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">==</span> <span class="nx">current</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">&amp;&amp;</span>
-</span><span class='line'>          <span class="kr">native</span><span class="p">.</span><span class="nx">hostname</span> <span class="o">==</span> <span class="nx">current</span><span class="p">.</span><span class="nx">hostname</span> <span class="o">&amp;&amp;</span>
-</span><span class='line'>          <span class="kr">native</span><span class="p">.</span><span class="nx">port</span> <span class="o">==</span> <span class="nx">current</span><span class="p">.</span><span class="nx">port</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">// Same origin policy</span>
-</span><span class='line'>        <span class="nx">getOffOrigin</span><span class="p">.</span><span class="nx">cache</span><span class="p">[</span><span class="nx">cacheKey</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
-</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">current</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">==</span> <span class="s1">&#39;app:&#39;</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">// Avoid displaying app:// protocol</span>
-</span><span class='line'>        <span class="nx">getOffOrigin</span><span class="p">.</span><span class="nx">cache</span><span class="p">[</span><span class="nx">cacheKey</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
-</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">getOffOrigin</span><span class="p">.</span><span class="nx">cache</span><span class="p">[</span><span class="nx">cacheKey</span><span class="p">]</span> <span class="o">=</span> <span class="nx">current</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">+</span> <span class="s1">&#39;//&#39;</span> <span class="o">+</span> <span class="nx">current</span><span class="p">.</span><span class="nx">hostname</span><span class="p">;</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="nx">getOffOrigin</span><span class="p">.</span><span class="nx">cache</span><span class="p">[</span><span class="nx">cacheKey</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="nx">getOffOrigin</span><span class="p">.</span><span class="nx">cache</span> <span class="o">=</span> <span class="p">{};</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><p>If we only have one arguments we could use it as the key to cache directly.
-But we have multiple arguments in this case, we then use stringilized JSON to be the key.</p></li>
-<li><p>Hence we don&#8217;t need to do the same thing every time we enter this function if the arguments are used before.</p></li>
-<li><p>Have fun with your function cache!</p></li>
-</ul>
-
-</div>
-  
-  
-
-
-</div>
-
-      </article>
-    
     </div>
       <div class="row">
         <ul class="pager">
@@ -2391,6 +2456,10 @@ But we have multiple arguments in this case, we then use stringilized JSON to be
     <ul class="recent_posts">
       
         <li>
+          <a href="/blog/2013/07/18/window-manager-decoupling/">[FxOS] Plan: Window Management decoupling (CONT.)</a>
+        </li>
+      
+        <li>
           <a href="/blog/2013/07/16/audio-competing-in-fxos/">[Fx OS] Background media play</a>
         </li>
       
@@ -2404,10 +2473,6 @@ But we have multiple arguments in this case, we then use stringilized JSON to be
       
         <li>
           <a href="/blog/2013/07/05/page-visibility-on-firefox-os/">HTML5 Page visibility on Fx OS</a>
-        </li>
-      
-        <li>
-          <a href="/blog/2013/07/05/one-year-at-mozilla/">My first year at Mozilla</a>
         </li>
       
     </ul>

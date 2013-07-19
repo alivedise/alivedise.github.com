@@ -129,6 +129,148 @@
 
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2012/12/22/javascript-memorization/">Javascript Memorization</a></h1>
+    
+    
+      <p class="meta">
+        
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-22T00:28:00+08:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2012</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascript/'>javascript</a>
+  
+</span>
+
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>As you know, function in javascript is also an object,
+you could use a property of the object to keep function result.
+This is called <code>Memorization</code>.</p>
+
+<p>Today I have a chance to utilize this skill.</p>
+
+<p>Please read codes below first:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">getOffOrigin</span><span class="p">(</span><span class="nx">app</span><span class="p">.</span><span class="nx">frame</span><span class="p">.</span><span class="nx">dataset</span><span class="p">.</span><span class="nx">url</span> <span class="o">?</span> <span class="nx">app</span><span class="p">.</span><span class="nx">frame</span><span class="p">.</span><span class="nx">dataset</span><span class="p">.</span><span class="nx">url</span> <span class="o">:</span> <span class="nx">app</span><span class="p">.</span><span class="nx">frame</span><span class="p">.</span><span class="nx">src</span><span class="p">,</span> <span class="nx">origin</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">subtitle</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">subtitle</span><span class="p">.</span><span class="nx">textContent</span> <span class="o">=</span> <span class="nx">getOffOrigin</span><span class="p">(</span><span class="nx">app</span><span class="p">.</span><span class="nx">frame</span><span class="p">.</span><span class="nx">dataset</span><span class="p">.</span><span class="nx">url</span> <span class="o">?</span> <span class="nx">app</span><span class="p">.</span><span class="nx">frame</span><span class="p">.</span><span class="nx">dataset</span><span class="p">.</span><span class="nx">url</span> <span class="o">:</span> <span class="nx">app</span><span class="p">.</span><span class="nx">frame</span><span class="p">.</span><span class="nx">src</span><span class="p">,</span> <span class="nx">origin</span><span class="p">);</span>
+</span><span class='line'>  <span class="nx">card</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">subtitle</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>getOffOrigin</code> has to use some logic to compare the two arguments and return a string.
+The result wouldn&#8217;t change if the arguments are the same.
+Therefore, to avoid calling the function many times, the result could be stored in the function itself.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="kd">function</span> <span class="nx">getOffOrigin</span><span class="p">(</span><span class="nx">src</span><span class="p">,</span> <span class="nx">origin</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// Use src and origin as cache key</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">cacheKey</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arguments</span><span class="p">));</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">getOffOrigin</span><span class="p">.</span><span class="nx">cache</span><span class="p">[</span><span class="nx">cacheKey</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="kr">native</span> <span class="o">=</span> <span class="nx">getOriginObject</span><span class="p">(</span><span class="nx">origin</span><span class="p">);</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">current</span> <span class="o">=</span> <span class="nx">getOriginObject</span><span class="p">(</span><span class="nx">src</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">current</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">==</span> <span class="s1">&#39;http:&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// Display http:// protocol anyway</span>
+</span><span class='line'>        <span class="nx">getOffOrigin</span><span class="p">.</span><span class="nx">cache</span><span class="p">[</span><span class="nx">cacheKey</span><span class="p">]</span> <span class="o">=</span> <span class="nx">current</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">+</span> <span class="s1">&#39;//&#39;</span> <span class="o">+</span> <span class="nx">current</span><span class="p">.</span><span class="nx">hostname</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="kr">native</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">==</span> <span class="nx">current</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">&amp;&amp;</span>
+</span><span class='line'>          <span class="kr">native</span><span class="p">.</span><span class="nx">hostname</span> <span class="o">==</span> <span class="nx">current</span><span class="p">.</span><span class="nx">hostname</span> <span class="o">&amp;&amp;</span>
+</span><span class='line'>          <span class="kr">native</span><span class="p">.</span><span class="nx">port</span> <span class="o">==</span> <span class="nx">current</span><span class="p">.</span><span class="nx">port</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// Same origin policy</span>
+</span><span class='line'>        <span class="nx">getOffOrigin</span><span class="p">.</span><span class="nx">cache</span><span class="p">[</span><span class="nx">cacheKey</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">current</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">==</span> <span class="s1">&#39;app:&#39;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// Avoid displaying app:// protocol</span>
+</span><span class='line'>        <span class="nx">getOffOrigin</span><span class="p">.</span><span class="nx">cache</span><span class="p">[</span><span class="nx">cacheKey</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">getOffOrigin</span><span class="p">.</span><span class="nx">cache</span><span class="p">[</span><span class="nx">cacheKey</span><span class="p">]</span> <span class="o">=</span> <span class="nx">current</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">+</span> <span class="s1">&#39;//&#39;</span> <span class="o">+</span> <span class="nx">current</span><span class="p">.</span><span class="nx">hostname</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">getOffOrigin</span><span class="p">.</span><span class="nx">cache</span><span class="p">[</span><span class="nx">cacheKey</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="nx">getOffOrigin</span><span class="p">.</span><span class="nx">cache</span> <span class="o">=</span> <span class="p">{};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>If we only have one arguments we could use it as the key to cache directly.
+But we have multiple arguments in this case, we then use stringilized JSON to be the key.</p></li>
+<li><p>Hence we don&#8217;t need to do the same thing every time we enter this function if the arguments are used before.</p></li>
+<li><p>Have fun with your function cache!</p></li>
+</ul>
+
+</div>
+  
+  
+
+
+</div>
+
+      </article>
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2012/09/04/web-activity/">Web Activity</a></h1>
     
     
@@ -1560,79 +1702,6 @@ posted in
 
       </article>
     
-    
-      <article class="span4">
-        <div class="article-format">
-
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/05/22/ie8-security/">你的IE8/9真的是IE8/9嗎？</a></h1>
-    
-    
-      <p class="meta">
-        
-  
-
-
-  
-    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
-  
-
- - 
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-05-22T21:12:00+08:00" pubdate data-updated="true">May 22<span>nd</span>, 2012</time> - 
-        
-
-posted in
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/iesucks/'>iesucks</a>
-  
-</span>
-
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>最近遇到一個問題，原本開發時看起來沒問題的網站，到了測試人員手中變得不堪一擊：包括出現JSON is undefined的script error alert，以及各種css錯亂問題。問過IE版本之後確實跟自己在用的同樣都是IE8沒錯。</p>
-
-<p>後來發現一條線索：當網際網路選項->安全性中將某個網站加入近端內部網路區域清單內的話，安全等級為何都會觸發上面那些怪bug。</p>
-
-<p>以<a href="http://secondstory.com">secondstory</a>為例，如下圖設定：
-<img src="http://i.imgur.com/waJfX.png"></p>
-
-<p>原本設定前用IE9開的長相：<img src="http://i.imgur.com/KFR5d.jpg"></p>
-
-<p>加入清單後：<img src="http://i.imgur.com/XndFx.jpg"></p>
-
-<p>排版都飛掉了。打開開發者工具一看，文件模式被強制改成IE7標準。自己手動改回IE8/IE9標準後網頁CSS才奏效。</p>
-
-<p><b>這件事可怕的地方在於使用者可能不知道他把這個網頁加入了限制清單，如同我們的測試人員。更可怕的地方是幾乎不會有人知道安全限制代表著網頁功能失效，人們看到的只會是一些不能用的功能以及錯亂的排版。</b></p>
-
-<p>永遠別小看IE！</p>
-</div>
-  
-  
-
-
-</div>
-
-      </article>
-    
     </div>
       <div class="row">
         <ul class="pager">
@@ -1660,6 +1729,10 @@ posted in
     <ul class="recent_posts">
       
         <li>
+          <a href="/blog/2013/07/18/window-manager-decoupling/">[FxOS] Plan: Window Management decoupling (CONT.)</a>
+        </li>
+      
+        <li>
           <a href="/blog/2013/07/16/audio-competing-in-fxos/">[Fx OS] Background media play</a>
         </li>
       
@@ -1673,10 +1746,6 @@ posted in
       
         <li>
           <a href="/blog/2013/07/05/page-visibility-on-firefox-os/">HTML5 Page visibility on Fx OS</a>
-        </li>
-      
-        <li>
-          <a href="/blog/2013/07/05/one-year-at-mozilla/">My first year at Mozilla</a>
         </li>
       
     </ul>
