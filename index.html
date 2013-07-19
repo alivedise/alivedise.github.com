@@ -234,9 +234,13 @@ the life cycle of activity callee is based on app A instead of app B.</p>
 
 <h3>Visibility Management</h3>
 
-<p>App window would have 2 kind of &#8220;child-like&#8221; window instance:
-* <code>var childWindow = window.open</code>
-* <code>new MozActivity</code></p>
+<p>App window would have 2 kind of &#8220;child-like&#8221; window instance:</p>
+
+<ul>
+<li><code>var childWindow = window.open</code></li>
+<li><code>new MozActivity</code></li>
+</ul>
+
 
 <p>Currently we don&#8217;t send of the caller correctly to background on these two cases.</p>
 
@@ -269,10 +273,14 @@ So from this point it is an instance specific value.</p>
 
 <p>We should leave this part in Window Manager but let Homescreen Window manages itself.</p>
 
-<p>To manage itself means that:
-* Generate the mozbrowser iframe by itself.
-* Fetch homescreen manifest by the manifestURL storing at settings on its own.
-* Revive itself when it&#8217;s killed in background. (Different behavior than other apps.)</p>
+<p>To manage itself means that:</p>
+
+<ul>
+<li>Generate the mozbrowser iframe by itself.</li>
+<li>Fetch homescreen manifest by the manifestURL storing at settings on its own.</li>
+<li>Revive itself when it&#8217;s killed in background. (Different behavior than other apps.)</li>
+</ul>
+
 
 <p>So it&#8217;s worthy to have an specific app window singleton for homescreen app.</p>
 
