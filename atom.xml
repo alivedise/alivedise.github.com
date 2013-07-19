@@ -4,7 +4,7 @@
   <title><![CDATA[Ascheriit]]></title>
   <link href="http://alivedise.github.com/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-19T18:17:52+08:00</updated>
+  <updated>2013-07-19T18:26:48+08:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -54,7 +54,7 @@
 
 <p>So which could be pulled out to reduce the heavy weight?</p>
 
-<h3>Inline Activity Management -> App Window</h3>
+<h3>Inline Activity Management</h3>
 
 <p>Inline Activity Management should belong to the activity caller.</p>
 
