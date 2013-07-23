@@ -4,7 +4,7 @@
   <title><![CDATA[Ascheriit]]></title>
   <link href="http://alivedise.github.com/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-23T17:43:50+02:00</updated>
+  <updated>2013-07-23T17:45:38+02:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -24,7 +24,16 @@ One of those is: <a href="https://groups.google.com/forum/#!topic/mozilla.dev.ga
 <p>The main idea is load the modules into iframe, containing:</p>
 
 <ul>
-<li>HTML file <code><iframe src="moduleA.html"></iframe></code></li>
+<li>HTML file</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>  <span class="nt">&lt;iframe</span> <span class="na">src=</span><span class="s">&quot;moduleA.html&quot;</span><span class="nt">&gt;&lt;/iframe&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
 <li>The remaining are loaded as well as the iframe
 
 <ul>
@@ -60,7 +69,9 @@ One of those is: <a href="https://groups.google.com/forum/#!topic/mozilla.dev.ga
 
 <p>Any MVC pattern couldn&#8217;t guarantee that if you destroy a module, the relative parts(DOM/js) are thrown right away.</p>
 
-<p>IMO I really wish one day we have the ability to make sure GC is done not only on iframes but on the elements we choose to.</p>
+<p>IMO I really wish one day we have the ability to make sure GC is done not only on iframes but on the DOM elements we want it to.</p>
+
+<p>AI hope that we won&#8217;t end up that only one framework, one library is left for choice.</p>
 ]]></content>
   </entry>
   
