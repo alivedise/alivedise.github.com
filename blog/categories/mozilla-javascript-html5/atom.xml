@@ -4,7 +4,7 @@
   <title><![CDATA[Category: mozilla,javascript,html5 | Ascheriit]]></title>
   <link href="http://alivedise.github.com/blog/categories/mozilla-javascript-html5/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-19T18:26:48+08:00</updated>
+  <updated>2013-07-23T17:43:50+02:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Web activity]]></title>
     <link href="http://alivedise.github.com/blog/2012/09/04/web-activity/"/>
-    <updated>2012-09-04T15:45:00+08:00</updated>
+    <updated>2012-09-04T15:45:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2012/09/04/web-activity</id>
     <content type="html"><![CDATA[<p>Web activity是由Mozilla設計並開發，用來使web app之間共享資源的框架。
 在Firefox OS中已經存在Platform/UI上的實作，並且有一些內建的主要Web app已經利用Web activity來達成跨應用程式溝通的目的。

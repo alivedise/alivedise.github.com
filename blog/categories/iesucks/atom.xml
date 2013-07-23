@@ -4,7 +4,7 @@
   <title><![CDATA[Category: iesucks | Ascheriit]]></title>
   <link href="http://alivedise.github.com/blog/categories/iesucks/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-19T18:26:48+08:00</updated>
+  <updated>2013-07-23T17:43:50+02:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[你的IE8/9真的是IE8/9嗎？]]></title>
     <link href="http://alivedise.github.com/blog/2012/05/22/ie8-security/"/>
-    <updated>2012-05-22T21:12:00+08:00</updated>
+    <updated>2012-05-22T21:12:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2012/05/22/ie8-security</id>
     <content type="html"><![CDATA[<p>最近遇到一個問題，原本開發時看起來沒問題的網站，到了測試人員手中變得不堪一擊：包括出現JSON is undefined的script error alert，以及各種css錯亂問題。問過IE版本之後確實跟自己在用的同樣都是IE8沒錯。</p>
 

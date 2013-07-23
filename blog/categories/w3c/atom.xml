@@ -4,7 +4,7 @@
   <title><![CDATA[Category: w3c | Ascheriit]]></title>
   <link href="http://alivedise.github.com/blog/categories/w3c/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-19T18:26:48+08:00</updated>
+  <updated>2013-07-23T17:43:50+02:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[[HTML] 多行tooltip(title)]]></title>
     <link href="http://alivedise.github.com/blog/2012/02/09/multiline-tooltip/"/>
-    <updated>2012-02-09T11:46:00+08:00</updated>
+    <updated>2012-02-09T11:46:00+01:00</updated>
     <id>http://alivedise.github.com/blog/2012/02/09/multiline-tooltip</id>
     <content type="html"><![CDATA[<p>html原生tooltip(title屬性)顯示多行的方法：</p>
 

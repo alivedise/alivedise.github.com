@@ -4,7 +4,7 @@
   <title><![CDATA[Ascheriit]]></title>
   <link href="http://alivedise.github.com/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-19T18:26:48+08:00</updated>
+  <updated>2013-07-23T17:43:50+02:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -14,9 +14,138 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Modules inside iframe]]></title>
+    <link href="http://alivedise.github.com/blog/2013/07/23/sandbox-iframe/"/>
+    <updated>2013-07-23T14:08:00+02:00</updated>
+    <id>http://alivedise.github.com/blog/2013/07/23/sandbox-iframe</id>
+    <content type="html"><![CDATA[<p>Recently we had some discussions about modulization.
+One of those is: <a href="https://groups.google.com/forum/#!topic/mozilla.dev.gaia/Ls9U-CScxWA">Proposition of an architectural change for Gaia apps</a>.</p>
+
+<p>The main idea is load the modules into iframe, containing:</p>
+
+<ul>
+<li>HTML file <code><iframe src="moduleA.html"></iframe></code></li>
+<li>The remaining are loaded as well as the iframe
+
+<ul>
+<li>js files</li>
+<li>css files</li>
+<li>l10n resources (it is, the dictionary relavant to the frame.)</li>
+</ul>
+</li>
+</ul>
+
+
+<p>First thing comes to my mind is, we would end up with a &#8220;lots of iframe&#8221; HTML, which just looks like <code>frameset</code>&#8230;;)</p>
+
+<p>My real concerns:</p>
+
+<ol>
+<li>iframe load latency - We may encounter UI flash before the content is fully loaded.</li>
+<li>postMessage overhead - To communicate with other modules we couldn&#8217;t use previous <code>window.dispatchEvent</code> nor &#8216;pub/sub&#8217;. We will need to use <code>postMessage</code> very often.</li>
+<li>network overhead - We could group all every templating files into one but it seems we couldn&#8217;t merge the HTML files in difference into big one.</li>
+</ol>
+
+
+<p>The good parts I am heard:</p>
+
+<ol>
+<li>This way enforce people to separate the logic. (But people could use a big iframe as well.)</li>
+<li>Some JS bytecodes are shared between frames. We don&#8217;t need to parse it again.</li>
+<li>We could unload an iframe entirely if we don&#8217;t need it anymore.</li>
+</ol>
+
+
+<p>The last one looks to me the most critical one.</p>
+
+<p>Any MVC pattern couldn&#8217;t guarantee that if you destroy a module, the relative parts(DOM/js) are thrown right away.</p>
+
+<p>IMO I really wish one day we have the ability to make sure GC is done not only on iframes but on the elements we choose to.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[FxOS] Audio Competing Policies]]></title>
+    <link href="http://alivedise.github.com/blog/2013/07/19/audio-competing-again/"/>
+    <updated>2013-07-19T18:43:00+02:00</updated>
+    <id>http://alivedise.github.com/blog/2013/07/19/audio-competing-again</id>
+    <content type="html"><![CDATA[<p>I mentioned current audio competing policies in preivous &#8220;Background play&#8221; article.</p>
+
+<p>This article is trying to decribe it more precisely.</p>
+
+<h2>Preface</h2>
+
+<p>All these API and policies are coming from these similar requirements:</p>
+
+<blockquote><p>&#8220;As an user I want the music is automatically muted when call incoming.&#8221;<br/>&#8220;As an user I want the music is able to play at background.&#8221;<br/>&#8220;As an user I want the music to stop the background playing content.&#8221;</p></blockquote>
+
+
+<p>As you may know this doesn&#8217;t exist on desktop browser (yet).</p>
+
+<h2>Initial proposal: Multiple audio stream.</h2>
+
+<script async="true" class="speakerdeck-embed" data-id="e77e4870d5d70130ea8666ea2df61d46" src="http://alivedise.github.com//speakerdeck.com/assets/embed.js"> </script>
+
+
+<p>The initial proposal is, control everything from UI side.</p>
+
+<p>Gaia knows which app is foreground and which app is background,</p>
+
+<p>so what we want is just:</p>
+
+<ul>
+<li>Ability to mute the whole page/app.</li>
+<li>Be able to know which page/app is playing audio.</li>
+<li>Use permission model to distinguish the priority.</li>
+</ul>
+
+
+<h2>Current policy: the UX logic is living in platform</h2>
+
+<ul>
+<li>Foreground app could always be playable.</li>
+<li>Only content or higher channel could play at background.</li>
+<li>Only active app is able to play when screen is off.</li>
+<li>Higher channel would interrupt lower channel.</li>
+</ul>
+
+
+<h2>Future policy: ?</h2>
+
+<ul>
+<li>Basic competing unit is a page but not an app.</li>
+<li>Separate competing and background play.</li>
+<li>Control from UI side, again.</li>
+<li>Video: Exactly&#8230;.video doesn&#8217;t need channel.</li>
+<li><a href="http://bugzil.la/835101">New audio channel API is ongoing.</a>
+
+<ul>
+<li>To resolve background play problem with normal channel.</li>
+<li>Ability to control the mozbrowser iframe to play or pause.</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>Learned</h2>
+
+<ul>
+<li>We should consider existing web pages/apps as well as new API.</li>
+<li>Shall we dance with user experience?
+
+<ul>
+<li>UX is the king, but logic is another thing.</li>
+</ul>
+</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[[FxOS] Plan: Window Management Module Decoupling]]></title>
     <link href="http://alivedise.github.com/blog/2013/07/18/window-manager-decoupling/"/>
-    <updated>2013-07-18T17:33:00+08:00</updated>
+    <updated>2013-07-18T17:33:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2013/07/18/window-manager-decoupling</id>
     <content type="html"><![CDATA[<p><img src="http://i.imgur.com/T0pyFFc.jpg"></p>
 
@@ -182,7 +311,7 @@ let app window expose its screenshot to cards view.</p>
   <entry>
     <title type="html"><![CDATA[[Fx OS] Background media play]]></title>
     <link href="http://alivedise.github.com/blog/2013/07/16/audio-competing-in-fxos/"/>
-    <updated>2013-07-16T19:16:00+08:00</updated>
+    <updated>2013-07-16T19:16:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2013/07/16/audio-competing-in-fxos</id>
     <content type="html"><![CDATA[<p><img src="https://blog.mozilla.org/press/files/2012/09/FXOS_Music_Grid.jpg"></p>
 
@@ -323,7 +452,7 @@ you should also consider to set content channel because video is expected to int
   <entry>
     <title type="html"><![CDATA[Proposal: System Modualization Plan]]></title>
     <link href="http://alivedise.github.com/blog/2013/07/10/system-modulization-plan/"/>
-    <updated>2013-07-10T18:04:00+08:00</updated>
+    <updated>2013-07-10T18:04:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2013/07/10/system-modulization-plan</id>
     <content type="html"><![CDATA[<h4>Source</h4>
 
@@ -424,7 +553,7 @@ The first thing come to my mind is <code>window.parent.postMessage</code></p>
   <entry>
     <title type="html"><![CDATA[[Window Management] Transition state machine]]></title>
     <link href="http://alivedise.github.com/blog/2013/07/05/transition-state-machine/"/>
-    <updated>2013-07-05T14:53:00+08:00</updated>
+    <updated>2013-07-05T14:53:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2013/07/05/transition-state-machine</id>
     <content type="html"><![CDATA[<p>The article is inspired by Tim&#8217;s <a href="http://blog.timc.idv.tw/posts/css-classes-state-machine-puzzle/">CSS Classes State Machine Puzzle</a>.</p>
 
@@ -1153,7 +1282,7 @@ Maybe we could define the level of the callback into three here, according to th
   <entry>
     <title type="html"><![CDATA[HTML5 Page visibility on Fx OS]]></title>
     <link href="http://alivedise.github.com/blog/2013/07/05/page-visibility-on-firefox-os/"/>
-    <updated>2013-07-05T04:23:00+08:00</updated>
+    <updated>2013-07-05T04:23:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2013/07/05/page-visibility-on-firefox-os</id>
     <content type="html"><![CDATA[<p>在桌面版本的網頁開發中，我們可以透過 HTML5 的 page visibility API 來知道目前的網頁是否為使用者焦點，或者目前不可為使用者所見，來達成某些目的：如停止 UI 更新，資料交換&#8230;等，範例程式如下：</p>
 
@@ -1250,7 +1379,7 @@ Gaia System Architecture Diagram (source from https://docs.google.com/drawings/d
   <entry>
     <title type="html"><![CDATA[My first year at Mozilla]]></title>
     <link href="http://alivedise.github.com/blog/2013/07/05/one-year-at-mozilla/"/>
-    <updated>2013-07-05T02:31:00+08:00</updated>
+    <updated>2013-07-05T02:31:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2013/07/05/one-year-at-mozilla</id>
     <content type="html"><![CDATA[<h3>Achievements</h3>
 
@@ -1334,7 +1463,7 @@ Gaia System Architecture Diagram (source from https://docs.google.com/drawings/d
   <entry>
     <title type="html"><![CDATA[Recent side projects: Alvitr, Lucifer, GaiaSystemAPIDOC]]></title>
     <link href="http://alivedise.github.com/blog/2013/06/18/alvitr/"/>
-    <updated>2013-06-18T12:33:00+08:00</updated>
+    <updated>2013-06-18T12:33:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2013/06/18/alvitr</id>
     <content type="html"><![CDATA[<h3>Alvitr</h3>
 
@@ -1393,7 +1522,7 @@ Gaia System Architecture Diagram (source from https://docs.google.com/drawings/d
   <entry>
     <title type="html"><![CDATA[Javascript從變形矩陣反推scale以及rotate]]></title>
     <link href="http://alivedise.github.com/blog/2013/05/27/rotation-matrix/"/>
-    <updated>2013-05-27T15:41:00+08:00</updated>
+    <updated>2013-05-27T15:41:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2013/05/27/rotation-matrix</id>
     <content type="html"><![CDATA[<p>原文：
 <a href="http://css-tricks.com/get-value-of-css-rotation-through-javascript/">http://css-tricks.com/get-value-of-css-rotation-through-javascript/</a></p>
@@ -1524,7 +1653,7 @@ Gaia System Architecture Diagram (source from https://docs.google.com/drawings/d
   <entry>
     <title type="html"><![CDATA[From browser to browser. (1)]]></title>
     <link href="http://alivedise.github.com/blog/2013/02/23/from-browser-to-browser/"/>
-    <updated>2013-02-23T17:40:00+08:00</updated>
+    <updated>2013-02-23T17:40:00+01:00</updated>
     <id>http://alivedise.github.com/blog/2013/02/23/from-browser-to-browser</id>
     <content type="html"><![CDATA[<h3>Firefox OS</h3>
 
@@ -1750,7 +1879,7 @@ And it&#8217;s having countless private functions now.</p>
   <entry>
     <title type="html"><![CDATA[Mocha: MockMozActivity與global leak]]></title>
     <link href="http://alivedise.github.com/blog/2013/02/23/mock-moz-activity/"/>
-    <updated>2013-02-23T16:56:00+08:00</updated>
+    <updated>2013-02-23T16:56:00+01:00</updated>
     <id>http://alivedise.github.com/blog/2013/02/23/mock-moz-activity</id>
     <content type="html"><![CDATA[<p>之前在寫單元測試時，需要測到MozActivity的呼叫。</p>
 
@@ -1844,7 +1973,7 @@ And it&#8217;s having countless private functions now.</p>
   <entry>
     <title type="html"><![CDATA[Javascript memorization]]></title>
     <link href="http://alivedise.github.com/blog/2012/12/22/javascript-memorization/"/>
-    <updated>2012-12-22T00:28:00+08:00</updated>
+    <updated>2012-12-22T00:28:00+01:00</updated>
     <id>http://alivedise.github.com/blog/2012/12/22/javascript-memorization</id>
     <content type="html"><![CDATA[<p>As you know, function in javascript is also an object,
 you could use a property of the object to keep function result.
@@ -1937,7 +2066,7 @@ But we have multiple arguments in this case, we then use stringilized JSON to be
   <entry>
     <title type="html"><![CDATA[Web activity]]></title>
     <link href="http://alivedise.github.com/blog/2012/09/04/web-activity/"/>
-    <updated>2012-09-04T15:45:00+08:00</updated>
+    <updated>2012-09-04T15:45:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2012/09/04/web-activity</id>
     <content type="html"><![CDATA[<p>Web activity是由Mozilla設計並開發，用來使web app之間共享資源的框架。
 在Firefox OS中已經存在Platform/UI上的實作，並且有一些內建的主要Web app已經利用Web activity來達成跨應用程式溝通的目的。
@@ -2120,7 +2249,7 @@ Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
   <entry>
     <title type="html"><![CDATA[[gaia] HTML5 Window Shade]]></title>
     <link href="http://alivedise.github.com/blog/2012/07/05/gaia-window-shade/"/>
-    <updated>2012-07-05T13:58:00+08:00</updated>
+    <updated>2012-07-05T13:58:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2012/07/05/gaia-window-shade</id>
     <content type="html"><![CDATA[<h1>Window Shade</h1>
 
@@ -2384,7 +2513,7 @@ Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
   <entry>
     <title type="html"><![CDATA[[WEB] Web Application Core]]></title>
     <link href="http://alivedise.github.com/blog/2012/06/10/web-application-core/"/>
-    <updated>2012-06-10T17:06:00+08:00</updated>
+    <updated>2012-06-10T17:06:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2012/06/10/web-application-core</id>
     <content type="html"><![CDATA[<p>最近看到這篇文章<a href="http://addyosmani.github.com/backbone-aura/">Backbone Aura</a>難得的有提到一個web application core該做些什麼事情？跟我想的蠻相似的，這邊將他列出來：
 * 管理widget的life cycle的能力。
@@ -2471,7 +2600,7 @@ Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
   <entry>
     <title type="html"><![CDATA[[javascript] function hoisting應用]]></title>
     <link href="http://alivedise.github.com/blog/2012/06/10/function-hoisting-appliance/"/>
-    <updated>2012-06-10T16:17:00+08:00</updated>
+    <updated>2012-06-10T16:17:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2012/06/10/function-hoisting-appliance</id>
     <content type="html"><![CDATA[<h1>function hoisting是什麼？</h1>
 
@@ -2524,7 +2653,7 @@ Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
   <entry>
     <title type="html"><![CDATA[把assignment變數轉成JSON格式]]></title>
     <link href="http://alivedise.github.com/blog/2012/05/31/underline-to-json/"/>
-    <updated>2012-05-31T10:53:00+08:00</updated>
+    <updated>2012-05-31T10:53:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2012/05/31/underline-to-json</id>
     <content type="html"><![CDATA[<p>從Server端收到的資訊是如下格式</p>
 
@@ -2587,7 +2716,7 @@ network_hostname=abc1234
   <entry>
     <title type="html"><![CDATA[CanJS簡介]]></title>
     <link href="http://alivedise.github.com/blog/2012/05/30/can-js/"/>
-    <updated>2012-05-30T17:33:00+08:00</updated>
+    <updated>2012-05-30T17:33:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2012/05/30/can-js</id>
     <content type="html"><![CDATA[<h1>CanJS是什麼？</h1>
 
@@ -2619,7 +2748,7 @@ JMVC除了MVC還提供其他的case solution，而Backbone只專注在MVC身上�
   <entry>
     <title type="html"><![CDATA[「WEB」我也有一個故事要說。]]></title>
     <link href="http://alivedise.github.com/blog/2012/05/30/i-have-also-a-story-to-tell/"/>
-    <updated>2012-05-30T04:15:00+08:00</updated>
+    <updated>2012-05-30T04:15:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2012/05/30/i-have-also-a-story-to-tell</id>
     <content type="html"><![CDATA[<p>這個部落格在我的定位中是純技術取向，但這篇應該會是唯一一篇非關技術的文章。</p>
 
@@ -2752,181 +2881,6 @@ JMVC除了MVC還提供其他的case solution，而Backbone只專注在MVC身上�
 <li>有人問第4段的那張手寫日期表是什麼？最後一個下班者拿走公司鑰匙的簽名。被我懶得寫跳過的平常日期是：沒回家。假日來公司：不會記。</li>
 </ol>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[JavascriptMVC on Slideshare]]></title>
-    <link href="http://alivedise.github.com/blog/2012/05/24/javascriptmvc-slideshare/"/>
-    <updated>2012-05-24T14:58:00+08:00</updated>
-    <id>http://alivedise.github.com/blog/2012/05/24/javascriptmvc-slideshare</id>
-    <content type="html"><![CDATA[<p>陸續看到兩個介紹Backbone的投影片&#8211;JSDC上的<a href="https://speakerdeck.com/u/jaceju/p/refactoring-with-backbonejs">Refactor with Backbone.js</a>，以及在slideshare看到的<a href="http://www.slideshare.net/molily/javascript-application-architecture-with-backbonejs">Javasciprt Application Architecture with Backbone.js</a>，一時手癢就想自己也來做一個介紹JavascriptMVC的投影片丟到Slideshare。</p>
-
-<p>目前Slideshare上跟JavascriptMVC有關的投影片有：</p>
-
-<ol>
-<li><a href="http://www.slideshare.net/4lb0/javascriptmvc">JavascriptMVC</a>:六個月前上傳，德文？撰寫。</li>
-</ol>
-
-
-<div style="width:425px" id="__ss_10174435"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/4lb0/javascriptmvc" title="JavascriptMVC" target="_blank">JavascriptMVC</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/10174435" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" allowfullscreen></iframe></div>
-
-
-<ol>
-<li><a href="http://www.slideshare.net/zukunftsalick/introduction-to-javascriptmvc">Introduction to JavascriptMVC</a>:一年前上傳。</li>
-</ol>
-
-
-<div style="width:425px" id="__ss_7966052"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/zukunftsalick/introduction-to-javascriptmvc" title="Introduction to JavaScriptMVC" target="_blank">Introduction to JavaScriptMVC</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/7966052" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" allowfullscreen></iframe></div>
-
-
-<ol>
-<li><a href="http://www.slideshare.net/tdreyno/jqconf">Organizing Code with JavascriptMVC</a>:兩年前上傳。</li>
-</ol>
-
-
-<div style="width:425px" id="__ss_5467723"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/tdreyno/jqconf" title="Organizing Code with JavascriptMVC" target="_blank">Organizing Code with JavascriptMVC</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/5467723" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" allowfullscreen></iframe></div>
-
-
-<p>比起Backbone實在差太多了&#8230;而且有些還是過時的資訊。</p>
-
-<p>姑且先整理一下之前的Javascript簡介投影片丟上去，下個目標預計是寫一個完整的建置範例，不過目前還沒有想到主題。</p>
-
-<div style="width:425px" id="__ss_13010920"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/DavidSkyAlive/javascriptmvc-another-choice-of-web-framework" title="JavascriptMVC: Another choice of web framework" target="_blank">JavascriptMVC: Another choice of web framework</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/13010920" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" allowfullscreen></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/DavidSkyAlive" target="_blank">Alive Kuo</a> </div> </div>
-
-
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[JSDC Taiwan 2012 - 參加心得]]></title>
-    <link href="http://alivedise.github.com/blog/2012/05/24/jsdc-tw-2012/"/>
-    <updated>2012-05-24T14:47:00+08:00</updated>
-    <id>http://alivedise.github.com/blog/2012/05/24/jsdc-tw-2012</id>
-    <content type="html"><![CDATA[<p><img src="http://i.imgur.com/2YabH.jpg"></p>
-
-<p>5/19(六)有幸參加台灣第一屆Javascript開發者研討會，簡單寫一些感想。</p>
-
-<h1>[Key note] Node.JS on Windows Azure</h1>
-
-<p><img src="http://i.imgur.com/FWnFz.jpg"></p>
-
-<p>主講者是大學時期的好人助教ericsk，這次他代表微軟出席講在Windows Azure上的Node.js開發，</p>
-
-<p>因為我對windows沒什麼興趣，這場都在玩弄IPAD上的irc client度過。不過ericsk有特別提到他在OSDC被當梗的事情XD</p>
-
-<h1>[Key note] Gaia: A modern smartphone user interface in HTML5 and JavaScript</h1>
-
-<p><img src="http://i.imgur.com/ivh8j.jpg"></p>
-
-<p>講者是Mozilla的技術總監，全程英文。剛趕來現場的朋友說：「剛剛計程車上司機問我這老外是要去哪&#8230;」XDD</p>
-
-<p>因為投影片字蠻小英文又說的很快，不少人在IRC上表示聽不太懂。</p>
-
-<p>前面都在鋪梗，講網路瀏覽器的發展，到Mobile的現況（Android跟iOS各據一方），最後帶出HTML5才是未來所有應用的依歸，而Mozilla要透過B2G這個專案來帶動HTML5 app的發展，以及打破Mobile市場的現況。</p>
-
-<p>聽起來比較算是宣傳性質的演講，不過後來仔細看投影片還是有提到一些技術問題喔！</p>
-
-<h1>Happy Programming with CoffeeScript</h1>
-
-<p><img src="http://i.imgur.com/uLEL9.jpg"></p>
-
-<p>其實對CoffeeScript沒太大興趣，不過講者帶的很好很順，蠻吸引人去看的。</p>
-
-<p>然後聽到當天覺得最好笑的笑話：「CoffeeScript作者2009年第一次commit，有一天他在網路上看到有人自稱擁有5年+CS開發經驗，作者：「我想去跟他學一下&#8230;.」」</p>
-
-<p>簡單的說，CoffeeScript是在幫助你少寫一些code，要學的話還是建議學JavaScript，然後「用CoffeeScript寫」。</p>
-
-<h1>JavaScript MVC compare</h1>
-
-<p><img src="http://i.imgur.com/TyoNN.jpg"></p>
-
-<p>TonyQ主講，簡單介紹一個Web MVC framework該有的特徵。</p>
-
-<p>可惜並沒有詳細提到各家solution的好壞。</p>
-
-<p>View方面有拿JavascriptMVC的實作-EmbeddedJS當做範例。</p>
-
-<h1>Module Pattern, AMD, RequireJS</h1>
-
-<p><img src="http://i.imgur.com/Z20kJ.jpg"></p>
-
-<p>RequireJS聽起來很像是StealJS解決library dependancy的方案，不過好像不需要透過同時載入JS來做，有機會再找來研究看看。</p>
-
-<p>AMD我一直以為是某處理器廠牌Orz&#8230;原來是指Asynchronous Module Definition。聽說是業界現在的標準？</p>
-
-<p>Module Pattern就是講JS實作private的方式。</p>
-
-<h1>針對行動平台最佳化的HTML5動畫引擎設計與實作</h1>
-
-<p>我睡著了&#8230;.</p>
-
-<h1>前端工程師也可以淡定的開發網站應用！RedTea Web Framework！</h1>
-
-<p><img src="http://i.imgur.com/2M3uR.jpg"></p>
-
-<p>原本的題目是Non MVC framework。</p>
-
-<p>講者介紹自己基於Node.js開發的前後端結合framework，RedTea。</p>
-
-<p>名言：「強者都要自己做一套framework！」</p>
-
-<h1>淡淡定定用 JS 寫 WebAPI</h1>
-
-<p><img src="http://i.imgur.com/IDgs8.jpg"></p>
-
-<p>其實就是Mozilla B2G專案中的底層技術介紹，如何export API給上層網頁使用。</p>
-
-<h1>Refactoring with Backbone.js</h1>
-
-<p><img src="http://i.imgur.com/bATCl.jpg"></p>
-
-<p>講者用一個非常完整的例子介紹如何用Backbone來refactor一個網頁。</p>
-
-<h1>Lightning talks</h1>
-
-<h2>JavaScript，我真是搞不懂你啊！</h2>
-
-<p><img src="http://i.imgur.com/mblUI.jpg"></p>
-
-<p>WAT!</p>
-
-<p>用一些有趣的範例帶出js奇妙的語言特性。</p>
-
-<h2>造輪子好好玩</h2>
-
-<p>有人提到講者做的互動式即時聊天繪圖網頁比他介紹的jQuery Modile Slider還有趣很多，深表贊同。</p>
-
-<h2>一起來玩 d3.js 吧</h2>
-
-<p>唯一的女講者，我只記得這不是Diablo3&#8230;</p>
-
-<h2>眉角瞥見 JavaScript 與自由/開放源碼著作權議題</h2>
-
-<p>唯一的非工程師講者，從法律角度切入JS開發。</p>
-
-<h2>Spatial Publish Subscribe for LBS Applications</h2>
-
-<p>我完全想不起來這在說什麼&#8230;</p>
-
-<h2>有 Backbone 真是太好了</h2>
-
-<p>講者用backbone來改寫自己名片網站的故事。</p>
-
-<h1>沒技術含量的總結</h1>
-
-<ul>
-<li>有三場提到Backbone，只有一場有沾到JavascriptMVC。</li>
-<li>Node.js也是一個大宗。</li>
-<li>Mobile應用是另一個大主題。</li>
-<li>現場開發者大部分看起來都非常年輕。</li>
-<li>一眼看去大概90%的聽眾自備電腦，八成都是蘋果&#8230;</li>
-<li>希望明年有機會上台分享！</li>
-</ul>
-
-
-<p><img src="http://i.imgur.com/e0pcO.jpg"></p>
 ]]></content>
   </entry>
   

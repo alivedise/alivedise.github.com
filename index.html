@@ -129,6 +129,226 @@
 
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2013/07/23/sandbox-iframe/">Modules Inside Iframe</a></h1>
+    
+    
+      <p class="meta">
+        
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-23T14:08:00+02:00" pubdate data-updated="true">Jul 23<span>rd</span>, 2013</time> - 
+        
+
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Recently we had some discussions about modulization.
+One of those is: <a href="https://groups.google.com/forum/#!topic/mozilla.dev.gaia/Ls9U-CScxWA">Proposition of an architectural change for Gaia apps</a>.</p>
+
+<p>The main idea is load the modules into iframe, containing:</p>
+
+<ul>
+<li>HTML file <code><iframe src="moduleA.html"></iframe></code></li>
+<li>The remaining are loaded as well as the iframe
+
+<ul>
+<li>js files</li>
+<li>css files</li>
+<li>l10n resources (it is, the dictionary relavant to the frame.)</li>
+</ul>
+</li>
+</ul>
+
+
+<p>First thing comes to my mind is, we would end up with a &#8220;lots of iframe&#8221; HTML, which just looks like <code>frameset</code>&#8230;;)</p>
+
+<p>My real concerns:</p>
+
+<ol>
+<li>iframe load latency - We may encounter UI flash before the content is fully loaded.</li>
+<li>postMessage overhead - To communicate with other modules we couldn&#8217;t use previous <code>window.dispatchEvent</code> nor &#8216;pub/sub&#8217;. We will need to use <code>postMessage</code> very often.</li>
+<li>network overhead - We could group all every templating files into one but it seems we couldn&#8217;t merge the HTML files in difference into big one.</li>
+</ol>
+
+
+<p>The good parts I am heard:</p>
+
+<ol>
+<li>This way enforce people to separate the logic. (But people could use a big iframe as well.)</li>
+<li>Some JS bytecodes are shared between frames. We don&#8217;t need to parse it again.</li>
+<li>We could unload an iframe entirely if we don&#8217;t need it anymore.</li>
+</ol>
+
+
+<p>The last one looks to me the most critical one.</p>
+
+<p>Any MVC pattern couldn&#8217;t guarantee that if you destroy a module, the relative parts(DOM/js) are thrown right away.</p>
+
+<p>IMO I really wish one day we have the ability to make sure GC is done not only on iframes but on the elements we choose to.</p>
+</div>
+  
+  
+
+
+</div>
+
+      </article>
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/07/19/audio-competing-again/">[FxOS] Audio Competing Policies</a></h1>
+    
+    
+      <p class="meta">
+        
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-19T18:43:00+02:00" pubdate data-updated="true">Jul 19<span>th</span>, 2013</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/audio/'>audio</a>, <a class='category' href='/blog/categories/fxos/'>fxos</a>
+  
+</span>
+
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I mentioned current audio competing policies in preivous &#8220;Background play&#8221; article.</p>
+
+<p>This article is trying to decribe it more precisely.</p>
+
+<h2>Preface</h2>
+
+<p>All these API and policies are coming from these similar requirements:</p>
+
+<blockquote><p>&#8220;As an user I want the music is automatically muted when call incoming.&#8221;<br/>&#8220;As an user I want the music is able to play at background.&#8221;<br/>&#8220;As an user I want the music to stop the background playing content.&#8221;</p></blockquote>
+
+
+<p>As you may know this doesn&#8217;t exist on desktop browser (yet).</p>
+
+<h2>Initial proposal: Multiple audio stream.</h2>
+
+<script async="true" class="speakerdeck-embed" data-id="e77e4870d5d70130ea8666ea2df61d46" src="//speakerdeck.com/assets/embed.js"> </script>
+
+
+<p>The initial proposal is, control everything from UI side.</p>
+
+<p>Gaia knows which app is foreground and which app is background,</p>
+
+<p>so what we want is just:</p>
+
+<ul>
+<li>Ability to mute the whole page/app.</li>
+<li>Be able to know which page/app is playing audio.</li>
+<li>Use permission model to distinguish the priority.</li>
+</ul>
+
+
+<h2>Current policy: the UX logic is living in platform</h2>
+
+<ul>
+<li>Foreground app could always be playable.</li>
+<li>Only content or higher channel could play at background.</li>
+<li>Only active app is able to play when screen is off.</li>
+<li>Higher channel would interrupt lower channel.</li>
+</ul>
+
+
+<h2>Future policy: ?</h2>
+
+<ul>
+<li>Basic competing unit is a page but not an app.</li>
+<li>Separate competing and background play.</li>
+<li>Control from UI side, again.</li>
+<li>Video: Exactly&#8230;.video doesn&#8217;t need channel.</li>
+<li><a href="http://bugzil.la/835101">New audio channel API is ongoing.</a>
+
+<ul>
+<li>To resolve background play problem with normal channel.</li>
+<li>Ability to control the mozbrowser iframe to play or pause.</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>Learned</h2>
+
+<ul>
+<li>We should consider existing web pages/apps as well as new API.</li>
+<li>Shall we dance with user experience?
+
+<ul>
+<li>UX is the king, but logic is another thing.</li>
+</ul>
+</li>
+</ul>
+
+</div>
+  
+  
+
+
+</div>
+
+      </article>
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2013/07/18/window-manager-decoupling/">[FxOS] Plan: Window Management Module Decoupling</a></h1>
     
     
@@ -154,7 +374,7 @@
   
 
 
-<time datetime="2013-07-18T17:33:00+08:00" pubdate data-updated="true">Jul 18<span>th</span>, 2013</time> - 
+<time datetime="2013-07-18T17:33:00+02:00" pubdate data-updated="true">Jul 18<span>th</span>, 2013</time> - 
         
 
 posted in
@@ -369,7 +589,7 @@ let app window expose its screenshot to cards view.</p>
   
 
 
-<time datetime="2013-07-16T19:16:00+08:00" pubdate data-updated="true">Jul 16<span>th</span>, 2013</time> - 
+<time datetime="2013-07-16T19:16:00+02:00" pubdate data-updated="true">Jul 16<span>th</span>, 2013</time> - 
         
 
 posted in
@@ -559,7 +779,7 @@ you should also consider to set content channel because video is expected to int
   
 
 
-<time datetime="2013-07-10T18:04:00+08:00" pubdate data-updated="true">Jul 10<span>th</span>, 2013</time> - 
+<time datetime="2013-07-10T18:04:00+02:00" pubdate data-updated="true">Jul 10<span>th</span>, 2013</time> - 
         
 
 posted in
@@ -709,7 +929,7 @@ The first thing come to my mind is <code>window.parent.postMessage</code></p>
   
 
 
-<time datetime="2013-07-05T14:53:00+08:00" pubdate data-updated="true">Jul 5<span>th</span>, 2013</time> - 
+<time datetime="2013-07-05T14:53:00+02:00" pubdate data-updated="true">Jul 5<span>th</span>, 2013</time> - 
         
 
 posted in
@@ -1487,7 +1707,7 @@ Maybe we could define the level of the callback into three here, according to th
   
 
 
-<time datetime="2013-07-05T04:23:00+08:00" pubdate data-updated="true">Jul 5<span>th</span>, 2013</time> - 
+<time datetime="2013-07-05T04:23:00+02:00" pubdate data-updated="true">Jul 5<span>th</span>, 2013</time> - 
         
 
 posted in
@@ -1633,7 +1853,7 @@ Gaia System Architecture Diagram (source from https://docs.google.com/drawings/d
   
 
 
-<time datetime="2013-07-05T02:31:00+08:00" pubdate data-updated="true">Jul 5<span>th</span>, 2013</time> - 
+<time datetime="2013-07-05T02:31:00+02:00" pubdate data-updated="true">Jul 5<span>th</span>, 2013</time> - 
         
 
 posted in
@@ -1766,7 +1986,7 @@ posted in
   
 
 
-<time datetime="2013-06-18T12:33:00+08:00" pubdate data-updated="true">Jun 18<span>th</span>, 2013</time> - 
+<time datetime="2013-06-18T12:33:00+02:00" pubdate data-updated="true">Jun 18<span>th</span>, 2013</time> - 
         
 
 posted in
@@ -1874,7 +2094,7 @@ posted in
   
 
 
-<time datetime="2013-05-27T15:41:00+08:00" pubdate data-updated="true">May 27<span>th</span>, 2013</time> - 
+<time datetime="2013-05-27T15:41:00+02:00" pubdate data-updated="true">May 27<span>th</span>, 2013</time> - 
         
 
 posted in
@@ -2023,424 +2243,6 @@ posted in
 
       </article>
     
-    
-      <article class="span4">
-        <div class="article-format">
-
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/02/23/from-browser-to-browser/">From Browser to Browser. (1)</a></h1>
-    
-    
-      <p class="meta">
-        
-  
-
-
-  
-    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
-  
-
- - 
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-02-23T17:40:00+08:00" pubdate data-updated="true">Feb 23<span>rd</span>, 2013</time> - 
-        
-
-posted in
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/gaia/'>gaia</a>
-  
-</span>
-
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3>Firefox OS</h3>
-
-<p><img src="http://cdn0.mos.techradar.futurecdn.net///art/mobile_phones/Mozilla/FireFoxOS/DeveloperHandsets/FirefoxOSDev-Press-01-580-75.jpg"></p>
-
-<h3>System app</h3>
-
-<p>Exactly, Firefox OS, also known for boot 2 gecko, is having only one app/one page.
-It&#8217;s the system app, which controls all web app&#8217;s life cycle.
-When FirefoxOS is booted, it would load the system app from <code>system/index.html</code>.
-Then system app would take care of the remaing stuff.</p>
-
-<ul>
-<li>Load modules</li>
-<li>Init homescreen app</li>
-<li>Etc.</li>
-</ul>
-
-
-<h3>Window Manager</h3>
-
-<p>Window Manager is the core of Firefox OS, the core of system app, which is in charge of creating/maintaining/killing apps.
-An app, indeed, is a web page.</p>
-
-<p>We use a magic, calling browser API, to make a web page act like an app.</p>
-
-<h3>Browser API</h3>
-
-<p>See https://developer.mozilla.org/en-US/docs/DOM/Using_the_Browser_API</p>
-
-<p>A browser here means that the web page acts like it is living in a browser <code>frame</code>.
-We are replacing nearly every XUL-based UI with HTML to <code>port</code> the WEB to the phone.</p>
-
-<h3>Module Pattern</h3>
-
-<p>Module pattern is the way Window Manager being imeplemented.
-A module pattern looks like:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">WindowManager</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">_id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">_running</span> <span class="o">=</span> <span class="p">{};</span>
-</span><span class='line'>  <span class="kd">function</span> <span class="nx">createApp</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>     <span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">App</span><span class="p">();</span>
-</span><span class='line'>     <span class="nx">_running</span><span class="p">[</span><span class="nx">_id</span><span class="p">]</span> <span class="o">=</span> <span class="nx">app</span><span class="p">;</span>
-</span><span class='line'>     <span class="nx">_id</span><span class="o">++</span><span class="p">;</span>
-</span><span class='line'>     <span class="k">return</span> <span class="nx">app</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kd">function</span> <span class="nx">killApp</span><span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">delete</span> <span class="nx">_running</span><span class="p">[</span><span class="nx">id</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">return</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">create</span><span class="o">:</span> <span class="nx">createApp</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">kill</span><span class="o">:</span> <span class="nx">killApp</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">})();</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Thus the Window Manager object only has 2 public attributes.
-This looks fine, but it would be a nightmare if this pattern grows to over 2000 lines.
-And it&#8217;s having countless private functions now.</p>
-
-<p>This module now is not unit testable nor maintainable.</p>
-
-<h3>Break it!</h3>
-
-<h4>From the browser to the browser</h4>
-
-<p>Let&#8217;s define a new object to contain and manage itself in its own scope.</p>
-
-<p>It&#8217;s called <code>browserFrame</code>.</p>
-
-<h5>The responsibility of browserFrame</h5>
-
-<p>It would create an iframe with all attributes needed for BrowserAPI.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">/* Define a basic mozbrowser iframe class.</span>
-</span><span class='line'><span class="cm"> * It creates a mozbrowser iframe,</span>
-</span><span class='line'><span class="cm"> * and finally returns the DOM element it just created.</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">BrowserFrame</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span> <span class="nx">invocation</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">function</span> <span class="nx">BrowserFrame</span><span class="p">()</span> <span class="p">{</span> <span class="c1">// This constructor function is a local variable.</span>
-</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">element</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">nextId</span><span class="o">++</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">callbacks</span> <span class="o">=</span> <span class="p">{};</span>
-</span><span class='line'>    <span class="nx">createFrame</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span> <span class="c1">// All arguments are values to createFrame</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nx">BrowserFrame</span><span class="p">.</span><span class="nx">className</span> <span class="o">=</span> <span class="s1">&#39;browser&#39;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">// These are helper functions and variables used by the methods above</span>
-</span><span class='line'>  <span class="c1">// They&#39;re not part of the public API of the module, but they&#39;re hidden</span>
-</span><span class='line'>  <span class="c1">// within this function scope so we don&#39;t have to define them as a</span>
-</span><span class='line'>  <span class="c1">// property of Browser or prefix them with underscores.</span>
-</span><span class='line'>  <span class="kd">function</span> <span class="nx">createFrame</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">origin</span><span class="p">,</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">manifestURL</span><span class="p">,</span> <span class="nx">oop</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">browser</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;iframe&#39;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">browser</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;mozallowfullscreen&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// Most apps currently need to be hosted in a special &#39;mozbrowser&#39; iframe.</span>
-</span><span class='line'>    <span class="c1">// They also need to be marked as &#39;mozapp&#39; to be recognized as apps by the</span>
-</span><span class='line'>    <span class="c1">// platform.</span>
-</span><span class='line'>    <span class="nx">browser</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;mozbrowser&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">oop</span><span class="p">)</span>
-</span><span class='line'>      <span class="nx">browser</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;remote&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">manifestURL</span><span class="p">)</span>
-</span><span class='line'>      <span class="nx">browser</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;mozapp&#39;</span><span class="p">,</span> <span class="nx">manifestURL</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">origin</span><span class="p">)</span>
-</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">origin</span> <span class="o">=</span> <span class="nx">origin</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">name</span><span class="p">)</span>
-</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">browser</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="nx">url</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">browser</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">className</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">browser</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">BrowserFrame</span><span class="p">.</span><span class="nx">className</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// Store the element</span>
-</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">element</span> <span class="o">=</span> <span class="nx">browser</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">nextId</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="c1">// The public API for this module is the Browser() constructor function.</span>
-</span><span class='line'>  <span class="c1">// We need to export that function from this private namespace so that</span>
-</span><span class='line'>  <span class="c1">// it can be used on the outside. In this case, we export the constructor</span>
-</span><span class='line'>  <span class="c1">// by returning it. It becomes the value of the assignment expression</span>
-</span><span class='line'>  <span class="c1">// on the first line above.</span>
-</span><span class='line'>  <span class="k">return</span> <span class="nx">BrowserFrame</span><span class="p">;</span>
-</span><span class='line'><span class="p">}());</span> <span class="c1">// Invoke the function immediately after defining it.</span>
-</span></code></pre></td></tr></table></div></figure>
-
-</div>
-  
-  
-
-
-</div>
-
-      </article>
-    
-    
-      <article class="span4">
-        <div class="article-format">
-
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/02/23/mock-moz-activity/">Mocha: MockMozActivity與global Leak</a></h1>
-    
-    
-      <p class="meta">
-        
-  
-
-
-  
-    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
-  
-
- - 
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-02-23T16:56:00+08:00" pubdate data-updated="true">Feb 23<span>rd</span>, 2013</time> - 
-        
-
-posted in
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/javascript/'>javascript</a>
-  
-</span>
-
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>之前在寫單元測試時，需要測到MozActivity的呼叫。</p>
-
-<p>當我們嘗試去取代window object中的MozActivity時，會遇到：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>0) Feed "before all" hook: Error: global leak detected:</span></code></pre></td></tr></table></div></figure>
-
-
-<p>解決方法：</p>
-
-<p>在程式前面加上<code>mocha.setup({ignoreLeaks: true});</code></p>
-
-<p>最後加上<code>mocha.setup({ignoreLeaks: true});</code></p>
-
-<p>碰到這個錯誤是在嘗試加入假的MozActivity給window時。</p>
-
-<p>因為要被測試的module中有如下的程式片段：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'>  <span class="k">new</span> <span class="nx">MozActivity</span><span class="p">({</span>
-</span><span class='line'>    <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;view&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">data</span><span class="o">:</span> <span class="p">{</span> <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;url&#39;</span><span class="p">,</span> <span class="nx">url</span><span class="o">:</span> <span class="nx">url</span> <span class="p">}</span>
-</span><span class='line'>  <span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>去呼叫browser app開啟某個特定網頁，</p>
-
-<p>但是mocha跑的環境中有可能：</p>
-
-<ol>
-<li>並沒有window.MozActivity這個物件。</li>
-<li>有MozActivity但是我們無法知道他是否被呼叫。</li>
-</ol>
-
-
-<p>這時候需要塞一個MockMozActivity給window，暫時取代掉原本的MozActivity，</p>
-
-<p>然後從MockMozActivity裡面留個變數記錄被呼叫的參數狀況來判斷程式是否正確的執行呼叫activity。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">mockMozActivityInstance</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">MockMozActivity</span> <span class="o">=</span> <span class="kd">function</span> <span class="nx">MozActivity</span><span class="p">(</span><span class="nx">configuration</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">property</span> <span class="k">in</span> <span class="nx">configuration</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">this</span><span class="p">[</span><span class="nx">property</span><span class="p">]</span> <span class="o">=</span> <span class="nx">configuration</span><span class="p">[</span><span class="nx">property</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="nx">mockMozActivityInstance</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-</span><span class='line'><span class="p">};</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>之後寫的測試內容：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// Captive Portal Test</span>
-</span><span class='line'>  <span class="nx">test</span><span class="p">(</span><span class="s1">&#39;system/captive portal login w/o manual enable wifi&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">CaptivePortal</span><span class="p">.</span><span class="nx">handleEvent</span><span class="p">(</span><span class="nx">event</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">MockSettingsListener</span><span class="p">.</span><span class="nx">mCallback</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">assert</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span><span class="nx">mockMozActivityInstance</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span> <span class="s1">&#39;view&#39;</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">});</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>人生第一個單元測試程式完成 \O/</p>
-</div>
-  
-  
-
-
-</div>
-
-      </article>
-    
     </div>
       <div class="row">
         <ul class="pager">
@@ -2464,6 +2266,14 @@ posted in
     <ul class="recent_posts">
       
         <li>
+          <a href="/blog/2013/07/23/sandbox-iframe/">Modules inside iframe</a>
+        </li>
+      
+        <li>
+          <a href="/blog/2013/07/19/audio-competing-again/">[FxOS] Audio Competing Policies</a>
+        </li>
+      
+        <li>
           <a href="/blog/2013/07/18/window-manager-decoupling/">[FxOS] Plan: Window Management Module Decoupling</a>
         </li>
       
@@ -2473,14 +2283,6 @@ posted in
       
         <li>
           <a href="/blog/2013/07/10/system-modulization-plan/">Proposal: System Modualization Plan</a>
-        </li>
-      
-        <li>
-          <a href="/blog/2013/07/05/transition-state-machine/">[Window Management] Transition state machine</a>
-        </li>
-      
-        <li>
-          <a href="/blog/2013/07/05/page-visibility-on-firefox-os/">HTML5 Page visibility on Fx OS</a>
         </li>
       
     </ul>

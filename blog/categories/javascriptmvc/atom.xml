@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascriptMVC | Ascheriit]]></title>
   <link href="http://alivedise.github.com/blog/categories/javascriptmvc/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-19T18:26:48+08:00</updated>
+  <updated>2013-07-23T17:43:50+02:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[javascriptMVC原始碼分析 - Class實作（下）]]></title>
     <link href="http://alivedise.github.com/blog/2012/05/17/class-code-trace-3/"/>
-    <updated>2012-05-17T10:36:00+08:00</updated>
+    <updated>2012-05-17T10:36:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2012/05/17/class-code-trace-3</id>
     <content type="html"><![CDATA[<h1>Instantiation</h1>
 
@@ -27,7 +27,7 @@
   <entry>
     <title type="html"><![CDATA[javascriptMVC原始碼分析 - Class實作（中）]]></title>
     <link href="http://alivedise.github.com/blog/2012/05/15/class-code-trace-2/"/>
-    <updated>2012-05-15T10:44:00+08:00</updated>
+    <updated>2012-05-15T10:44:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2012/05/15/class-code-trace-2</id>
     <content type="html"><![CDATA[<h3>fnText Magic</h3>
 
@@ -194,7 +194,7 @@ MyClass.getData(showDataFunc);
   <entry>
     <title type="html"><![CDATA[javascriptMVC原始碼分析 - Class實作（上）]]></title>
     <link href="http://alivedise.github.com/blog/2012/05/15/class-code-trace/"/>
-    <updated>2012-05-15T09:58:00+08:00</updated>
+    <updated>2012-05-15T09:58:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2012/05/15/class-code-trace</id>
     <content type="html"><![CDATA[<h3>前言</h3>
 
@@ -337,7 +337,7 @@ MyClass.getData(showDataFunc);
   <entry>
     <title type="html"><![CDATA[[ff13-2] chromie - Time labyrinth breaker]]></title>
     <link href="http://alivedise.github.com/blog/2012/02/29/chromie/"/>
-    <updated>2012-02-29T14:29:00+08:00</updated>
+    <updated>2012-02-29T14:29:00+01:00</updated>
     <id>http://alivedise.github.com/blog/2012/02/29/chromie</id>
     <content type="html"><![CDATA[<h3>簡介</h3>
 
@@ -409,7 +409,7 @@ MyClass.getData(showDataFunc);
   <entry>
     <title type="html"><![CDATA[[javascriptMVC] Forum 問答]]></title>
     <link href="http://alivedise.github.com/blog/2012/02/24/jmvc-forum-treasure/"/>
-    <updated>2012-02-24T01:53:00+08:00</updated>
+    <updated>2012-02-24T01:53:00+01:00</updated>
     <id>http://alivedise.github.com/blog/2012/02/24/jmvc-forum-treasure</id>
     <content type="html"><![CDATA[<h3>如何手動觸發model update? 讓'{model} updated'可以被想要接受的人接收</h3>
 

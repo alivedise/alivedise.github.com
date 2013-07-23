@@ -4,7 +4,7 @@
   <title><![CDATA[Category: b2g | Ascheriit]]></title>
   <link href="http://alivedise.github.com/blog/categories/b2g/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-19T18:26:48+08:00</updated>
+  <updated>2013-07-23T17:43:50+02:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Proposal: System Modualization Plan]]></title>
     <link href="http://alivedise.github.com/blog/2013/07/10/system-modulization-plan/"/>
-    <updated>2013-07-10T18:04:00+08:00</updated>
+    <updated>2013-07-10T18:04:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2013/07/10/system-modulization-plan</id>
     <content type="html"><![CDATA[<h4>Source</h4>
 
@@ -112,7 +112,7 @@ The first thing come to my mind is <code>window.parent.postMessage</code></p>
   <entry>
     <title type="html"><![CDATA[[gaia] HTML5 Window Shade]]></title>
     <link href="http://alivedise.github.com/blog/2012/07/05/gaia-window-shade/"/>
-    <updated>2012-07-05T13:58:00+08:00</updated>
+    <updated>2012-07-05T13:58:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2012/07/05/gaia-window-shade</id>
     <content type="html"><![CDATA[<h1>Window Shade</h1>
 

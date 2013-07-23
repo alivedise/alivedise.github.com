@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | Ascheriit]]></title>
   <link href="http://alivedise.github.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-19T18:26:48+08:00</updated>
+  <updated>2013-07-23T17:43:50+02:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Proposal: System Modualization Plan]]></title>
     <link href="http://alivedise.github.com/blog/2013/07/10/system-modulization-plan/"/>
-    <updated>2013-07-10T18:04:00+08:00</updated>
+    <updated>2013-07-10T18:04:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2013/07/10/system-modulization-plan</id>
     <content type="html"><![CDATA[<h4>Source</h4>
 
@@ -112,7 +112,7 @@ The first thing come to my mind is <code>window.parent.postMessage</code></p>
   <entry>
     <title type="html"><![CDATA[[Window Management] Transition state machine]]></title>
     <link href="http://alivedise.github.com/blog/2013/07/05/transition-state-machine/"/>
-    <updated>2013-07-05T14:53:00+08:00</updated>
+    <updated>2013-07-05T14:53:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2013/07/05/transition-state-machine</id>
     <content type="html"><![CDATA[<p>The article is inspired by Tim's <a href="http://blog.timc.idv.tw/posts/css-classes-state-machine-puzzle/">CSS Classes State Machine Puzzle</a>.</p>
 
@@ -539,7 +539,7 @@ Maybe we could define the level of the callback into three here, according to th
   <entry>
     <title type="html"><![CDATA[Javascript從變形矩陣反推scale以及rotate]]></title>
     <link href="http://alivedise.github.com/blog/2013/05/27/rotation-matrix/"/>
-    <updated>2013-05-27T15:41:00+08:00</updated>
+    <updated>2013-05-27T15:41:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2013/05/27/rotation-matrix</id>
     <content type="html"><![CDATA[<p>原文：
 <a href="http://css-tricks.com/get-value-of-css-rotation-through-javascript/">http://css-tricks.com/get-value-of-css-rotation-through-javascript/</a></p>
@@ -621,7 +621,7 @@ console.log('Scale: ' + scale + ';Rotate: ' + angle + 'deg');
   <entry>
     <title type="html"><![CDATA[Mocha: MockMozActivity與global leak]]></title>
     <link href="http://alivedise.github.com/blog/2013/02/23/mock-moz-activity/"/>
-    <updated>2013-02-23T16:56:00+08:00</updated>
+    <updated>2013-02-23T16:56:00+01:00</updated>
     <id>http://alivedise.github.com/blog/2013/02/23/mock-moz-activity</id>
     <content type="html"><![CDATA[<p>之前在寫單元測試時，需要測到MozActivity的呼叫。</p>
 
@@ -705,7 +705,7 @@ assert.equal(mockMozActivityInstance.name, 'view');
   <entry>
     <title type="html"><![CDATA[Javascript memorization]]></title>
     <link href="http://alivedise.github.com/blog/2012/12/22/javascript-memorization/"/>
-    <updated>2012-12-22T00:28:00+08:00</updated>
+    <updated>2012-12-22T00:28:00+01:00</updated>
     <id>http://alivedise.github.com/blog/2012/12/22/javascript-memorization</id>
     <content type="html"><![CDATA[<p>As you know, function in javascript is also an object,
 you could use a property of the object to keep function result.

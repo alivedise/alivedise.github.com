@@ -4,7 +4,7 @@
   <title><![CDATA[Category: firefoxos | Ascheriit]]></title>
   <link href="http://alivedise.github.com/blog/categories/firefoxos/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-19T18:26:48+08:00</updated>
+  <updated>2013-07-23T17:43:50+02:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[HTML5 Page visibility on Fx OS]]></title>
     <link href="http://alivedise.github.com/blog/2013/07/05/page-visibility-on-firefox-os/"/>
-    <updated>2013-07-05T04:23:00+08:00</updated>
+    <updated>2013-07-05T04:23:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2013/07/05/page-visibility-on-firefox-os</id>
     <content type="html"><![CDATA[<p>在桌面版本的網頁開發中，我們可以透過 HTML5 的 page visibility API 來知道目前的網頁是否為使用者焦點，或者目前不可為使用者所見，來達成某些目的：如停止 UI 更新，資料交換...等，範例程式如下：</p>
 
@@ -102,7 +102,7 @@ Gaia System Architecture Diagram (source from https://docs.google.com/drawings/d
   <entry>
     <title type="html"><![CDATA[[gaia] HTML5 Window Shade]]></title>
     <link href="http://alivedise.github.com/blog/2012/07/05/gaia-window-shade/"/>
-    <updated>2012-07-05T13:58:00+08:00</updated>
+    <updated>2012-07-05T13:58:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2012/07/05/gaia-window-shade</id>
     <content type="html"><![CDATA[<h1>Window Shade</h1>
 

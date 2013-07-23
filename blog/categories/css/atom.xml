@@ -4,7 +4,7 @@
   <title><![CDATA[Category: css | Ascheriit]]></title>
   <link href="http://alivedise.github.com/blog/categories/css/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-19T18:26:48+08:00</updated>
+  <updated>2013-07-23T17:43:50+02:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[[Window Management] Transition state machine]]></title>
     <link href="http://alivedise.github.com/blog/2013/07/05/transition-state-machine/"/>
-    <updated>2013-07-05T14:53:00+08:00</updated>
+    <updated>2013-07-05T14:53:00+02:00</updated>
     <id>http://alivedise.github.com/blog/2013/07/05/transition-state-machine</id>
     <content type="html"><![CDATA[<p>The article is inspired by Tim's <a href="http://blog.timc.idv.tw/posts/css-classes-state-machine-puzzle/">CSS Classes State Machine Puzzle</a>.</p>
 

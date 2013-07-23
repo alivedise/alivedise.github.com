@@ -4,7 +4,7 @@
   <title><![CDATA[Category: octopress | Ascheriit]]></title>
   <link href="http://alivedise.github.com/blog/categories/octopress/atom.xml" rel="self"/>
   <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-19T18:26:48+08:00</updated>
+  <updated>2013-07-23T17:43:50+02:00</updated>
   <id>http://alivedise.github.com/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[[Octopress] 重來懶人包]]></title>
     <link href="http://alivedise.github.com/blog/2012/02/10/octopress-on-ubuntu-lazy/"/>
-    <updated>2012-02-10T15:36:00+08:00</updated>
+    <updated>2012-02-10T15:36:00+01:00</updated>
     <id>http://alivedise.github.com/blog/2012/02/10/octopress-on-ubuntu-lazy</id>
     <content type="html"><![CDATA[<p>在ubuntu上架設octopress環境的懶人包：</p>
 
@@ -73,7 +73,7 @@ git pull</p>
   <entry>
     <title type="html"><![CDATA[[Octopress] image tag of octopress測試]]></title>
     <link href="http://alivedise.github.com/blog/2012/02/07/image-tag-test-on-cats/"/>
-    <updated>2012-02-07T10:07:00+08:00</updated>
+    <updated>2012-02-07T10:07:00+01:00</updated>
     <id>http://alivedise.github.com/blog/2012/02/07/image-tag-test-on-cats</id>
     <content type="html"><![CDATA[<p><img src="https://p.twimg.com/Ak_HuCoCQAAY7cd.jpg:large">
 <img src="https://p.twimg.com/Ak_H-6VCQAAqQ8s.jpg:large">
