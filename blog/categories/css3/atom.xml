@@ -4,7 +4,7 @@
   <title><![CDATA[Category: css3 | Ascheriit]]></title>
   <link href="http://alivedise.github.io/blog/categories/css3/atom.xml" rel="self"/>
   <link href="http://alivedise.github.io/"/>
-  <updated>2013-08-07T11:00:37+08:00</updated>
+  <updated>2013-08-07T11:19:55+08:00</updated>
   <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -32,7 +32,7 @@
 </ol>
 
 
-<p><img class="<a" src="href="http://i.imgur.com/nU76i.png">http://i.imgur.com/nU76i.png</a>"></p>
+<p>{% img <a href="http://i.imgur.com/nU76i.png">http://i.imgur.com/nU76i.png</a> %}</p>
 
 <p>這個UX，Google把它稱為<b>Window shade</b></p>
 

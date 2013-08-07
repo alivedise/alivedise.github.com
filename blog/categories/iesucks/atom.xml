@@ -4,7 +4,7 @@
   <title><![CDATA[Category: iesucks | Ascheriit]]></title>
   <link href="http://alivedise.github.io/blog/categories/iesucks/atom.xml" rel="self"/>
   <link href="http://alivedise.github.io/"/>
-  <updated>2013-08-07T11:00:37+08:00</updated>
+  <updated>2013-08-07T11:19:55+08:00</updated>
   <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -22,12 +22,15 @@
 
 <p>後來發現一條線索：當網際網路選項->安全性中將某個網站加入近端內部網路區域清單內的話，安全等級為何都會觸發上面那些怪bug。</p>
 
+<!--more-->
+
+
 <p>以<a href="http://secondstory.com">secondstory</a>為例，如下圖設定：
-<img class="<a" src="href="http://i.imgur.com/waJfX.png">http://i.imgur.com/waJfX.png</a>"></p>
+{% img <a href="http://i.imgur.com/waJfX.png">http://i.imgur.com/waJfX.png</a> %}</p>
 
-<p>原本設定前用IE9開的長相：<img class="<a" src="href="http://i.imgur.com/KFR5d.jpg">http://i.imgur.com/KFR5d.jpg</a>"></p>
+<p>原本設定前用IE9開的長相：{% img <a href="http://i.imgur.com/KFR5d.jpg">http://i.imgur.com/KFR5d.jpg</a> %}</p>
 
-<p>加入清單後：<img class="<a" src="href="http://i.imgur.com/XndFx.jpg">http://i.imgur.com/XndFx.jpg</a>"></p>
+<p>加入清單後：{% img <a href="http://i.imgur.com/XndFx.jpg">http://i.imgur.com/XndFx.jpg</a> %}</p>
 
 <p>排版都飛掉了。打開開發者工具一看，文件模式被強制改成IE7標準。自己手動改回IE8/IE9標準後網頁CSS才奏效。</p>
 

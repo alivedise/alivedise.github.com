@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascriptMVC | Ascheriit]]></title>
   <link href="http://alivedise.github.io/blog/categories/javascriptmvc/atom.xml" rel="self"/>
   <link href="http://alivedise.github.io/"/>
-  <updated>2013-08-07T11:00:37+08:00</updated>
+  <updated>2013-08-07T11:19:55+08:00</updated>
   <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -43,6 +43,9 @@ prototype[name] = typeof prop[name] == "function" &amp;&amp; typeof _super[name]
 </code></pre>
 
 <p>大概可以推測他想做的是從字串找到._super，但是那個詭異的fnTest實在不容易懂。</p>
+
+<!--more-->
+
 
 <p>後來在一個對岸熱血青年(他把所有js lib的類別實作都研究過了，這也是我之後想做的事)的文章中看到了曙光：<a href="http://www.cnblogs.com/sanshi/archive/2009/07/09/1519585.html">http://www.cnblogs.com/sanshi/archive/2009/07/09/1519585.html</a></p>
 
@@ -203,6 +206,9 @@ MyClass.getData(showDataFunc);
 
 <p>javascript有許多種關於類別繼承的實作方式，jMVC中的$.Class實作來自於<a href="http://ejohn.org/blog/simple-javascript-inheritance/">http://ejohn.org/blog/simple-javascript-inheritance/</a></p>
 
+<!--more-->
+
+
 <p>而作者又聲稱他的實作想法來自Base2(<a href="http://code.google.com/p/base2/">http://code.google.com/p/base2/</a>)與Prototype(<a href="http://prototypejs.org/">http://prototypejs.org/</a>)</p>
 
 <p>這個最初的實作的要點如下：</p>
@@ -354,6 +360,9 @@ MyClass.getData(showDataFunc);
 
 <h3>實做</h3>
 
+<!--more-->
+
+
 <ol>
 <li>尋徑遞迴演算法
 核心片段
@@ -392,7 +401,7 @@ MyClass.getData(showDataFunc);
 <h3>截圖及操作</h3>
 
 <p>1~6數字輸入刻度，0刪除前一個。
-<img class="<a" src="href="http://i.imgur.com/MSugN.png">http://i.imgur.com/MSugN.png</a>"></p>
+{% img <a href="http://i.imgur.com/MSugN.png">http://i.imgur.com/MSugN.png</a> %}</p>
 
 <h3>Github demo page</h3>
 

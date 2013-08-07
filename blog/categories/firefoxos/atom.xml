@@ -4,7 +4,7 @@
   <title><![CDATA[Category: firefoxos | Ascheriit]]></title>
   <link href="http://alivedise.github.io/blog/categories/firefoxos/atom.xml" rel="self"/>
   <link href="http://alivedise.github.io/"/>
-  <updated>2013-08-07T11:00:37+08:00</updated>
+  <updated>2013-08-07T11:19:55+08:00</updated>
   <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -38,10 +38,15 @@ function handleVisibilityChange() {
 <!--more-->
 
 
-<p><blockquote><p>應用程式判斷自己在前景/背景的依據，類似 android 的 onPause/onResume<br/>系統底層 Low Memory Killer 的參數之一：背景應用程式在可用記憶體過低時會優先被 kill<br/>在電力消耗變成一個必須優先考量要點的手持裝置上，透過進入背景時停止更新 UI 對電力節約有很大幅度的幫助。<br/>然而，在手機系統上，並不像在桌面瀏覽器一樣單純的是透過頁面切換 (onPageShow/onPageHide) 來決定要不要對某個 web page/app 做前景背景切換，而是要根據系統 UI hierarchy 以及當前介面中層級較高的其他元件的狀態來維持 visibility 的協調性。</p></blockquote></p>
+<p>{% blockquote %}
+應用程式判斷自己在前景/背景的依據，類似 android 的 onPause/onResume
+系統底層 Low Memory Killer 的參數之一：背景應用程式在可用記憶體過低時會優先被 kill
+在電力消耗變成一個必須優先考量要點的手持裝置上，透過進入背景時停止更新 UI 對電力節約有很大幅度的幫助。
+然而，在手機系統上，並不像在桌面瀏覽器一樣單純的是透過頁面切換 (onPageShow/onPageHide) 來決定要不要對某個 web page/app 做前景背景切換，而是要根據系統 UI hierarchy 以及當前介面中層級較高的其他元件的狀態來維持 visibility 的協調性。
+{% endblockquote %}</p>
 
 <p>聽起來很抽象嗎？先來張系統模組介面架構圖：
-<img class="<a" src="href="http://i.imgur.com/ypJSsQg.jpg">http://i.imgur.com/ypJSsQg.jpg</a>">
+{% img <a href="http://i.imgur.com/ypJSsQg.jpg">http://i.imgur.com/ypJSsQg.jpg</a> %}
 Gaia System Architecture Diagram (source from <a href="https://docs.google.com/drawings/d/18DnhTgQBK3M0KBeLGJkWW1hfiYBB6GgTmfdbUnT2SLs/edit?usp=sharing">https://docs.google.com/drawings/d/18DnhTgQBK3M0KBeLGJkWW1hfiYBB6GgTmfdbUnT2SLs/edit?usp=sharing</a>)</p>
 
 <p>簡單的說，手機系統介面在特定狀態下會將目前已經是前景的 app 設定為背景狀態，其優先層級如下：</p>
@@ -121,7 +126,7 @@ Gaia System Architecture Diagram (source from <a href="https://docs.google.com/d
 </ol>
 
 
-<p><img class="<a" src="href="http://i.imgur.com/nU76i.png">http://i.imgur.com/nU76i.png</a>"></p>
+<p>{% img <a href="http://i.imgur.com/nU76i.png">http://i.imgur.com/nU76i.png</a> %}</p>
 
 <p>這個UX，Google把它稱為<b>Window shade</b></p>
 
