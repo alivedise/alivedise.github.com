@@ -14,7 +14,7 @@
   
     
   
-  <meta name="description" content=" Test ">
+  <meta name="description" content=" I'm alive. A web developer from Taipei, Taiwan. ">
   
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -22,17 +22,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://alivedise.github.com/">
+  <link rel="canonical" href="http://alivedise.github.io/">
   <link href="/favicon.png" rel="icon">
   <link href='http://fonts.googleapis.com/css?family=Cantarell' rel='stylesheet' type='text/css'>
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="Ascheriit" type="application/atom+xml">
+  <link href="http://feeds.feedburner.com/ascheriit" rel="alternate" title="Ascheriit" type="application/atom+xml">
   <meta name="og:type" content="website" />
   <meta name="og:site_name" content="Ascheriit" />
   <meta name="og:title" content="Ascheriit" />
-  <meta name="og:description" content=" Test " />
-  <meta name="og:url" content="http://alivedise.github.com/index.html"/>
-  <meta name="url" content="http://alivedise.github.com/index.html">
+  <meta name="og:description" content=" I'm alive. A web developer from Taipei, Taiwan. " />
+  <meta name="og:url" content="http://alivedise.github.io/index.html"/>
+  <meta name="url" content="http://alivedise.github.io/index.html">
   
   <meta name="distribution" content="global">
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
@@ -63,8 +63,7 @@
   <h1>
     Ascheriit
   </h1>
-  <h2>I am <em>Alive</em>, a Front-end Developer from <em>Taiwan</em>.</h2>
-  <span class="label">Taipei</span> <span class="label">Tokyo</span> <span class="label">Paris</span> <span class="label">San Francisco</span> <span class="label">Berlin</span> <span class="label">Madrid</span>
+  <h2></h2>
 </div>
 
     </div>
@@ -74,14 +73,8 @@
       <div class="row">
   <div class="span4">
     <h2>about me</h2>
-<pre>
-  (function() {
-    var Alive = new WebDeveloper();
-    Alive.live(_.Taipei);
-    Alive.work(_.Mozilla);
-    Alive.speak(_.Javascript);
-  }());
-</pre>
+<p>A little something about me.</p>
+
   </div>
   <div class="span6">
     
@@ -129,7 +122,7 @@
 
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/07/23/sandbox-iframe/">Modules Inside Iframe</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/08/06/coscup-2013/">[COSCUP 2013] Audio Competing in FxOS</a></h1>
     
     
       <p class="meta">
@@ -154,242 +147,7 @@
   
 
 
-<time datetime="2013-07-23T14:08:00+02:00" pubdate data-updated="true">Jul 23<span>rd</span>, 2013</time> - 
-        
-
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><img src="http://i.imgur.com/CJ38kUz.jpg"></p>
-
-<p>Recently we had some discussions about modulization.
-One of those is: <a href="https://groups.google.com/forum/#!topic/mozilla.dev.gaia/Ls9U-CScxWA">Proposition of an architectural change for Gaia apps</a>.</p>
-
-<p>The main idea is load the modules into iframe, containing:</p>
-
-<ul>
-<li>HTML file</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'>  <span class="nt">&lt;iframe</span> <span class="na">src=</span><span class="s">&quot;moduleA.html&quot;</span><span class="nt">&gt;&lt;/iframe&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>The remaining are loaded as well as the iframe
-
-<ul>
-<li>js files</li>
-<li>css files</li>
-<li>l10n resources (it is, the dictionary relavant to the frame.)</li>
-</ul>
-</li>
-</ul>
-
-
-<p>First thing comes to my mind is, we would end up with a &#8220;lots of iframe&#8221; HTML, which just looks like <code>frameset</code>&#8230;;)</p>
-
-<p><img src="http://cdn-viper.demandvideo.com/media/f9b83e6d-9490-426f-bc49-081918e27488/jpeg/0184fb2f-5b55-4bd7-bb4f-e6ccadcfb0b2_23.jpg"></p>
-
-<p>My real concerns:</p>
-
-<ol>
-<li>iframe load latency - We may encounter UI flash before the content is fully loaded.</li>
-<li>postMessage overhead - To communicate with other modules we couldn&#8217;t use previous <code>window.dispatchEvent</code> nor &#8216;pub/sub&#8217;. We will need to use <code>postMessage</code> very often.</li>
-<li>network overhead - We could group all every templating files into one but it seems we couldn&#8217;t merge the HTML files in difference into big one.</li>
-</ol>
-
-
-<p>The good parts I am heard:</p>
-
-<ol>
-<li>This way enforce people to separate the logic. (But people could use a big iframe as well.)</li>
-<li>Some JS bytecodes are shared between frames. We don&#8217;t need to parse it again.</li>
-<li>We could unload an iframe entirely if we don&#8217;t need it anymore.</li>
-</ol>
-
-
-<p>The last one looks to me the most critical one.</p>
-
-<p>Any MVC pattern couldn&#8217;t guarantee that if you destroy a module, the relative parts(DOM/js) are thrown right away.</p>
-
-<p>IMO I really wish one day we have the ability to make sure GC is done not only on iframes but on the DOM elements we want it to.</p>
-
-<p>AI hope that we won&#8217;t end up that only one framework, one library is left for choice.</p>
-</div>
-  
-  
-
-
-</div>
-
-      </article>
-    
-    
-      <article class="span4">
-        <div class="article-format">
-
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/07/19/audio-competing-again/">[FxOS] Audio Competing Policies</a></h1>
-    
-    
-      <p class="meta">
-        
-  
-
-
-  
-    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
-  
-
- - 
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-07-19T18:43:00+02:00" pubdate data-updated="true">Jul 19<span>th</span>, 2013</time> - 
-        
-
-posted in
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/audio/'>audio</a>, <a class='category' href='/blog/categories/fxos/'>fxos</a>
-  
-</span>
-
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I mentioned current audio competing policies in preivous &#8220;Background play&#8221; article.</p>
-
-<p>This article is trying to decribe it more precisely.</p>
-
-<h2>Preface</h2>
-
-<p>All these API and policies are coming from these similar requirements:</p>
-
-<blockquote><p>&#8220;As an user I want the music is automatically muted when call incoming.&#8221;<br/>&#8220;As an user I want the music is able to play at background.&#8221;<br/>&#8220;As an user I want the music to stop the background playing content.&#8221;</p></blockquote>
-
-
-<p>As you may know this doesn&#8217;t exist on desktop browser (yet).</p>
-
-<h2>Initial proposal: Multiple audio stream.</h2>
-
-<script async="true" class="speakerdeck-embed" data-id="e77e4870d5d70130ea8666ea2df61d46" src="//speakerdeck.com/assets/embed.js"> </script>
-
-
-<p>The initial proposal is, control everything from UI side.</p>
-
-<p>Gaia knows which app is foreground and which app is background,</p>
-
-<p>so what we want is just:</p>
-
-<ul>
-<li>Ability to mute the whole page/app.</li>
-<li>Be able to know which page/app is playing audio.</li>
-<li>Use permission model to distinguish the priority.</li>
-</ul>
-
-
-<h2>Current policy: the UX logic is living in platform</h2>
-
-<ul>
-<li>Foreground app could always be playable.</li>
-<li>Only content or higher channel could play at background.</li>
-<li>Only active app is able to play when screen is off.</li>
-<li>Higher channel would interrupt lower channel.</li>
-</ul>
-
-
-<h2>Future policy: ?</h2>
-
-<ul>
-<li>Basic competing unit is a page but not an app.</li>
-<li>Separate competing and background play.</li>
-<li>Control from UI side, again.</li>
-<li>Video: Exactly&#8230;.video doesn&#8217;t need channel.</li>
-<li><a href="http://bugzil.la/835101">New audio channel API is ongoing.</a>
-
-<ul>
-<li>To resolve background play problem with normal channel.</li>
-<li>Ability to control the mozbrowser iframe to play or pause.</li>
-</ul>
-</li>
-</ul>
-
-
-<h2>Learned</h2>
-
-<ul>
-<li>We should consider existing web pages/apps as well as new API.</li>
-<li>Shall we dance with user experience?
-
-<ul>
-<li>UX is the king, but logic is another thing.</li>
-</ul>
-</li>
-</ul>
-
-</div>
-  
-  
-
-
-</div>
-
-      </article>
-    
-    
-      <article class="span4">
-        <div class="article-format">
-
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/07/18/window-manager-decoupling/">[FxOS] Plan: Window Management Module Decoupling</a></h1>
-    
-    
-      <p class="meta">
-        
-  
-
-
-  
-    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
-  
-
- - 
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-07-18T17:33:00+02:00" pubdate data-updated="true">Jul 18<span>th</span>, 2013</time> - 
+<time datetime="2013-08-06T17:40:00+08:00" pubdate data-updated="true">Aug 6<span>th</span>, 2013</time> - 
         
 
 posted in
@@ -401,14 +159,79 @@ posted in
 
 
         
+         | <a href="/blog/2013/08/06/coscup-2013/#disqus_thread">Comments</a>
+        
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p><img src="http://i.imgur.com/T0pyFFc.jpg"></p>
+  <div class="entry-content"><p>I gave a presentation about how we implement the audio competing in FxOS in COSCUP.</p>
 
-<p>Following are the plan about why and how to split current Gaia:System:Window Manager.</p>
+<iframe src="http://www.slideshare.net/slideshow/embed_code/24888285 " width="595" height="446" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC;border-width:1px 1px 0;margin-bottom:5px" allowfullscreen></iframe>
+
+
+<p></p>
+</div>
+  
+  
+
+
+</div>
+
+      </article>
+    
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/07/18/window-manager-decoupling/">[FxOS] Plan: Window Management Decoupling (CONT.)</a></h1>
+    
+    
+      <p class="meta">
+        
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-18T17:33:00+08:00" pubdate data-updated="true">Jul 18<span>th</span>, 2013</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/fxos/'>fxos</a>
+  
+</span>
+
+
+        
+         | <a href="/blog/2013/07/18/window-manager-decoupling/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Following are the plan about why and how to split current Gaia:System:Window Manager.</p>
 
 <h2>Sources/Links</h2>
 
@@ -422,8 +245,6 @@ posted in
 
 <ul>
 <li>App Window Management</li>
-<li>Crash Management</li>
-<li>Clear browser data</li>
 <li>Wrapper Window Management</li>
 <li>Inline Activity Management</li>
 <li>Homescreen Management</li>
@@ -435,14 +256,13 @@ posted in
 <li>System Message Handler</li>
 <li>Open app transition</li>
 <li>Close app transition</li>
-<li>System Message Handler</li>
 <li>FTU Management [deprecated! Become standalone FTU Launcher already!]</li>
 </ul>
 
 
 <p>So which could be pulled out to reduce the heavy weight?</p>
 
-<h3>Inline Activity Management</h3>
+<h3>Inline Activity Management &ndash;> App Window</h3>
 
 <p>Inline Activity Management should belong to the activity caller.</p>
 
@@ -451,119 +271,27 @@ the life cycle of activity callee is based on app A instead of app B.</p>
 
 <p>Thus, if app A is killed or closed, the activity opened by app A should be killed.</p>
 
-<p>But if app B(index.html) is killed, activity B(open.html) shouldn&#8217;t be affected.</p>
+<p>But if app B(index.html) is killed, activity B(open.html) shouldn&rsquo;t be affected.</p>
 
 <h3>Resize Management</h3>
 
 <p>Resize is another duty of the app window instance itself.</p>
 
-<p>If we&#8217;re moving the activity into the app window, we could</p>
+<p>If we&rsquo;re moving the activity into the app window, we could</p>
 
 <ol>
-<li>Recursively call current activity callee&#8217;s resize function until the last callee is found.</li>
+<li>Recursively call current activity callee&rsquo;s resize function until the last callee is found.</li>
 <li>Resize all activity callee on top of current app window.</li>
 </ol>
 
 
-<p>in the app window&#8217;s resize function.</p>
+<p>in the app window&rsquo;s resize function.</p>
 
 <h3>Visibility Management</h3>
 
-<p>App window would have 2 kind of &#8220;child-like&#8221; window instance:</p>
-
-<ul>
-<li><code>var childWindow = window.open</code></li>
-<li><code>new MozActivity</code></li>
-</ul>
-
-
-<p>Currently we don&#8217;t send of the caller correctly to background on these two cases.</p>
-
-<p>The reasons are:</p>
-
-<ol>
-<li>Memory concern. Part of our memory management model relies on the page visibility state. Backgrounded app has higher possibility to be killed. We shall review and refine this soon. See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=892371">https://bugzilla.mozilla.org/show_bug.cgi?id=892371</a>.</li>
-<li>Backgrounded app is totally invisible instead of keeping the cached image frame. See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=825174">https://bugzilla.mozilla.org/show_bug.cgi?id=825174</a></li>
-</ol>
-
-
-<h3>Oreintation Management</h3>
-
-<p>App could specify the native orientation from manifest&#8217;s orientation field.
-So from this point it is an instance specific value.</p>
-
-<p>What&#8217;s tricky here is:</p>
-
-<ol>
-<li>Orientation indeed isn&#8217;t app specific API. Any app at any time could call <code>lockOrientation</code> of &#8216;screen&#8217; object. Thus it would affect the other apps.</li>
-<li>What we should do is preventing app from locking/unlocking orientation when they&#8217;re background.</li>
-<li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=840147">Orientation behavior is bind to app transtion UX.</a></li>
-<li>We will discuss this more detailly in app window design.</li>
-</ol>
-
-
-<h3>Homescreen Management</h3>
-
-<p>Window Manager is the one who manipulates hardware or software home button event.</p>
-
-<p>We should leave this part in Window Manager but let Homescreen Window manages itself.</p>
-
-<p>To manage itself means that:</p>
-
-<ul>
-<li>Generate the mozbrowser iframe by itself.</li>
-<li>Fetch homescreen manifest by the manifestURL storing at settings on its own.</li>
-<li>Revive itself when it&#8217;s killed in background. (Different behavior than other apps.)</li>
-</ul>
-
-
-<p>So it&#8217;s worthy to have an specific app window singleton for homescreen app.</p>
-
-<h3>Wrapper Management</h3>
-
-<p>This is another special type of app window.
-It&#8217;s opened via homescreen; it stands for the app who has no manifestURL but a pure web page.</p>
-
-<p>We should have a new WrapperWindow class inherited from AppWindow class.</p>
-
-<h3>mozbrowser iframe generation</h3>
-
-<p>All kind of window needs one mozbrowser iframe with different attributes fed to.</p>
-
-<p>The element should be generated in <code>BrowserFrame</code> in configuration pattern.</p>
-
-<h3>Open/Close transition</h3>
-
-<p>This is the most important part of a window UI.</p>
-
-<p>There&#8217;re many things relying on the transition state to take progress.</p>
-
-<p>We&#8217;re discussing it in previous article, and would review this implementation soon.</p>
-
-<h3>System Message Handler</h3>
-
-<p>Now system message is used for opening the target app if it&#8217;s not opened.
-There&#8217;re two cases: activity and non-activity.</p>
-
-<p>This should be left in Window Manager.</p>
-
-<h3>Crash management</h3>
-
-<ul>
-<li>For crash of app window, let it decides what it wants to do when it sees crash event.</li>
-<li>For crash of opened window or activivity, let its caller decides what to do.</li>
-</ul>
-
-
-<h3>Clear browser data</h3>
-
-<p>Totally safe enough to move to another module.
-Irrevalant to manage windows.</p>
-
-<h3>Screenshot Management</h3>
-
-<p>Since the screenshot now is only touched by app window and cards view,
-let app window expose its screenshot to cards view.</p>
+<p>App window would have 2 kind of &ldquo;child-like&rdquo; window instance:
+* <code>var child = window.open</code>
+* <code>Activity</code></p>
 </div>
   
   
@@ -604,7 +332,7 @@ let app window expose its screenshot to cards view.</p>
   
 
 
-<time datetime="2013-07-16T19:16:00+02:00" pubdate data-updated="true">Jul 16<span>th</span>, 2013</time> - 
+<time datetime="2013-07-16T19:16:00+08:00" pubdate data-updated="true">Jul 16<span>th</span>, 2013</time> - 
         
 
 posted in
@@ -615,6 +343,8 @@ posted in
 </span>
 
 
+        
+         | <a href="/blog/2013/07/16/audio-competing-in-fxos/#disqus_thread">Comments</a>
         
       </p>
     
@@ -630,7 +360,7 @@ and/or has the ability to interrupt other playing audio, please view this articl
 
 <p>You need to specify this permission in the manifest of your app.</p>
 
-<p>And yes, this means we don&#8217;t allow a web page without the manifest to play at background.</p>
+<p>And yes, this means we don&rsquo;t allow a web page without the manifest to play at background.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -643,7 +373,7 @@ and/or has the ability to interrupt other playing audio, please view this articl
 
 <p>The <code>content</code> represents the name of the audio channel.</p>
 
-<p>Note: Video&#8217;s permission also uses the same <code>audio-channel-content</code>.</p>
+<p>Note: Video&rsquo;s permission also uses the same <code>audio-channel-content</code>.</p>
 
 <h3>Audio Channel Types</h3>
 
@@ -671,7 +401,7 @@ and/or has the ability to interrupt other playing audio, please view this articl
 <h3>Audio Competing Rules</h3>
 
 <ol>
-<li>We&#8217;re interrupting the lower channel when higher channel occurs.</li>
+<li>We&rsquo;re interrupting the lower channel when higher channel occurs.</li>
 <li>If the same channel are playing and using content channel,
 the one who gets visibility (go to foreground) would be the winner.</li>
 <li>The foreground page/app is always playable. However the channel type decides it could interrupt background playing content or not.</li>
@@ -719,7 +449,7 @@ and the page/app is the current displayed one.</li>
 
 <p>You should create another audio/video instance if you want to be played in another channel.</p>
 
-<h2>(OPTIONAL) If you want to know you&#8217;re interrupted by higher channel</h2>
+<h2>(OPTIONAL) If you want to know you&rsquo;re interrupted by higher channel</h2>
 
 <p>Add mozinterruptbegin/mozinterruptend event handler if you need to do something with interruptions.</p>
 
@@ -742,7 +472,7 @@ and the page/app is the current displayed one.</li>
 
 <ul>
 <li>Even if your are developing a HTML5 video playing app,
-and we all know that video shouldn&#8217;t be played at background due to strange UX,
+and we all know that video shouldn&rsquo;t be played at background due to strange UX,
 you should also consider to set content channel because video is expected to interrupt the current background playing media.</li>
 </ul>
 
@@ -769,7 +499,7 @@ you should also consider to set content channel because video is expected to int
 
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/07/10/system-modulization-plan/">Proposal: System Modualization Plan</a></h1>
+      <h1 class="entry-title"><a href="/blog/2013/07/10/system-modulization-plan/">Proposal: System Modulization Plan</a></h1>
     
     
       <p class="meta">
@@ -794,7 +524,7 @@ you should also consider to set content channel because video is expected to int
   
 
 
-<time datetime="2013-07-10T18:04:00+02:00" pubdate data-updated="true">Jul 10<span>th</span>, 2013</time> - 
+<time datetime="2013-07-10T18:04:00+08:00" pubdate data-updated="true">Jul 10<span>th</span>, 2013</time> - 
         
 
 posted in
@@ -805,6 +535,8 @@ posted in
 </span>
 
 
+        
+         | <a href="/blog/2013/07/10/system-modulization-plan/#disqus_thread">Comments</a>
         
       </p>
     
@@ -819,16 +551,16 @@ posted in
 
 <ol>
 <li>Some modules directly invokes others.</li>
-<li><code>'LockScreen is undefined.'</code> message appears oftenly right after device boots up.</li>
-<li>Memory concern - Most of the modules are not always needed. Most of the UI view doesn&#8217;t need to live in the DOM tree at first.</li>
-<li>Performance concern - device bootup time is getting longer and longer.</li>
+<li><code>&lsquo;LockScreen is undefined.&rsquo;</code> message appears oftenly right after device boots up.</li>
+<li>Memory concern &ndash; Most of the modules are not always needed. Most of the UI view doesn&rsquo;t need to live in the DOM tree at first.</li>
+<li>Performance concern &ndash; device bootup time is getting longer and longer.</li>
 </ol>
 
 
 <h4>Proposal: Core modules and side modules</h4>
 
-<p>We could figure out what&#8217;s definitely necessary in an operating system and what&#8217;s not.
-For example, <code>Window Management</code> relevant modules should be a core module but <code>Captive Portal</code> shouldn&#8217;t be.</p>
+<p>We could figure out what&rsquo;s definitely necessary in an operating system and what&rsquo;s not.
+For example, <code>Window Management</code> relevant modules should be a core module but <code>Captive Portal</code> shouldn&rsquo;t be.</p>
 
 <p>The main idea is the same as any other app performanace tuning:
 Lazy load anything on demand.</p>
@@ -859,9 +591,9 @@ For example, lazy load the Captive Portal:</p>
 * expose handleEvent in any side module for Event Dispatcher to invoke when they are firt time loaded by Event Dispatcher.</p>
 
 <p>With this, we could even lazy load lockscreen,
-because if lockscreen is disabled by the user, we don&#8217;t need to load it when the device boots.</p>
+because if lockscreen is disabled by the user, we don&rsquo;t need to load it when the device boots.</p>
 
-<p>IMO there&#8217;re only few core modules now:</p>
+<p>IMO there&rsquo;re only few core modules now:</p>
 
 <ul>
 <li>Window Management
@@ -874,7 +606,7 @@ because if lockscreen is disabled by the user, we don&#8217;t need to load it wh
 <li>Utility-tray</li>
 <li>Statusbar</li>
 <li>Init Logo Handler (But this is useless after device boot finishes.)</li>
-<li>Screen Management (Exactly, it&#8217;s indeed Wake Lock Management)</li>
+<li>Screen Management (Exactly, it&rsquo;s indeed Wake Lock Management)</li>
 <li>Applications (API Wrapper for mozApp)</li>
 </ul>
 
@@ -899,11 +631,11 @@ because if lockscreen is disabled by the user, we don&#8217;t need to load it wh
 
 <h5>Chanllenge</h5>
 
-<p>If we want to &#8220;unload&#8221; the module and its view using iframe,
+<p>If we want to &ldquo;unload&rdquo; the module and its view using iframe,
 we need a way for modules inside iframe to communicate.
 The first thing come to my mind is <code>window.parent.postMessage</code></p>
 
-<p>Second, we need to consider dependency problems if it&#8217;s too complex.</p>
+<p>Second, we need to consider dependency problems if it&rsquo;s too complex.</p>
 </div>
   
   
@@ -944,24 +676,26 @@ The first thing come to my mind is <code>window.parent.postMessage</code></p>
   
 
 
-<time datetime="2013-07-05T14:53:00+02:00" pubdate data-updated="true">Jul 5<span>th</span>, 2013</time> - 
+<time datetime="2013-07-05T14:53:00+08:00" pubdate data-updated="true">Jul 5<span>th</span>, 2013</time> - 
         
 
 posted in
 <span class="categories">
   
-    <a class='category' href='/blog/categories/css/'>css</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>
+    <a class='category' href='/blog/categories/css/'>css,</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>
   
 </span>
 
 
+        
+         | <a href="/blog/2013/07/05/transition-state-machine/#disqus_thread">Comments</a>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>The article is inspired by Tim&#8217;s <a href="http://blog.timc.idv.tw/posts/css-classes-state-machine-puzzle/">CSS Classes State Machine Puzzle</a>.</p>
+  <div class="entry-content"><p>The article is inspired by Tim&rsquo;s <a href="http://blog.timc.idv.tw/posts/css-classes-state-machine-puzzle/">CSS Classes State Machine Puzzle</a>.</p>
 
 <p>We had some frustrations all the times, on animating a window correctly.</p>
 
@@ -969,36 +703,36 @@ posted in
 But at first I need to apologize for my poor knowledge and thought about css transitions using class names.</p>
 
 <p>In the past I usually thought it was stupid to use class list to control the style.
-I thought it was ambiguous and strange if we ran into a situation that there&#8217;re more than one classes of same type put on one element. And an element full of different class names for different purposes may conflict. Recently I see <a href="https://github.com/h5bp/Effeckt.css">Effeckt</a> and know this is the trend: a simple class name stands for a kind of animation.</p>
+I thought it was ambiguous and strange if we ran into a situation that there&rsquo;re more than one classes of same type put on one element. And an element full of different class names for different purposes may conflict. Recently I see <a href="https://github.com/h5bp/Effeckt.css">Effeckt</a> and know this is the trend: a simple class name stands for a kind of animation.</p>
 
 <p>The real problem is that we should never put wrong class on the DOM element, in javascript. So this now turns to be a pure javascript puzzle.</p>
 
-<p>We know, that, in certain moment, the app window is always in a specific state A, not B nor C. So what&#8217;s the problem? It&#8217;s how could we switch the state correctly.</p>
+<p>We know, that, in certain moment, the app window is always in a specific state A, not B nor C. So what&rsquo;s the problem? It&rsquo;s how could we switch the state correctly.</p>
 
-<p>Let&#8217;s create a real state machine in javascript!</p>
+<p>Let&rsquo;s create a real state machine in javascript!</p>
 
-<p>So far it doesn&#8217;t take times for us to figure out that a window should have 4 basic transition state: <code>closed</code>, <code>opening</code>, <code>opened</code>, <code>closing</code>.</p>
+<p>So far it doesn&rsquo;t take times for us to figure out that a window should have 4 basic transition state: <code>closed</code>, <code>opening</code>, <code>opened</code>, <code>closing</code>.</p>
 
 <p>A basic transition life cycle of a window could be:</p>
 
 <blockquote><p>(initial) -> closed -> opening -> opened &#8212;&#8212;> closing -> opening &#8212;&#8212;> &#8230;.</p></blockquote>
 
 
-<p>Now we have 4 states, the next is what&#8217;s the trigger to states switching?</p>
+<p>Now we have 4 states, the next is what&rsquo;s the trigger to states switching?</p>
 
-<p>In finite state machine, what triggers state change is named for <a href="https://en.wikipedia.org/wiki/Finite-state_machine">&#8216;event&#8217;</a>.</p>
+<p>In finite state machine, what triggers state change is named for <a href="https://en.wikipedia.org/wiki/Finite-state_machine">&lsquo;event&rsquo;</a>.</p>
 
-<p>We know that at least we have 2 events: &#8216;open&#8217; and &#8216;close&#8217;.</p>
+<p>We know that at least we have 2 events: &lsquo;open&rsquo; and &lsquo;close&rsquo;.</p>
 
 <ul>
-<li>&#8216;open&#8217; would trigger <code>closed</code> switches to <code>opening</code></li>
-<li>&#8216;close&#8217; would trigger <code>opened</code> switches to <code>closing</code></li>
-<li>If we sends &#8216;open&#8217; event into the state machine continously,
+<li>&lsquo;open&rsquo; would trigger <code>closed</code> switches to <code>opening</code></li>
+<li>&lsquo;close&rsquo; would trigger <code>opened</code> switches to <code>closing</code></li>
+<li>If we sends &lsquo;open&rsquo; event into the state machine continously,
 the second event would be ignored.
-(Exactly it depends on what policy we choose. For example, we could devide &#8216;opening&#8217; state into &#8216;opening-part-1&#8217; and &#8216;opening-part-2&#8217; states. And implement the async state change. But if we need s two-state opening, it sounds like a CSS design problem to me. Let&#8217;s discuss this later if necessary.)</li>
-<li>In order to gurantee the transition does really end and thus being independent from the &#8216;animationend&#8217; event(The event here is HTML DOM Event), we need to add a timer between &#8216;opening&#8217; and &#8216;opened&#8217; state. Also between &#8216;closing&#8217; and &#8216;closed&#8217; state.</li>
-<li>Let&#8217;s call the new event &#8216;timeout&#8217;, the timing we set the timer is right after the transitioning from &#8216;closed&#8217; to &#8216;opening&#8217;, and from &#8216;opened&#8217; to &#8216;closing&#8217; successfully occurs.</li>
-<li>For some use case we may want to cancel the transition. The &#8216;cancel&#8217; event is only valid in &#8216;opening&#8217; and &#8216;closing&#8217; state.</li>
+(Exactly it depends on what policy we choose. For example, we could devide &lsquo;opening&rsquo; state into &lsquo;opening-part-1&rsquo; and &lsquo;opening-part-2&rsquo; states. And implement the async state change. But if we need s two-state opening, it sounds like a CSS design problem to me. Let&rsquo;s discuss this later if necessary.)</li>
+<li>In order to gurantee the transition does really end and thus being independent from the &lsquo;animationend&rsquo; event(The event here is HTML DOM Event), we need to add a timer between &lsquo;opening&rsquo; and &lsquo;opened&rsquo; state. Also between &lsquo;closing&rsquo; and &lsquo;closed&rsquo; state.</li>
+<li>Let&rsquo;s call the new event &lsquo;timeout&rsquo;, the timing we set the timer is right after the transitioning from &lsquo;closed&rsquo; to &lsquo;opening&rsquo;, and from &lsquo;opened&rsquo; to &lsquo;closing&rsquo; successfully occurs.</li>
+<li>For some use case we may want to cancel the transition. The &lsquo;cancel&rsquo; event is only valid in &lsquo;opening&rsquo; and &lsquo;closing&rsquo; state.</li>
 </ul>
 
 
@@ -1638,15 +1372,15 @@ the second event would be ignored.
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h5>The state machine&#8217;s usage and notes</h5>
+<h5>The state machine&rsquo;s usage and notes</h5>
 
 <ol>
-<li>A single app window instance would send &#8216;open&#8217; and &#8216;close&#8217; event due to user action:
+<li>A single app window instance would send &lsquo;open&rsquo; and &lsquo;close&rsquo; event due to user action:
 <code>
-transitionStateMachine.<em>processEvent('open');
-transitionStateMachine.</em>processEvent('close');
+transitionStateMachine.<em>processEvent(&lsquo;open&rsquo;);
+transitionStateMachine.</em>processEvent(&lsquo;close&rsquo;);
 </code>
-Note, app window doesn&#8217;t need to know current state of the state machine.</li>
+Note, app window doesn&rsquo;t need to know current state of the state machine.</li>
 <li>The state machine itself is the one who creates/removes the timer which triggers timeout event. I am also thinking about moving this out of the state machine and do this in another mixin, only have the callback functions provided by the state machine. But I am not sure.</li>
 <li>The state machine has some callback for others(other state machine!) listed below:
 
@@ -1664,20 +1398,20 @@ Maybe we could define the level of the callback into three here, according to th
 </ol>
 
 
-<p>Finally, back to the problems addressed in Tim&#8217;s article:</p>
+<p>Finally, back to the problems addressed in Tim&rsquo;s article:</p>
 
 <ul>
 <li>Do we need intermediate state?
 
 <ul>
-<li>I don&#8217;t think so, at least for now. If we really need to goto next state when we successfully from state A to state B, we could call <code>_processEvent</code> again in the inner callback of the state machine. This doesn&#8217;t violate the policy that only state machine ifself could decide its next state.</li>
-<li>If the intermediate state needs to acquire other type of state &#8211; just fetch the current state of the other state machine. Or, if we need, register an one-time callback if the current state doesn&#8217;t meet our requirement.</li>
+<li>I don&rsquo;t think so, at least for now. If we really need to goto next state when we successfully from state A to state B, we could call <code>_processEvent</code> again in the inner callback of the state machine. This doesn&rsquo;t violate the policy that only state machine ifself could decide its next state.</li>
+<li>If the intermediate state needs to acquire other type of state &mdash; just fetch the current state of the other state machine. Or, if we need, register an one-time callback if the current state doesn&rsquo;t meet our requirement.</li>
 </ul>
 </li>
 <li>How about state conflict between two apps?
 
 <ul>
-<li>That won&#8217;t happen if we deal with the state changes correctly and independently in each app&#8217;s scope. I hope so.</li>
+<li>That won&rsquo;t happen if we deal with the state changes correctly and independently in each app&rsquo;s scope. I hope so.</li>
 </ul>
 </li>
 </ul>
@@ -1722,7 +1456,7 @@ Maybe we could define the level of the callback into three here, according to th
   
 
 
-<time datetime="2013-07-05T04:23:00+02:00" pubdate data-updated="true">Jul 5<span>th</span>, 2013</time> - 
+<time datetime="2013-07-05T04:23:00+08:00" pubdate data-updated="true">Jul 5<span>th</span>, 2013</time> - 
         
 
 posted in
@@ -1734,12 +1468,14 @@ posted in
 
 
         
+         | <a href="/blog/2013/07/05/page-visibility-on-firefox-os/#disqus_thread">Comments</a>
+        
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>在桌面版本的網頁開發中，我們可以透過 HTML5 的 page visibility API 來知道目前的網頁是否為使用者焦點，或者目前不可為使用者所見，來達成某些目的：如停止 UI 更新，資料交換&#8230;等，範例程式如下：</p>
+  <div class="entry-content"><p>在桌面版本的網頁開發中，我們可以透過 HTML5 的 page visibility API 來知道目前的網頁是否為使用者焦點，或者目前不可為使用者所見，來達成某些目的：如停止 UI 更新，資料交換&hellip;等，範例程式如下：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -1771,7 +1507,7 @@ posted in
 
 <p>聽起來很抽象嗎？先來張系統模組介面架構圖：
 <img src="http://i.imgur.com/ypJSsQg.jpg">
-Gaia System Architecture Diagram (source from https://docs.google.com/drawings/d/18DnhTgQBK3M0KBeLGJkWW1hfiYBB6GgTmfdbUnT2SLs/edit?usp=sharing)</p>
+Gaia System Architecture Diagram (source from <a href="https://docs.google.com/drawings/d/18DnhTgQBK3M0KBeLGJkWW1hfiYBB6GgTmfdbUnT2SLs/edit?usp=sharing">https://docs.google.com/drawings/d/18DnhTgQBK3M0KBeLGJkWW1hfiYBB6GgTmfdbUnT2SLs/edit?usp=sharing</a>)</p>
 
 <p>簡單的說，手機系統介面在特定狀態下會將目前已經是前景的 app 設定為背景狀態，其優先層級如下：</p>
 
@@ -1785,7 +1521,7 @@ Gaia System Architecture Diagram (source from https://docs.google.com/drawings/d
 </ol>
 
 
-<p>而這些事件又可能會同時發生而產生互相影響，如：inline activity 作用時電話打進來，多重 inline activities 中第一次產生的 activity frame 會被第二次的 activity frame 蓋掉&#8230;等。</p>
+<p>而這些事件又可能會同時發生而產生互相影響，如：inline activity 作用時電話打進來，多重 inline activities 中第一次產生的 activity frame 會被第二次的 activity frame 蓋掉&hellip;等。</p>
 
 <p>這些決策發生在哪呢？與桌面瀏覽器不同，決定這一切的是發生在 Gaia，也就是 Firefox OS 的 UI 層：換句話說，是以 JavaScript 撰寫的噢。而實現的方式是系統中各個模組對各個底層 moz-*  API 的 callback 重新包覆並以 custom event 的形式通知其他模組，最後集中給 system app 中的 Window Manager 來做統一管理。</p>
 
@@ -1798,11 +1534,11 @@ Gaia System Architecture Diagram (source from https://docs.google.com/drawings/d
 
 <ul>
 <li>(Gaia) [Screen Manager] mozPower.screenEnabled = false</li>
-<li>(Gaia) [Screen Manager] send custom &#8216;screenchange&#8217; event</li>
-<li>(Gaia) [Lockscreen] get &#8216;screenchange&#8217; event, check the settings of &#8220;lockscreen.enabled&#8221; and dispatch custom &#8216;lock&#8217; event</li>
-<li>(Gaia) [Window Manager] get &#8216;lock&#8217; event, and then set visibility = false for current app(focused one).</li>
-<li>(Gonk) [/sys/power] See mozPower.screenEnabled is modified and send &#8216;sizemodechange&#8217; to simulate the content window is minimized.</li>
-<li>(Gecko) [shell] Get &#8216;sizemodechange&#8217; event, set visibility = false for the whole system app</li>
+<li>(Gaia) [Screen Manager] send custom &lsquo;screenchange&rsquo; event</li>
+<li>(Gaia) [Lockscreen] get &lsquo;screenchange&rsquo; event, check the settings of &ldquo;lockscreen.enabled&rdquo; and dispatch custom &lsquo;lock&rsquo; event</li>
+<li>(Gaia) [Window Manager] get &lsquo;lock&rsquo; event, and then set visibility = false for current app(focused one).</li>
+<li>(Gonk) [/sys/power] See mozPower.screenEnabled is modified and send &lsquo;sizemodechange&rsquo; to simulate the content window is minimized.</li>
+<li>(Gecko) [shell] Get &lsquo;sizemodechange&rsquo; event, set visibility = false for the whole system app</li>
 </ul>
 
 
@@ -1810,9 +1546,9 @@ Gaia System Architecture Diagram (source from https://docs.google.com/drawings/d
 
 <ul>
 <li>(Gecko) Get keypress event of sleep-button, and then send mozChromeEvent to gaia</li>
-<li>(Gaia) [Hardware Button Manager] Get mozChromeEvent with type = &#8220;sleep-button-press&#8221;, wrap the event to &#8216;wake&#8217; event</li>
+<li>(Gaia) [Hardware Button Manager] Get mozChromeEvent with type = &ldquo;sleep-button-press&rdquo;, wrap the event to &lsquo;wake&rsquo; event</li>
 <li>(Gaia) [Screen Manager] mozPower.screenEnabled = true</li>
-<li>(Gecko) [shell] Get &#8216;sizemodechange&#8217; event, set visibility = true for the whole system app
+<li>(Gecko) [shell] Get &lsquo;sizemodechange&rsquo; event, set visibility = true for the whole system app
 [NOTE] the current app is still invisible now, but the system app is visible.</li>
 </ul>
 
@@ -1820,8 +1556,8 @@ Gaia System Architecture Diagram (source from https://docs.google.com/drawings/d
 <h5>Unlock the lockscreen:</h5>
 
 <ul>
-<li>(Gaia) [Lockscreen] Send custom &#8216;unlock&#8217; event.</li>
-<li>(Gaia) [Widow Manager] Get &#8216;unlock&#8217; event and turn on the active app&#8217;s visibility.</li>
+<li>(Gaia) [Lockscreen] Send custom &lsquo;unlock&rsquo; event.</li>
+<li>(Gaia) [Widow Manager] Get &lsquo;unlock&rsquo; event and turn on the active app&rsquo;s visibility.</li>
 </ul>
 
 
@@ -1868,7 +1604,7 @@ Gaia System Architecture Diagram (source from https://docs.google.com/drawings/d
   
 
 
-<time datetime="2013-07-05T02:31:00+02:00" pubdate data-updated="true">Jul 5<span>th</span>, 2013</time> - 
+<time datetime="2013-07-05T02:31:00+08:00" pubdate data-updated="true">Jul 5<span>th</span>, 2013</time> - 
         
 
 posted in
@@ -1879,6 +1615,8 @@ posted in
 </span>
 
 
+        
+         | <a href="/blog/2013/07/05/one-year-at-mozilla/#disqus_thread">Comments</a>
         
       </p>
     
@@ -1921,7 +1659,7 @@ posted in
 <img src="http://i.imgur.com/OBv99Ty.jpg">
 <img src="http://i.imgur.com/7u3g8IC.jpg"></p>
 
-<h4>Berlin - Snow!</h4>
+<h4>Berlin &ndash; Snow!</h4>
 
 <p><img src="http://i.imgur.com/cO74ubC.jpg">
 <img src="http://i.imgur.com/EULi3MV.jpg">
@@ -1938,8 +1676,8 @@ posted in
 <h4>Japan</h4>
 
 <ul>
-<li>自助旅行 - 是的，這其實跟工作無關，不過也因為是在這裡，請長假出國玩絕對不是太困難的事情。</li>
-<li>我在日本期間去了日本Mozilla辦公室 - 位在六本木，一個很棒的空間。
+<li>自助旅行 &ndash; 是的，這其實跟工作無關，不過也因為是在這裡，請長假出國玩絕對不是太困難的事情。</li>
+<li>我在日本期間去了日本Mozilla辦公室 &ndash; 位在六本木，一個很棒的空間。
 <img src="http://i.imgur.com/z4ekB4W.jpg">
 <img src="http://i.imgur.com/2ErLpTd.jpg">
 <img src="http://i.imgur.com/qtQGJuH.jpg">
@@ -2001,7 +1739,7 @@ posted in
   
 
 
-<time datetime="2013-06-18T12:33:00+02:00" pubdate data-updated="true">Jun 18<span>th</span>, 2013</time> - 
+<time datetime="2013-06-18T12:33:00+08:00" pubdate data-updated="true">Jun 18<span>th</span>, 2013</time> - 
         
 
 posted in
@@ -2012,6 +1750,8 @@ posted in
 </span>
 
 
+        
+         | <a href="/blog/2013/06/18/alvitr/#disqus_thread">Comments</a>
         
       </p>
     
@@ -2061,13 +1801,13 @@ posted in
 <a href="https://github.com/alivedise/jsdoc3-bootstrap">JSDOC3 bootstrap template</a>
 不知道為什麼jsdoc2我電腦一直裝不成功，jsdoc3倒是很簡單的用npm就裝好了。</p>
 
-<p>找了一下找不到專門給jsdoc3用的好看template&#8230;我就自己套bootstrap上去了，成果如上。</p>
+<p>找了一下找不到專門給jsdoc3用的好看template&hellip;我就自己套bootstrap上去了，成果如上。</p>
 
 <h3>其他</h3>
 
-<p>我還有一兩個一直很想做的probject&#8230;不過總是因為懶惰作罷:P</p>
+<p>我還有一兩個一直很想做的probject&hellip;不過總是因為懶惰作罷:P</p>
 
-<p>回首到Mozilla也一年了，感覺自身還有很多不足&#8230;.
+<p>回首到Mozilla也一年了，感覺自身還有很多不足&hellip;.
 督促自己寫side project只是開始而已，還要再努力阿！</p>
 </div>
   
@@ -2109,7 +1849,7 @@ posted in
   
 
 
-<time datetime="2013-05-27T15:41:00+02:00" pubdate data-updated="true">May 27<span>th</span>, 2013</time> - 
+<time datetime="2013-05-27T15:41:00+08:00" pubdate data-updated="true">May 27<span>th</span>, 2013</time> - 
         
 
 posted in
@@ -2120,6 +1860,8 @@ posted in
 </span>
 
 
+        
+         | <a href="/blog/2013/05/27/rotation-matrix/#disqus_thread">Comments</a>
         
       </p>
     
@@ -2258,6 +2000,283 @@ posted in
 
       </article>
     
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/02/23/from-browser-to-browser/">From Browser to Browser. (1)</a></h1>
+    
+    
+      <p class="meta">
+        
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-23T17:40:00+08:00" pubdate data-updated="true">Feb 23<span>rd</span>, 2013</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/gaia/'>gaia</a>
+  
+</span>
+
+
+        
+         | <a href="/blog/2013/02/23/from-browser-to-browser/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>Firefox OS</h3>
+
+<p><img src="http://cdn0.mos.techradar.futurecdn.net///art/mobile_phones/Mozilla/FireFoxOS/DeveloperHandsets/FirefoxOSDev-Press-01-580-75.jpg"></p>
+
+<h3>System app</h3>
+
+<p>Exactly, Firefox OS, also known for boot 2 gecko, is having only one app/one page.
+It&rsquo;s the system app, which controls all web app&rsquo;s life cycle.
+When FirefoxOS is booted, it would load the system app from <code>system/index.html</code>.
+Then system app would take care of the remaing stuff.</p>
+
+<ul>
+<li>Load modules</li>
+<li>Init homescreen app</li>
+<li>Etc.</li>
+</ul>
+
+
+<h3>Window Manager</h3>
+
+<p>Window Manager is the core of Firefox OS, the core of system app, which is in charge of creating/maintaining/killing apps.
+An app, indeed, is a web page.</p>
+
+<p>We use a magic, calling browser API, to make a web page act like an app.</p>
+
+<h3>Browser API</h3>
+
+<p>See <a href="https://developer.mozilla.org/en-US/docs/DOM/Using_the_Browser_API">https://developer.mozilla.org/en-US/docs/DOM/Using_the_Browser_API</a></p>
+
+<p>A browser here means that the web page acts like it is living in a browser <code>frame</code>.
+We are replacing nearly every XUL-based UI with HTML to <code>port</code> the WEB to the phone.</p>
+
+<h3>Module Pattern</h3>
+
+<p>Module pattern is the way Window Manager being imeplemented.
+A module pattern looks like:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">WindowManager</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">_id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">_running</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'>  <span class="kd">function</span> <span class="nx">createApp</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>     <span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">App</span><span class="p">();</span>
+</span><span class='line'>     <span class="nx">_running</span><span class="p">[</span><span class="nx">_id</span><span class="p">]</span> <span class="o">=</span> <span class="nx">app</span><span class="p">;</span>
+</span><span class='line'>     <span class="nx">_id</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>     <span class="k">return</span> <span class="nx">app</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">function</span> <span class="nx">killApp</span><span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">delete</span> <span class="nx">_running</span><span class="p">[</span><span class="nx">id</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">create</span><span class="o">:</span> <span class="nx">createApp</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">kill</span><span class="o">:</span> <span class="nx">killApp</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">})();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Thus the Window Manager object only has 2 public attributes.
+This looks fine, but it would be a nightmare if this pattern grows to over 2000 lines.
+And it&rsquo;s having countless private functions now.</p>
+
+<p>This module now is not unit testable nor maintainable.</p>
+
+<h3>Break it!</h3>
+
+<h4>From the browser to the browser</h4>
+
+<p>Let&rsquo;s define a new object to contain and manage itself in its own scope.</p>
+
+<p>It&rsquo;s called <code>browserFrame</code>.</p>
+
+<h5>The responsibility of browserFrame</h5>
+
+<p>It would create an iframe with all attributes needed for BrowserAPI.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/* Define a basic mozbrowser iframe class.</span>
+</span><span class='line'><span class="cm"> * It creates a mozbrowser iframe,</span>
+</span><span class='line'><span class="cm"> * and finally returns the DOM element it just created.</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">BrowserFrame</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span> <span class="nx">invocation</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">function</span> <span class="nx">BrowserFrame</span><span class="p">()</span> <span class="p">{</span> <span class="c1">// This constructor function is a local variable.</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">element</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">nextId</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">callbacks</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'>    <span class="nx">createFrame</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span> <span class="c1">// All arguments are values to createFrame</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">BrowserFrame</span><span class="p">.</span><span class="nx">className</span> <span class="o">=</span> <span class="s1">&#39;browser&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// These are helper functions and variables used by the methods above</span>
+</span><span class='line'>  <span class="c1">// They&#39;re not part of the public API of the module, but they&#39;re hidden</span>
+</span><span class='line'>  <span class="c1">// within this function scope so we don&#39;t have to define them as a</span>
+</span><span class='line'>  <span class="c1">// property of Browser or prefix them with underscores.</span>
+</span><span class='line'>  <span class="kd">function</span> <span class="nx">createFrame</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">origin</span><span class="p">,</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">manifestURL</span><span class="p">,</span> <span class="nx">oop</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">browser</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;iframe&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">browser</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;mozallowfullscreen&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Most apps currently need to be hosted in a special &#39;mozbrowser&#39; iframe.</span>
+</span><span class='line'>    <span class="c1">// They also need to be marked as &#39;mozapp&#39; to be recognized as apps by the</span>
+</span><span class='line'>    <span class="c1">// platform.</span>
+</span><span class='line'>    <span class="nx">browser</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;mozbrowser&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">oop</span><span class="p">)</span>
+</span><span class='line'>      <span class="nx">browser</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;remote&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">manifestURL</span><span class="p">)</span>
+</span><span class='line'>      <span class="nx">browser</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;mozapp&#39;</span><span class="p">,</span> <span class="nx">manifestURL</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">origin</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">origin</span> <span class="o">=</span> <span class="nx">origin</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">name</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">browser</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="nx">url</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">browser</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">className</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">browser</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">BrowserFrame</span><span class="p">.</span><span class="nx">className</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Store the element</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">element</span> <span class="o">=</span> <span class="nx">browser</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">nextId</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">// The public API for this module is the Browser() constructor function.</span>
+</span><span class='line'>  <span class="c1">// We need to export that function from this private namespace so that</span>
+</span><span class='line'>  <span class="c1">// it can be used on the outside. In this case, we export the constructor</span>
+</span><span class='line'>  <span class="c1">// by returning it. It becomes the value of the assignment expression</span>
+</span><span class='line'>  <span class="c1">// on the first line above.</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">BrowserFrame</span><span class="p">;</span>
+</span><span class='line'><span class="p">}());</span> <span class="c1">// Invoke the function immediately after defining it.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+</div>
+
+      </article>
+    
     </div>
       <div class="row">
         <ul class="pager">
@@ -2281,15 +2300,11 @@ posted in
     <ul class="recent_posts">
       
         <li>
-          <a href="/blog/2013/07/23/sandbox-iframe/">Modules inside iframe</a>
+          <a href="/blog/2013/08/06/coscup-2013/">[COSCUP 2013] Audio competing in FxOS</a>
         </li>
       
         <li>
-          <a href="/blog/2013/07/19/audio-competing-again/">[FxOS] Audio Competing Policies</a>
-        </li>
-      
-        <li>
-          <a href="/blog/2013/07/18/window-manager-decoupling/">[FxOS] Plan: Window Management Module Decoupling</a>
+          <a href="/blog/2013/07/18/window-manager-decoupling/">[FxOS] Plan: Window Management decoupling (CONT.)</a>
         </li>
       
         <li>
@@ -2297,7 +2312,11 @@ posted in
         </li>
       
         <li>
-          <a href="/blog/2013/07/10/system-modulization-plan/">Proposal: System Modualization Plan</a>
+          <a href="/blog/2013/07/10/system-modulization-plan/">Proposal: System Modulization Plan</a>
+        </li>
+      
+        <li>
+          <a href="/blog/2013/07/05/transition-state-machine/">[Window Management] Transition state machine</a>
         </li>
       
     </ul>
@@ -2392,6 +2411,14 @@ posted in
 }(document, 'script', 'facebook-jssdk'));</script>
 
 
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
 
 
 

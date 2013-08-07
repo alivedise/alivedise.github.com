@@ -14,7 +14,7 @@
   
     
   
-  <meta name="description" content=" Test ">
+  <meta name="description" content=" I'm alive. A web developer from Taipei, Taiwan. ">
   
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -22,17 +22,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://alivedise.github.com/blog/page/4/">
+  <link rel="canonical" href="http://alivedise.github.io/blog/page/4/">
   <link href="/favicon.png" rel="icon">
   <link href='http://fonts.googleapis.com/css?family=Cantarell' rel='stylesheet' type='text/css'>
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="Ascheriit" type="application/atom+xml">
+  <link href="http://feeds.feedburner.com/ascheriit" rel="alternate" title="Ascheriit" type="application/atom+xml">
   <meta name="og:type" content="website" />
   <meta name="og:site_name" content="Ascheriit" />
   <meta name="og:title" content="Ascheriit" />
-  <meta name="og:description" content=" Test " />
-  <meta name="og:url" content="http://alivedise.github.com/blog/page/4/index.html"/>
-  <meta name="url" content="http://alivedise.github.com/blog/page/4/index.html">
+  <meta name="og:description" content=" I'm alive. A web developer from Taipei, Taiwan. " />
+  <meta name="og:url" content="http://alivedise.github.io/blog/page/4/index.html"/>
+  <meta name="url" content="http://alivedise.github.io/blog/page/4/index.html">
   
   <meta name="distribution" content="global">
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
@@ -63,8 +63,7 @@
   <h1>
     Ascheriit
   </h1>
-  <h2>I am <em>Alive</em>, a Front-end Developer from <em>Taiwan</em>.</h2>
-  <span class="label">Taipei</span> <span class="label">Tokyo</span> <span class="label">Paris</span> <span class="label">San Francisco</span> <span class="label">Berlin</span> <span class="label">Madrid</span>
+  <h2></h2>
 </div>
 
     </div>
@@ -74,14 +73,8 @@
       <div class="row">
   <div class="span4">
     <h2>about me</h2>
-<pre>
-  (function() {
-    var Alive = new WebDeveloper();
-    Alive.live(_.Taipei);
-    Alive.work(_.Mozilla);
-    Alive.speak(_.Javascript);
-  }());
-</pre>
+<p>A little something about me.</p>
+
   </div>
   <div class="span6">
     
@@ -129,154 +122,6 @@
 
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2012/02/29/chromie/">[Ff13-2] Chromie - Time Labyrinth Breaker</a></h1>
-    
-    
-      <p class="meta">
-        
-  
-
-
-  
-    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
-  
-
- - 
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-02-29T14:29:00+01:00" pubdate data-updated="true">Feb 29<span>th</span>, 2012</time> - 
-        
-
-posted in
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/jquery/'>jQuery</a>, <a class='category' href='/blog/categories/javascriptmvc/'>javascriptMVC</a>
-  
-</span>
-
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3>簡介</h3>
-
-<ul>
-<li>ff13-2裡面有個時鐘小遊戲，<a href="http://www.youtube.com/watch?v=ngJyJDLkRh0&amp;feature=related">影片參考</a>。</li>
-<li>說穿了就是一個排列組合遊戲，比起其他小遊戲這個難度高很多，所以網路上有一些人寫了程式專門解這個小遊戲。其實有很多解答版本，但是都不太好用，UI也&#8230;。乾脆自己寫一個！</li>
-<li>有參考某個flash實做，不過我用純html5+js實現。js核心是jquery1.7.1，框架是javascriptMVC。</li>
-</ul>
-
-
-<h3>命名</h3>
-
-<h4>Chromie = 克羅米</h4>
-
-<p>克羅米是魔獸世界WoW中擁有時間穿梭能力的種族-青銅龍族中的一員。
-<a href="http://www.wowwiki.com/Chromie">克羅米@wow wiki</a></p>
-
-<h3>實做</h3>
-
-<ol>
-<li>尋徑遞迴演算法
-核心片段</li>
-</ol>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">divergence</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">current</span><span class="p">,</span> <span class="nx">attractor_fields</span><span class="p">,</span> <span class="nx">paths</span><span class="p">,</span> <span class="nx">dir</span><span class="p">){</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">value</span> <span class="o">=</span> <span class="nx">attractor_fields</span><span class="p">[</span><span class="nx">current</span><span class="p">];</span>
-</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="nx">value</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="c1">//paths.push(attractor_fields[current].toString()+&#39;[&#39;+(current+1)+&#39;]&#39;+dir);</span>
-</span><span class='line'>  <span class="nx">paths</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">current</span><span class="p">);</span>
-</span><span class='line'>  <span class="nx">attractor_fields</span><span class="p">[</span><span class="nx">current</span><span class="p">]</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="nx">paths</span><span class="p">.</span><span class="nx">length</span> <span class="o">==</span> <span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span>
-</span><span class='line'>  <span class="p">{</span>
-</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">renderSolution</span><span class="p">(</span><span class="nx">paths</span><span class="p">);</span>
-</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">renderHistroy</span><span class="p">(</span><span class="nx">paths</span><span class="p">);</span>
-</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;#steinsgate span&#39;</span><span class="p">).</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>          <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;#steinsgate&#39;</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
-</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;#steinsgate&#39;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="nx">paths</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span><span class="o">+</span><span class="s1">&#39;&lt;br/&gt;&#39;</span><span class="p">);</span>
-</span><span class='line'>      <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">path_fork1</span> <span class="o">=</span> <span class="nx">paths</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">path_fork2</span> <span class="o">=</span> <span class="nx">paths</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">af1</span> <span class="o">=</span> <span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">af2</span> <span class="o">=</span> <span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span>
-</span><span class='line'>  <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">divergence</span><span class="p">((</span><span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">length</span><span class="o">+</span><span class="nx">current</span><span class="o">+</span><span class="nx">value</span><span class="p">)</span><span class="o">%</span><span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span> <span class="nx">af1</span><span class="p">,</span> <span class="nx">path_fork1</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="o">+</span><span class="nx">value</span><span class="p">)</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">divergence</span><span class="p">((</span><span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">length</span><span class="o">+</span><span class="nx">current</span><span class="o">-</span><span class="nx">value</span><span class="p">)</span><span class="o">%</span><span class="nx">attractor_fields</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span> <span class="nx">af2</span><span class="p">,</span> <span class="nx">path_fork2</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="o">+</span><span class="nx">value</span><span class="p">);</span>  
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ol>
-<li>Canvas繪圖
-就是查API而已，利用了mozilla的線上開發手冊<a href="https://developer.mozilla.org/zh-TW/">mdn</a></li>
-</ol>
-
-
-<h3>截圖及操作</h3>
-
-<p>1~6數字輸入刻度，0刪除前一個。
-<img src="http://i.imgur.com/MSugN.png"></p>
-
-<h3>Github demo page</h3>
-
-<p><a href="http://alivedise.github.com/chromie">chromie</a></p>
-</div>
-  
-  
-
-
-</div>
-
-      </article>
-    
-    
-      <article class="span4">
-        <div class="article-format">
-
-  <header>
-    
       <h1 class="entry-title"><a href="/blog/2012/02/24/jmvc-forum-treasure/">[javascriptMVC] Forum 問答</a></h1>
     
     
@@ -302,7 +147,7 @@ posted in
   
 
 
-<time datetime="2012-02-24T01:53:00+01:00" pubdate data-updated="true">Feb 24<span>th</span>, 2012</time> - 
+<time datetime="2012-02-24T01:53:00+08:00" pubdate data-updated="true">Feb 24<span>th</span>, 2012</time> - 
         
 
 posted in
@@ -313,6 +158,8 @@ posted in
 </span>
 
 
+        
+         | <a href="/blog/2012/02/24/jmvc-forum-treasure/#disqus_thread">Comments</a>
         
       </p>
     
@@ -399,7 +246,7 @@ posted in
   
 
 
-<time datetime="2012-02-24T01:35:00+01:00" pubdate data-updated="true">Feb 24<span>th</span>, 2012</time> - 
+<time datetime="2012-02-24T01:35:00+08:00" pubdate data-updated="true">Feb 24<span>th</span>, 2012</time> - 
         
 
 posted in
@@ -410,6 +257,8 @@ posted in
 </span>
 
 
+        
+         | <a href="/blog/2012/02/24/jmvc-class-instance-initial/#disqus_thread">Comments</a>
         
       </p>
     
@@ -488,7 +337,7 @@ posted in
   
 
 
-<time datetime="2012-02-17T17:50:00+01:00" pubdate data-updated="true">Feb 17<span>th</span>, 2012</time> - 
+<time datetime="2012-02-17T17:50:00+08:00" pubdate data-updated="true">Feb 17<span>th</span>, 2012</time> - 
         
 
 posted in
@@ -499,6 +348,8 @@ posted in
 </span>
 
 
+        
+         | <a href="/blog/2012/02/17/javascript-future-reserve-word/#disqus_thread">Comments</a>
         
       </p>
     
@@ -587,7 +438,7 @@ posted in
   
 
 
-<time datetime="2012-02-17T13:44:00+01:00" pubdate data-updated="true">Feb 17<span>th</span>, 2012</time> - 
+<time datetime="2012-02-17T13:44:00+08:00" pubdate data-updated="true">Feb 17<span>th</span>, 2012</time> - 
         
 
 posted in
@@ -598,6 +449,8 @@ posted in
 </span>
 
 
+        
+         | <a href="/blog/2012/02/17/javascriptmvc-stealjs/#disqus_thread">Comments</a>
         
       </p>
     
@@ -613,7 +466,7 @@ posted in
 
 <p>Add a script tag that loads<code>steal/steal.js</code> and add the path to the first file to load in the query string like:</p>
 
-<p> &lt;script type=&#8217;text/javascript&#8217;</p>
+<p> &lt;script type=&lsquo;text/javascript&rsquo;</p>
 
 <pre><code> src='../steal/steal.js?myapp/myapp.js'&gt;
 </code></pre>
@@ -701,7 +554,7 @@ html pages.</p>
  add a script tag in <code>myapp.html</code>:</p>
 
 <p> @codestart html
- &lt;script type=&#8217;text/javascript&#8217;</p>
+ &lt;script type=&lsquo;text/javascript&rsquo;</p>
 
 <pre><code> src='../steal/steal.js'&gt;
 </code></pre>
@@ -710,11 +563,11 @@ html pages.</p>
  @codeend</p>
 
 <p> <div class='whisper'>PRO TIP: Bottom load your scripts. It
- will increase your application&#8217;s percieved response time.</div></p>
+ will increase your application&rsquo;s percieved response time.</div></p>
 
 <h2>Loading the First Script</h2>
 
-<p> Once steal has been added to your page, it&#8217;s time
+<p> Once steal has been added to your page, it&rsquo;s time
  to load scripts. We want to load <code>myapp.js</code>
  and have it load <code>jquery.js</code> and
  <code>jquery.ui.tabs.js</code>.</p>
@@ -729,23 +582,23 @@ html pages.</p>
 <h4>Add a script tag</h4>
 
 <p> Add a script tag after the steal
- script that &#8216;steals&#8217; <code>myapp.js</code> like:</p>
+ script that &lsquo;steals&rsquo; <code>myapp.js</code> like:</p>
 
 <p> @codestart html
- &lt;script type=&#8217;text/javascript&#8217;>
-   steal(&#8216;myapp/myapp.js&#8217;)
+ &lt;script type=&lsquo;text/javascript&rsquo;>
+   steal(&lsquo;myapp/myapp.js&rsquo;)
  &lt;/script>
  @codeend</p>
 
 <h4>Add the script parameter</h4>
 
 <p> The most common (and shortest) way to load <code>myapp.js</code>
- is to add the script path to the steal script&#8217;s src after in the
+ is to add the script path to the steal script&rsquo;s src after in the
  query params.  So, instead of adding a script, we change
  the steal script from:</p>
 
 <p> @codestart html
- &lt;script type=&#8217;text/javascript&#8217;</p>
+ &lt;script type=&lsquo;text/javascript&rsquo;</p>
 
 <pre><code> src='../steal/steal.js'&gt;
 </code></pre>
@@ -756,7 +609,7 @@ html pages.</p>
 <p> To</p>
 
 <p> @codestart html
- &lt;script type=&#8217;text/javascript&#8217;</p>
+ &lt;script type=&lsquo;text/javascript&rsquo;</p>
 
 <pre><code> src='../steal/steal.js?&lt;b&gt;myapp/myapp.js&lt;/b&gt;'&gt;
 </code></pre>
@@ -811,7 +664,7 @@ html pages.</p>
 </code></pre>
 
 <p> Finally, we need to add tabs to the page after
- the tabs&#8217;s widget has loaded.  We can add a callback function to
+ the tabs&rsquo;s widget has loaded.  We can add a callback function to
  steal that will get called when all previous scripts have finished
  loading:</p>
 
@@ -847,11 +700,11 @@ html pages.</p>
 <pre><code> steal('//foo.js');
 </code></pre>
 
-<p> Steal uses <code>'//'</code> to designate the [steal.static.root steal.root]
+<p> Steal uses <code>&lsquo;//&rsquo;</code> to designate the [steal.static.root steal.root]
  folder.</p>
 
-<p> To load relative to the current file, add <code>"./"</code> or
-  <code>"../"</code>:</p>
+<p> To load relative to the current file, add <code>&ldquo;./&rdquo;</code> or
+  <code>&ldquo;../&rdquo;</code>:</p>
 
 <pre><code> steal("./bar.js","../folder/zed.js");
 </code></pre>
@@ -884,7 +737,7 @@ html pages.</p>
 <p> Loads resources specified by each argument.  By default, resources
  are loaded in parallel and run in any order.</p>
 
-<p> @param {String|Function|Object} resource&#8230;</p>
+<p> @param {String|Function|Object} resource&hellip;</p>
 
 <p> Each argument specifies a resource.  Resources can
  be given as a:</p>
@@ -907,21 +760,21 @@ html pages.</p>
 <p> The available options are:</p>
 
 <ul>
-<li><p><strong>src</strong> {<em>String</em>} - the path to the resource.</p></li>
-<li><p><strong>waits</strong> {<em>Boolean default=false</em>} - true the resource should wait
+<li><p><strong>src</strong> {<em>String</em>} &ndash; the path to the resource.</p></li>
+<li><p><strong>waits</strong> {<em>Boolean default=false</em>} &ndash; true the resource should wait
 for prior steals to load and run. False if the resource should load and run in
 parallel.  This defaults to true for functions.</p></li>
-<li><p><strong>unique</strong> {<em>Boolean default=true</em>} - true if this is a unique resource
-that &#8216;owns&#8217; this url.  This is true for files, false for functions.</p></li>
-<li><p><strong>ignore</strong> {<em>Boolean default=false</em>} - true if this resource should
+<li><p><strong>unique</strong> {<em>Boolean default=true</em>} &ndash; true if this is a unique resource
+that &lsquo;owns&rsquo; this url.  This is true for files, false for functions.</p></li>
+<li><p><strong>ignore</strong> {<em>Boolean default=false</em>} &ndash; true if this resource should
 not be built into a production file and not loaded in
 production.  This is great for script that should only be available
 in development mode.</p></li>
-<li><p><strong>packaged</strong> {<em>Boolean default=true</em>} - true if the script should be built
+<li><p><strong>packaged</strong> {<em>Boolean default=true</em>} &ndash; true if the script should be built
 into the production file. false if the script should not be built
 into the production file, but still loaded.  This is useful for
-loading &#8216;packages&#8217;.</p></li>
-<li><p><strong>type</strong> {<em>String default=&#8221;js&#8221;</em>} - the type of the resource.  This
+loading &lsquo;packages&rsquo;.</p></li>
+<li><p><strong>type</strong> {<em>String default=&ldquo;js&rdquo;</em>} &ndash; the type of the resource.  This
 is typically inferred from the src.</p></li>
 </ul>
 
@@ -991,7 +844,7 @@ is typically inferred from the src.</p></li>
   
 
 
-<time datetime="2012-02-17T09:33:00+01:00" pubdate data-updated="true">Feb 17<span>th</span>, 2012</time> - 
+<time datetime="2012-02-17T09:33:00+08:00" pubdate data-updated="true">Feb 17<span>th</span>, 2012</time> - 
         
 
 posted in
@@ -1002,6 +855,8 @@ posted in
 </span>
 
 
+        
+         | <a href="/blog/2012/02/17/rd2-table-game-survey/#disqus_thread">Comments</a>
         
       </p>
     
@@ -1129,7 +984,7 @@ posted in
   
 
 
-<time datetime="2012-02-15T23:32:00+01:00" pubdate data-updated="true">Feb 15<span>th</span>, 2012</time> - 
+<time datetime="2012-02-15T23:32:00+08:00" pubdate data-updated="true">Feb 15<span>th</span>, 2012</time> - 
         
 
 posted in
@@ -1141,6 +996,8 @@ posted in
 
 
         
+         | <a href="/blog/2012/02/15/git-submodule/#disqus_thread">Comments</a>
+        
       </p>
     
   </header>
@@ -1150,7 +1007,7 @@ posted in
 
 <h1>偶然間發現這個github的競爭者<a href="http://bitbucket.com">Bitbucket</a>推出了無限免費私有倉庫+無限硬碟空間，</h1>
 
-<p>title: &#8220;[git] 心得(1) Submodule, Bitbucker&#8221;
+<p>title: &ldquo;[git] 心得(1) Submodule, Bitbucker&rdquo;
 date: 2012-02-15 23:32
 comments: true</p>
 
@@ -1249,7 +1106,7 @@ git merge origin master
   
 
 
-<time datetime="2012-02-10T15:36:00+01:00" pubdate data-updated="true">Feb 10<span>th</span>, 2012</time> - 
+<time datetime="2012-02-10T15:36:00+08:00" pubdate data-updated="true">Feb 10<span>th</span>, 2012</time> - 
         
 
 posted in
@@ -1260,6 +1117,8 @@ posted in
 </span>
 
 
+        
+         | <a href="/blog/2012/02/10/octopress-on-ubuntu-lazy/#disqus_thread">Comments</a>
         
       </p>
     
@@ -1283,14 +1142,14 @@ sudo apt-get install libyaml-0-2 libyaml-dev
 
 <h2>開始</h2>
 
-<p>bash -s stable &lt; &lt;(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)
-echo &#8216;[[ -s &#8220;$HOME/.rvm/scripts/rvm&#8221; ]] &amp;&amp; . &#8220;$HOME/.rvm/scripts/rvm&#8221; # Load RVM function&#8217; >> ~/.bash_profile
+<p>bash -s stable &lt; &lt;(curl -s <a href="https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer">https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer</a>)
+echo &lsquo;[[ -s &ldquo;$HOME/.rvm/scripts/rvm&rdquo; ]] &amp;&amp; . &ldquo;$HOME/.rvm/scripts/rvm&rdquo; # Load RVM function&rsquo; >> ~/.bash_profile
 source ~/.bash_profile
 rvm pkg install openssl
 rvm pkg install iconv
-rvm install 1.9.2 -C &#8211;with-openssl-dir=$HOME/.rvm/usr,&#8211;with-iconv-dir=$HOME/.rvm/usr
+rvm install 1.9.2 -C &mdash;with-openssl-dir=$HOME/.rvm/usr,&mdash;with-iconv-dir=$HOME/.rvm/usr
 rvm rubygems latest
-rvm use 1.9.2 &#8211;default
+rvm use 1.9.2 &mdash;default
 rvm reload
 gem install bundler</p>
 
@@ -1310,11 +1169,11 @@ git pull</p>
 
 <h2>安裝pathogen</h2>
 
-<p>(https://github.com/tpope/vim-pathogen)</p>
+<p>(<a href="https://github.com/tpope/vim-pathogen">https://github.com/tpope/vim-pathogen</a>)</p>
 
 <h2>安裝vim-octopress</h2>
 
-<p>(https://github.com/vim-scripts/vim-octopress)</p>
+<p>(<a href="https://github.com/vim-scripts/vim-octopress">https://github.com/vim-scripts/vim-octopress</a>)</p>
 </div>
   
   
@@ -1355,7 +1214,7 @@ git pull</p>
   
 
 
-<time datetime="2012-02-09T11:46:00+01:00" pubdate data-updated="true">Feb 9<span>th</span>, 2012</time> - 
+<time datetime="2012-02-09T11:46:00+08:00" pubdate data-updated="true">Feb 9<span>th</span>, 2012</time> - 
         
 
 posted in
@@ -1366,6 +1225,8 @@ posted in
 </span>
 
 
+        
+         | <a href="/blog/2012/02/09/multiline-tooltip/#disqus_thread">Comments</a>
         
       </p>
     
@@ -1379,7 +1240,7 @@ posted in
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>殘念得是很難得的firefox有bug，多行會變成空白字元&#8230;.
+<p>殘念得是很難得的firefox有bug，多行會變成空白字元&hellip;.
 IE跟Chrome是正常的。</p>
 
 <h2>jsfiddle</h2>
@@ -1428,7 +1289,7 @@ IE跟Chrome是正常的。</p>
   
 
 
-<time datetime="2012-02-09T11:03:00+01:00" pubdate data-updated="true">Feb 9<span>th</span>, 2012</time> - 
+<time datetime="2012-02-09T11:03:00+08:00" pubdate data-updated="true">Feb 9<span>th</span>, 2012</time> - 
         
 
 posted in
@@ -1439,6 +1300,8 @@ posted in
 </span>
 
 
+        
+         | <a href="/blog/2012/02/09/slickgrid-api-list/#disqus_thread">Comments</a>
         
       </p>
     
@@ -1810,6 +1673,69 @@ posted in
 
       </article>
     
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/02/07/image-tag-test-on-cats/">[Octopress] Image Tag of Octopress測試</a></h1>
+    
+    
+      <p class="meta">
+        
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-02-07T10:07:00+08:00" pubdate data-updated="true">Feb 7<span>th</span>, 2012</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/cats/'>cats</a>, <a class='category' href='/blog/categories/octopress/'>octopress</a>
+  
+</span>
+
+
+        
+         | <a href="/blog/2012/02/07/image-tag-test-on-cats/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img src="https://p.twimg.com/Ak_HuCoCQAAY7cd.jpg:large">
+<img src="https://p.twimg.com/Ak_H-6VCQAAqQ8s.jpg:large">
+<img src="https://p.twimg.com/Ak9KYgzCIAAr5DM.jpg:large">
+<img src="https://p.twimg.com/Ak4qFNnCMAE9fA-.jpg:large"></p>
+</div>
+  
+  
+
+
+</div>
+
+      </article>
+    
     </div>
       <div class="row">
         <ul class="pager">
@@ -1837,15 +1763,11 @@ posted in
     <ul class="recent_posts">
       
         <li>
-          <a href="/blog/2013/07/23/sandbox-iframe/">Modules inside iframe</a>
+          <a href="/blog/2013/08/06/coscup-2013/">[COSCUP 2013] Audio competing in FxOS</a>
         </li>
       
         <li>
-          <a href="/blog/2013/07/19/audio-competing-again/">[FxOS] Audio Competing Policies</a>
-        </li>
-      
-        <li>
-          <a href="/blog/2013/07/18/window-manager-decoupling/">[FxOS] Plan: Window Management Module Decoupling</a>
+          <a href="/blog/2013/07/18/window-manager-decoupling/">[FxOS] Plan: Window Management decoupling (CONT.)</a>
         </li>
       
         <li>
@@ -1853,7 +1775,11 @@ posted in
         </li>
       
         <li>
-          <a href="/blog/2013/07/10/system-modulization-plan/">Proposal: System Modualization Plan</a>
+          <a href="/blog/2013/07/10/system-modulization-plan/">Proposal: System Modulization Plan</a>
+        </li>
+      
+        <li>
+          <a href="/blog/2013/07/05/transition-state-machine/">[Window Management] Transition state machine</a>
         </li>
       
     </ul>
@@ -1948,6 +1874,14 @@ posted in
 }(document, 'script', 'facebook-jssdk'));</script>
 
 
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
 
 
 

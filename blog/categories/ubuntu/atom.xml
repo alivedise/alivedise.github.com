@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: ubuntu | Ascheriit]]></title>
-  <link href="http://alivedise.github.com/blog/categories/ubuntu/atom.xml" rel="self"/>
-  <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-23T18:10:26+02:00</updated>
-  <id>http://alivedise.github.com/</id>
+  <link href="http://alivedise.github.io/blog/categories/ubuntu/atom.xml" rel="self"/>
+  <link href="http://alivedise.github.io/"/>
+  <updated>2013-08-07T09:56:17+08:00</updated>
+  <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[[Octopress] 重來懶人包]]></title>
-    <link href="http://alivedise.github.com/blog/2012/02/10/octopress-on-ubuntu-lazy/"/>
-    <updated>2012-02-10T15:36:00+01:00</updated>
-    <id>http://alivedise.github.com/blog/2012/02/10/octopress-on-ubuntu-lazy</id>
+    <link href="http://alivedise.github.io/blog/2012/02/10/octopress-on-ubuntu-lazy/"/>
+    <updated>2012-02-10T15:36:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2012/02/10/octopress-on-ubuntu-lazy</id>
     <content type="html"><![CDATA[<p>在ubuntu上架設octopress環境的懶人包：</p>
 
 <h1>Git</h1>
@@ -35,14 +35,14 @@ sudo apt-get install libyaml-0-2 libyaml-dev
 
 <h2>開始</h2>
 
-<p>bash -s stable &lt; &lt;(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)
-echo '[[ -s "$HOME/.rvm/scripts/rvm" ]] &amp;&amp; . "$HOME/.rvm/scripts/rvm" # Load RVM function' >> ~/.bash_profile
+<p>bash -s stable &lt; &lt;(curl -s <a href="https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer">https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer</a>)
+echo &lsquo;[[ -s &ldquo;$HOME/.rvm/scripts/rvm&rdquo; ]] &amp;&amp; . &ldquo;$HOME/.rvm/scripts/rvm&rdquo; # Load RVM function&rsquo; >> ~/.bash_profile
 source ~/.bash_profile
 rvm pkg install openssl
 rvm pkg install iconv
-rvm install 1.9.2 -C --with-openssl-dir=$HOME/.rvm/usr,--with-iconv-dir=$HOME/.rvm/usr
+rvm install 1.9.2 -C &mdash;with-openssl-dir=$HOME/.rvm/usr,&mdash;with-iconv-dir=$HOME/.rvm/usr
 rvm rubygems latest
-rvm use 1.9.2 --default
+rvm use 1.9.2 &mdash;default
 rvm reload
 gem install bundler</p>
 
@@ -62,11 +62,11 @@ git pull</p>
 
 <h2>安裝pathogen</h2>
 
-<p>(https://github.com/tpope/vim-pathogen)</p>
+<p>(<a href="https://github.com/tpope/vim-pathogen">https://github.com/tpope/vim-pathogen</a>)</p>
 
 <h2>安裝vim-octopress</h2>
 
-<p>(https://github.com/vim-scripts/vim-octopress)</p>
+<p>(<a href="https://github.com/vim-scripts/vim-octopress">https://github.com/vim-scripts/vim-octopress</a>)</p>
 ]]></content>
   </entry>
   

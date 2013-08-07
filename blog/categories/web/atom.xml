@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: web | Ascheriit]]></title>
-  <link href="http://alivedise.github.com/blog/categories/web/atom.xml" rel="self"/>
-  <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-23T18:10:26+02:00</updated>
-  <id>http://alivedise.github.com/</id>
+  <link href="http://alivedise.github.io/blog/categories/web/atom.xml" rel="self"/>
+  <link href="http://alivedise.github.io/"/>
+  <updated>2013-08-07T09:56:17+08:00</updated>
+  <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
     
@@ -15,16 +15,16 @@
   
   <entry>
     <title type="html"><![CDATA[「WEB」我也有一個故事要說。]]></title>
-    <link href="http://alivedise.github.com/blog/2012/05/30/i-have-also-a-story-to-tell/"/>
-    <updated>2012-05-30T04:15:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2012/05/30/i-have-also-a-story-to-tell</id>
+    <link href="http://alivedise.github.io/blog/2012/05/30/i-have-also-a-story-to-tell/"/>
+    <updated>2012-05-30T04:15:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2012/05/30/i-have-also-a-story-to-tell</id>
     <content type="html"><![CDATA[<p>這個部落格在我的定位中是純技術取向，但這篇應該會是唯一一篇非關技術的文章。</p>
 
 <p>文長。</p>
 
 <p>我在確定得到新工作的那一天，在ptt soft_job以及web_design版發表了那段時間的面試心得，內容是有關前端工程師的工作面試經歷。（文章在<a href="http://www.ptt.cc/bbs/Soft_Job/M.1335873183.A.F23.html">http://www.ptt.cc/bbs/Soft_Job/M.1335873183.A.F23.html</a>）因為那篇文章我收到很多回應，也很感謝所有來信的人的鼓勵。就在明天我將要離開現在的公司然後到新公司報到，我想在這邊簡單寫下一個平凡的網頁工程師一路走來的心路歷程。一些細碎片段構成的過往。</p>
 
-<p><img src="http://i.imgur.com/CB6eE.jpg"></p>
+<p><img class="<a" src="href="http://i.imgur.com/CB6eE.jpg">http://i.imgur.com/CB6eE.jpg</a>"></p>
 
 <h3>0</h3>
 
@@ -40,7 +40,7 @@
 
 <h3>2</h3>
 
-<p><img src="http://i.imgur.com/CMRWv.jpg"></p>
+<p><img class="<a" src="href="http://i.imgur.com/CMRWv.jpg">http://i.imgur.com/CMRWv.jpg</a>"></p>
 
 <p>題外話，你們知道嗎，IPAD上有一款app叫zite，它會根據你看文章的喜好來決定要給你什麼material。唯一的缺點是不支援中文，文章source都是英文，不過英文資源本來就多於中文。所以當你看完一篇在寫css hack的文章，旁邊就有選項問你喜不喜歡，順便列出跟css相關的tag給你toggle。你會收到越來越多你想要的相關知識。我有一陣子睡前會躺在床上抱著ipad看新技術文章看到睡著。</p>
 
@@ -48,7 +48,7 @@
 
 <h3>3</h3>
 
-<p><img src="http://i.imgur.com/R7n2P.png"></p>
+<p><img class="<a" src="href="http://i.imgur.com/R7n2P.png">http://i.imgur.com/R7n2P.png</a>"></p>
 
 <p>我認為部落格的蓬勃發展很大的促進了技術分享這件事。當你遇到問題的時候你會google，而解決你的問題的通常是來自某個熱血的開發者的部落格的某篇獨門心得。我一開始只把這些部落格當成解決問題的手段，平常沒事不會去看。</p>
 
@@ -71,7 +71,7 @@
 
 <h3>4</h3>
 
-<p><img src="http://i.imgur.com/V8dg6.jpg" title="有人問我這是什麼？最後一個下班者拿走鑰匙的簽名。被跳過的平常日期是：沒回家。" ></p>
+<p><img class="<a" src="href="http://i.imgur.com/V8dg6.jpg">http://i.imgur.com/V8dg6.jpg</a>" title="有人問我這是什麼？最後一個下班者拿走鑰匙的簽名。被跳過的平常日期是：沒回家。" ></p>
 
 <p>然後就是那個一直被傳頌的故事。</p>
 
@@ -91,7 +91,7 @@
 
 <h3>5</h3>
 
-<p><img src="http://i.imgur.com/6FkRe.jpg"></p>
+<p><img class="<a" src="href="http://i.imgur.com/6FkRe.jpg">http://i.imgur.com/6FkRe.jpg</a>"></p>
 
 <p>我選擇的技術叫JavascriptMVC，是一個total solution client side MVC framework。與它相似的東西是Backbone.js，而最近這段期間我也體悟到其實backbone比較多人在用。也很多人問我為什麼當時不用backbone? 我的答案很簡單，當時花了兩天熬夜做不出一個簡單的起始範例，backbone的文件實在令我費解，就放棄了，</p>
 

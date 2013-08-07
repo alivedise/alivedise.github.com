@@ -22,18 +22,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://alivedise.github.com/blog/2012/05/15/class-code-trace-2/">
+  <link rel="canonical" href="http://alivedise.github.io/blog/2012/05/15/class-code-trace-2/">
   <link href="/favicon.png" rel="icon">
   <link href='http://fonts.googleapis.com/css?family=Cantarell' rel='stylesheet' type='text/css'>
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="Ascheriit" type="application/atom+xml">
+  <link href="http://feeds.feedburner.com/ascheriit" rel="alternate" title="Ascheriit" type="application/atom+xml">
   <meta name="og:type" content="website" />
   <meta name="og:site_name" content="Ascheriit" />
   <meta name="og:title" content="javascriptMVC原始碼分析 - Class實作（中）" />
   <meta name="og:description" content="fnText Magic 上一篇忘了提這個很特別的function fnTest = /xyz/.test(function() { xyz;
 }) ? /\b_super\b/ : /.*/, //after several lines prototype[name] = typeof &hellip;" />
-  <meta name="og:url" content="http://alivedise.github.com/blog/2012/05/15/class-code-trace-2/"/>
-  <meta name="url" content="http://alivedise.github.com/blog/2012/05/15/class-code-trace-2/">
+  <meta name="og:url" content="http://alivedise.github.io/blog/2012/05/15/class-code-trace-2/"/>
+  <meta name="url" content="http://alivedise.github.io/blog/2012/05/15/class-code-trace-2/">
   
   <meta name="subject" content="javascriptMVC"/>
   <meta name="category" content="javascriptMVC"/>
@@ -68,13 +68,13 @@
       <li><a href="/blog/archives">Archives</a></li>
     </ul>
     <ul class="nav" data-subscription="rss">
-      <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+      <li><a href="http://feeds.feedburner.com/ascheriit" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
       
     </ul>
       
     <form class="navbar-form" action="http://google.com/search" method="get">
       <fieldset role="search">
-        <input type="hidden" name="q" value="site:alivedise.github.com" />
+        <input type="hidden" name="q" value="site:alivedise.github.io" />
         <input class="span2" type="text" name="q" results="0" placeholder="Search"/>
       </fieldset>
     </form>
@@ -115,7 +115,7 @@
   
 
 
-<time datetime="2012-05-15T10:44:00+02:00" pubdate data-updated="true">May 15<span>th</span>, 2012</time> - 
+<time datetime="2012-05-15T10:44:00+08:00" pubdate data-updated="true">May 15<span>th</span>, 2012</time> - 
         
 
 posted in
@@ -126,6 +126,8 @@ posted in
 </span>
 
 
+        
+         | <a href="#disqus_thread">Comments</a>
         
       </p>
     
@@ -159,7 +161,7 @@ prototype[name] = typeof prop[name] == "function" &amp;&amp; typeof _super[name]
 
 <h5>Source</h5>
 
-<p>Returns a callback function for a function on this Class. Proxy ensures that &#8216;this&#8217; is set appropriately.</p>
+<p>Returns a callback function for a function on this Class. Proxy ensures that &lsquo;this&rsquo; is set appropriately.</p>
 
 <pre><code>$.Class("MyClass",{
     getData: function() {
@@ -267,13 +269,10 @@ MyClass.getData(showDataFunc);
 
 <ol>
 <li><code>funcs = args.shift();</code> //this.proxy的第一個參數會是函數名稱字串或函數名稱字串的陣列。取出後剩下的是要傳給這些函數的參數。</li>
-<li><code>return function class_cb(){...}</code> //這邊就是在做Currying: 用另一個函數回傳取代原本的函數。同時將此函數取名class_cb</li>
+<li><code>return function class_cb(){&hellip;}</code> //這邊就是在做Currying: 用另一個函數回傳取代原本的函數。同時將此函數取名class_cb</li>
 <li><code> if (isString &amp;&amp; self._set_called) {
-
-<pre><code>         self.called = func;
-</code></pre>
-
-<p>  } </code>  這一段目前看起來只有$.Controller才用的到，先不管他。</p></li>
+             self.called = func;
+  } </code>  這一段目前看起來只有$.Controller才用的到，先不管他。</li>
 <li>把字串轉成函數<code>self[func]</code></li>
 <li>重寫return，把一開始傳進來的參數再return給下一個函數用</li>
 </ol>
@@ -304,7 +303,7 @@ MyClass.getData(showDataFunc);
     <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
   
 
-
+ - 
       
 
 
@@ -317,7 +316,7 @@ MyClass.getData(showDataFunc);
   
 
 
-<time datetime="2012-05-15T10:44:00+02:00" pubdate data-updated="true">May 15<span>th</span>, 2012</time>
+<time datetime="2012-05-15T10:44:00+08:00" pubdate data-updated="true">May 15<span>th</span>, 2012</time> - 
       
 
 posted in
@@ -330,18 +329,16 @@ posted in
 
     </p>
     
-      <div class="share">
-	<div class="addthis_toolbox addthis_default_style ">
-	
-	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
-	
-	
-	<a class="addthis_button_tweet"></a>
-	
-	
-	<a class="addthis_counter addthis_pill_style"></a>
-	</div>
-  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://alivedise.github.io/blog/2012/05/15/class-code-trace-2/" data-via="alivedise" data-counturl="http://alivedise.github.io/blog/2012/05/15/class-code-trace-2/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
 </div>
 
     
@@ -373,15 +370,11 @@ posted in
     <ul class="recent_posts">
       
         <li>
-          <a href="/blog/2013/07/23/sandbox-iframe/">Modules inside iframe</a>
+          <a href="/blog/2013/08/06/coscup-2013/">[COSCUP 2013] Audio competing in FxOS</a>
         </li>
       
         <li>
-          <a href="/blog/2013/07/19/audio-competing-again/">[FxOS] Audio Competing Policies</a>
-        </li>
-      
-        <li>
-          <a href="/blog/2013/07/18/window-manager-decoupling/">[FxOS] Plan: Window Management Module Decoupling</a>
+          <a href="/blog/2013/07/18/window-manager-decoupling/">[FxOS] Plan: Window Management decoupling (CONT.)</a>
         </li>
       
         <li>
@@ -389,7 +382,11 @@ posted in
         </li>
       
         <li>
-          <a href="/blog/2013/07/10/system-modulization-plan/">Proposal: System Modualization Plan</a>
+          <a href="/blog/2013/07/10/system-modulization-plan/">Proposal: System Modulization Plan</a>
+        </li>
+      
+        <li>
+          <a href="/blog/2013/07/05/transition-state-machine/">[Window Management] Transition state machine</a>
         </li>
       
     </ul>
@@ -464,8 +461,8 @@ posted in
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://alivedise.github.com/blog/2012/05/15/class-code-trace-2/';
-        var disqus_url = 'http://alivedise.github.com/blog/2012/05/15/class-code-trace-2/';
+        var disqus_identifier = 'http://alivedise.github.io/blog/2012/05/15/class-code-trace-2/';
+        var disqus_url = 'http://alivedise.github.io/blog/2012/05/15/class-code-trace-2/';
         var disqus_script = 'embed.js';
       
     (function () {
@@ -487,6 +484,14 @@ posted in
 }(document, 'script', 'facebook-jssdk'));</script>
 
 
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
 
 
 

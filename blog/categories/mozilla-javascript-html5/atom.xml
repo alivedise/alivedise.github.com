@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: mozilla,javascript,html5 | Ascheriit]]></title>
-  <link href="http://alivedise.github.com/blog/categories/mozilla-javascript-html5/atom.xml" rel="self"/>
-  <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-23T18:10:26+02:00</updated>
-  <id>http://alivedise.github.com/</id>
+  <link href="http://alivedise.github.io/blog/categories/mozilla-javascript-html5/atom.xml" rel="self"/>
+  <link href="http://alivedise.github.io/"/>
+  <updated>2013-08-07T09:56:17+08:00</updated>
+  <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Web activity]]></title>
-    <link href="http://alivedise.github.com/blog/2012/09/04/web-activity/"/>
-    <updated>2012-09-04T15:45:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2012/09/04/web-activity</id>
+    <link href="http://alivedise.github.io/blog/2012/09/04/web-activity/"/>
+    <updated>2012-09-04T15:45:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2012/09/04/web-activity</id>
     <content type="html"><![CDATA[<p>Web activity是由Mozilla設計並開發，用來使web app之間共享資源的框架。
 在Firefox OS中已經存在Platform/UI上的實作，並且有一些內建的主要Web app已經利用Web activity來達成跨應用程式溝通的目的。
 （如：Gallery使用它來讓其他程式從它挑選圖片，也用同一技術來實現圖片分享到不同應用）</p>
@@ -64,8 +64,8 @@ type欄位是用來當filter用的
 
 <p>接受某個Activity的App必須在Manifest.webapp中宣告：
 ``` js
-"activities": {
-   "pick": {</p>
+&ldquo;activities&rdquo;: {
+   &ldquo;pick&rdquo;: {</p>
 
 <pre><code> "filters": {
    type: ["image/png", "image/gif"],
@@ -78,7 +78,7 @@ type欄位是用來當filter用的
 <code>
 並且在自己的javascript檔中寫好當Activity產生時的處理函式
 </code> js
-navigator.setMozMessageHandler('activity', function(a) {
+navigator.setMozMessageHandler(&lsquo;activity&rsquo;, function(a) {
   var image = getImageToReturn();
   if (!image) {</p>
 
@@ -87,7 +87,7 @@ return;
 </code></pre>
 
 <p>  }
-  a.postResult({ type: "image/png", url: image });
+  a.postResult({ type: &ldquo;image/png&rdquo;, url: image });
 });
 ```</p>
 
@@ -125,7 +125,7 @@ return;
 <code>
 在聯絡人程式中
 </code> js
-navigator.setMozMessageHandler('activity', function(a) {
+navigator.setMozMessageHandler(&lsquo;activity&rsquo;, function(a) {
   switch(a.source.data.type) {</p>
 
 <pre><code>case 'webcontacts/numbers':
@@ -145,9 +145,9 @@ case 'webcontacts/email':
 
 <p>比如圖片應用程式可以分享的對象有兩個以上的時候，
 Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
-<img src="http://i.imgur.com/V2rgq.jpg">
-<img src="http://i.imgur.com/xcgBK.png">
-<img src="http://i.imgur.com/UpaOC.png"></p>
+<img class="<a" src="href="http://i.imgur.com/V2rgq.jpg">http://i.imgur.com/V2rgq.jpg</a>">
+<img class="<a" src="href="http://i.imgur.com/xcgBK.png">http://i.imgur.com/xcgBK.png</a>">
+<img class="<a" src="href="http://i.imgur.com/UpaOC.png">http://i.imgur.com/UpaOC.png</a>"></p>
 
 <h3>結論</h3>
 

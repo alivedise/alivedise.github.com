@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Ascheriit]]></title>
-  <link href="http://alivedise.github.com/atom.xml" rel="self"/>
-  <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-23T18:10:26+02:00</updated>
-  <id>http://alivedise.github.com/</id>
+  <link href="http://alivedise.github.io/atom.xml" rel="self"/>
+  <link href="http://alivedise.github.io/"/>
+  <updated>2013-08-07T09:56:17+08:00</updated>
+  <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
     
@@ -14,157 +14,25 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Modules inside iframe]]></title>
-    <link href="http://alivedise.github.com/blog/2013/07/23/sandbox-iframe/"/>
-    <updated>2013-07-23T14:08:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2013/07/23/sandbox-iframe</id>
-    <content type="html"><![CDATA[<p><img src="http://i.imgur.com/CJ38kUz.jpg"></p>
+    <title type="html"><![CDATA[[COSCUP 2013] Audio competing in FxOS]]></title>
+    <link href="http://alivedise.github.io/blog/2013/08/06/coscup-2013/"/>
+    <updated>2013-08-06T17:40:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2013/08/06/coscup-2013</id>
+    <content type="html"><![CDATA[<p>I gave a presentation about how we implement the audio competing in FxOS in COSCUP.</p>
 
-<p>Recently we had some discussions about modulization.
-One of those is: <a href="https://groups.google.com/forum/#!topic/mozilla.dev.gaia/Ls9U-CScxWA">Proposition of an architectural change for Gaia apps</a>.</p>
-
-<p>The main idea is load the modules into iframe, containing:</p>
-
-<ul>
-<li>HTML file</li>
-</ul>
+<iframe src="http://www.slideshare.net/slideshow/embed_code/24888285 " width="595" height="446" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC;border-width:1px 1px 0;margin-bottom:5px" allowfullscreen></iframe>
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'>  <span class="nt">&lt;iframe</span> <span class="na">src=</span><span class="s">&quot;moduleA.html&quot;</span><span class="nt">&gt;&lt;/iframe&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>The remaining are loaded as well as the iframe
-
-<ul>
-<li>js files</li>
-<li>css files</li>
-<li>l10n resources (it is, the dictionary relavant to the frame.)</li>
-</ul>
-</li>
-</ul>
-
-
-<p>First thing comes to my mind is, we would end up with a &#8220;lots of iframe&#8221; HTML, which just looks like <code>frameset</code>&#8230;;)</p>
-
-<p><img src="http://cdn-viper.demandvideo.com/media/f9b83e6d-9490-426f-bc49-081918e27488/jpeg/0184fb2f-5b55-4bd7-bb4f-e6ccadcfb0b2_23.jpg"></p>
-
-<p>My real concerns:</p>
-
-<ol>
-<li>iframe load latency - We may encounter UI flash before the content is fully loaded.</li>
-<li>postMessage overhead - To communicate with other modules we couldn&#8217;t use previous <code>window.dispatchEvent</code> nor &#8216;pub/sub&#8217;. We will need to use <code>postMessage</code> very often.</li>
-<li>network overhead - We could group all every templating files into one but it seems we couldn&#8217;t merge the HTML files in difference into big one.</li>
-</ol>
-
-
-<p>The good parts I am heard:</p>
-
-<ol>
-<li>This way enforce people to separate the logic. (But people could use a big iframe as well.)</li>
-<li>Some JS bytecodes are shared between frames. We don&#8217;t need to parse it again.</li>
-<li>We could unload an iframe entirely if we don&#8217;t need it anymore.</li>
-</ol>
-
-
-<p>The last one looks to me the most critical one.</p>
-
-<p>Any MVC pattern couldn&#8217;t guarantee that if you destroy a module, the relative parts(DOM/js) are thrown right away.</p>
-
-<p>IMO I really wish one day we have the ability to make sure GC is done not only on iframes but on the DOM elements we want it to.</p>
-
-<p>AI hope that we won&#8217;t end up that only one framework, one library is left for choice.</p>
+<p></p>
 ]]></content>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[[FxOS] Audio Competing Policies]]></title>
-    <link href="http://alivedise.github.com/blog/2013/07/19/audio-competing-again/"/>
-    <updated>2013-07-19T18:43:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2013/07/19/audio-competing-again</id>
-    <content type="html"><![CDATA[<p>I mentioned current audio competing policies in preivous &#8220;Background play&#8221; article.</p>
-
-<p>This article is trying to decribe it more precisely.</p>
-
-<h2>Preface</h2>
-
-<p>All these API and policies are coming from these similar requirements:</p>
-
-<blockquote><p>&#8220;As an user I want the music is automatically muted when call incoming.&#8221;<br/>&#8220;As an user I want the music is able to play at background.&#8221;<br/>&#8220;As an user I want the music to stop the background playing content.&#8221;</p></blockquote>
-
-
-<p>As you may know this doesn&#8217;t exist on desktop browser (yet).</p>
-
-<h2>Initial proposal: Multiple audio stream.</h2>
-
-<script async="true" class="speakerdeck-embed" data-id="e77e4870d5d70130ea8666ea2df61d46" src="http://alivedise.github.com//speakerdeck.com/assets/embed.js"> </script>
-
-
-<p>The initial proposal is, control everything from UI side.</p>
-
-<p>Gaia knows which app is foreground and which app is background,</p>
-
-<p>so what we want is just:</p>
-
-<ul>
-<li>Ability to mute the whole page/app.</li>
-<li>Be able to know which page/app is playing audio.</li>
-<li>Use permission model to distinguish the priority.</li>
-</ul>
-
-
-<h2>Current policy: the UX logic is living in platform</h2>
-
-<ul>
-<li>Foreground app could always be playable.</li>
-<li>Only content or higher channel could play at background.</li>
-<li>Only active app is able to play when screen is off.</li>
-<li>Higher channel would interrupt lower channel.</li>
-</ul>
-
-
-<h2>Future policy: ?</h2>
-
-<ul>
-<li>Basic competing unit is a page but not an app.</li>
-<li>Separate competing and background play.</li>
-<li>Control from UI side, again.</li>
-<li>Video: Exactly&#8230;.video doesn&#8217;t need channel.</li>
-<li><a href="http://bugzil.la/835101">New audio channel API is ongoing.</a>
-
-<ul>
-<li>To resolve background play problem with normal channel.</li>
-<li>Ability to control the mozbrowser iframe to play or pause.</li>
-</ul>
-</li>
-</ul>
-
-
-<h2>Learned</h2>
-
-<ul>
-<li>We should consider existing web pages/apps as well as new API.</li>
-<li>Shall we dance with user experience?
-
-<ul>
-<li>UX is the king, but logic is another thing.</li>
-</ul>
-</li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[[FxOS] Plan: Window Management Module Decoupling]]></title>
-    <link href="http://alivedise.github.com/blog/2013/07/18/window-manager-decoupling/"/>
-    <updated>2013-07-18T17:33:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2013/07/18/window-manager-decoupling</id>
-    <content type="html"><![CDATA[<p><img src="http://i.imgur.com/T0pyFFc.jpg"></p>
-
-<p>Following are the plan about why and how to split current Gaia:System:Window Manager.</p>
+    <title type="html"><![CDATA[[FxOS] Plan: Window Management decoupling (CONT.)]]></title>
+    <link href="http://alivedise.github.io/blog/2013/07/18/window-manager-decoupling/"/>
+    <updated>2013-07-18T17:33:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2013/07/18/window-manager-decoupling</id>
+    <content type="html"><![CDATA[<p>Following are the plan about why and how to split current Gaia:System:Window Manager.</p>
 
 <h2>Sources/Links</h2>
 
@@ -178,8 +46,6 @@ One of those is: <a href="https://groups.google.com/forum/#!topic/mozilla.dev.ga
 
 <ul>
 <li>App Window Management</li>
-<li>Crash Management</li>
-<li>Clear browser data</li>
 <li>Wrapper Window Management</li>
 <li>Inline Activity Management</li>
 <li>Homescreen Management</li>
@@ -191,14 +57,13 @@ One of those is: <a href="https://groups.google.com/forum/#!topic/mozilla.dev.ga
 <li>System Message Handler</li>
 <li>Open app transition</li>
 <li>Close app transition</li>
-<li>System Message Handler</li>
 <li>FTU Management [deprecated! Become standalone FTU Launcher already!]</li>
 </ul>
 
 
 <p>So which could be pulled out to reduce the heavy weight?</p>
 
-<h3>Inline Activity Management</h3>
+<h3>Inline Activity Management &ndash;> App Window</h3>
 
 <p>Inline Activity Management should belong to the activity caller.</p>
 
@@ -207,127 +72,35 @@ the life cycle of activity callee is based on app A instead of app B.</p>
 
 <p>Thus, if app A is killed or closed, the activity opened by app A should be killed.</p>
 
-<p>But if app B(index.html) is killed, activity B(open.html) shouldn&#8217;t be affected.</p>
+<p>But if app B(index.html) is killed, activity B(open.html) shouldn&rsquo;t be affected.</p>
 
 <h3>Resize Management</h3>
 
 <p>Resize is another duty of the app window instance itself.</p>
 
-<p>If we&#8217;re moving the activity into the app window, we could</p>
+<p>If we&rsquo;re moving the activity into the app window, we could</p>
 
 <ol>
-<li>Recursively call current activity callee&#8217;s resize function until the last callee is found.</li>
+<li>Recursively call current activity callee&rsquo;s resize function until the last callee is found.</li>
 <li>Resize all activity callee on top of current app window.</li>
 </ol>
 
 
-<p>in the app window&#8217;s resize function.</p>
+<p>in the app window&rsquo;s resize function.</p>
 
 <h3>Visibility Management</h3>
 
-<p>App window would have 2 kind of &#8220;child-like&#8221; window instance:</p>
-
-<ul>
-<li><code>var childWindow = window.open</code></li>
-<li><code>new MozActivity</code></li>
-</ul>
-
-
-<p>Currently we don&#8217;t send of the caller correctly to background on these two cases.</p>
-
-<p>The reasons are:</p>
-
-<ol>
-<li>Memory concern. Part of our memory management model relies on the page visibility state. Backgrounded app has higher possibility to be killed. We shall review and refine this soon. See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=892371">https://bugzilla.mozilla.org/show_bug.cgi?id=892371</a>.</li>
-<li>Backgrounded app is totally invisible instead of keeping the cached image frame. See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=825174">https://bugzilla.mozilla.org/show_bug.cgi?id=825174</a></li>
-</ol>
-
-
-<h3>Oreintation Management</h3>
-
-<p>App could specify the native orientation from manifest&#8217;s orientation field.
-So from this point it is an instance specific value.</p>
-
-<p>What&#8217;s tricky here is:</p>
-
-<ol>
-<li>Orientation indeed isn&#8217;t app specific API. Any app at any time could call <code>lockOrientation</code> of &#8216;screen&#8217; object. Thus it would affect the other apps.</li>
-<li>What we should do is preventing app from locking/unlocking orientation when they&#8217;re background.</li>
-<li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=840147">Orientation behavior is bind to app transtion UX.</a></li>
-<li>We will discuss this more detailly in app window design.</li>
-</ol>
-
-
-<h3>Homescreen Management</h3>
-
-<p>Window Manager is the one who manipulates hardware or software home button event.</p>
-
-<p>We should leave this part in Window Manager but let Homescreen Window manages itself.</p>
-
-<p>To manage itself means that:</p>
-
-<ul>
-<li>Generate the mozbrowser iframe by itself.</li>
-<li>Fetch homescreen manifest by the manifestURL storing at settings on its own.</li>
-<li>Revive itself when it&#8217;s killed in background. (Different behavior than other apps.)</li>
-</ul>
-
-
-<p>So it&#8217;s worthy to have an specific app window singleton for homescreen app.</p>
-
-<h3>Wrapper Management</h3>
-
-<p>This is another special type of app window.
-It&#8217;s opened via homescreen; it stands for the app who has no manifestURL but a pure web page.</p>
-
-<p>We should have a new WrapperWindow class inherited from AppWindow class.</p>
-
-<h3>mozbrowser iframe generation</h3>
-
-<p>All kind of window needs one mozbrowser iframe with different attributes fed to.</p>
-
-<p>The element should be generated in <code>BrowserFrame</code> in configuration pattern.</p>
-
-<h3>Open/Close transition</h3>
-
-<p>This is the most important part of a window UI.</p>
-
-<p>There&#8217;re many things relying on the transition state to take progress.</p>
-
-<p>We&#8217;re discussing it in previous article, and would review this implementation soon.</p>
-
-<h3>System Message Handler</h3>
-
-<p>Now system message is used for opening the target app if it&#8217;s not opened.
-There&#8217;re two cases: activity and non-activity.</p>
-
-<p>This should be left in Window Manager.</p>
-
-<h3>Crash management</h3>
-
-<ul>
-<li>For crash of app window, let it decides what it wants to do when it sees crash event.</li>
-<li>For crash of opened window or activivity, let its caller decides what to do.</li>
-</ul>
-
-
-<h3>Clear browser data</h3>
-
-<p>Totally safe enough to move to another module.
-Irrevalant to manage windows.</p>
-
-<h3>Screenshot Management</h3>
-
-<p>Since the screenshot now is only touched by app window and cards view,
-let app window expose its screenshot to cards view.</p>
+<p>App window would have 2 kind of &ldquo;child-like&rdquo; window instance:
+* <code>var child = window.open</code>
+* <code>Activity</code></p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[[Fx OS] Background media play]]></title>
-    <link href="http://alivedise.github.com/blog/2013/07/16/audio-competing-in-fxos/"/>
-    <updated>2013-07-16T19:16:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2013/07/16/audio-competing-in-fxos</id>
+    <link href="http://alivedise.github.io/blog/2013/07/16/audio-competing-in-fxos/"/>
+    <updated>2013-07-16T19:16:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2013/07/16/audio-competing-in-fxos</id>
     <content type="html"><![CDATA[<p><img src="https://blog.mozilla.org/press/files/2012/09/FXOS_Music_Grid.jpg"></p>
 
 <p>If you want to have you own media playing app to be able to run at background,
@@ -337,7 +110,7 @@ and/or has the ability to interrupt other playing audio, please view this articl
 
 <p>You need to specify this permission in the manifest of your app.</p>
 
-<p>And yes, this means we don&#8217;t allow a web page without the manifest to play at background.</p>
+<p>And yes, this means we don&rsquo;t allow a web page without the manifest to play at background.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -350,7 +123,7 @@ and/or has the ability to interrupt other playing audio, please view this articl
 
 <p>The <code>content</code> represents the name of the audio channel.</p>
 
-<p>Note: Video&#8217;s permission also uses the same <code>audio-channel-content</code>.</p>
+<p>Note: Video&rsquo;s permission also uses the same <code>audio-channel-content</code>.</p>
 
 <h3>Audio Channel Types</h3>
 
@@ -378,7 +151,7 @@ and/or has the ability to interrupt other playing audio, please view this articl
 <h3>Audio Competing Rules</h3>
 
 <ol>
-<li>We&#8217;re interrupting the lower channel when higher channel occurs.</li>
+<li>We&rsquo;re interrupting the lower channel when higher channel occurs.</li>
 <li>If the same channel are playing and using content channel,
 the one who gets visibility (go to foreground) would be the winner.</li>
 <li>The foreground page/app is always playable. However the channel type decides it could interrupt background playing content or not.</li>
@@ -426,7 +199,7 @@ and the page/app is the current displayed one.</li>
 
 <p>You should create another audio/video instance if you want to be played in another channel.</p>
 
-<h2>(OPTIONAL) If you want to know you&#8217;re interrupted by higher channel</h2>
+<h2>(OPTIONAL) If you want to know you&rsquo;re interrupted by higher channel</h2>
 
 <p>Add mozinterruptbegin/mozinterruptend event handler if you need to do something with interruptions.</p>
 
@@ -449,7 +222,7 @@ and the page/app is the current displayed one.</li>
 
 <ul>
 <li>Even if your are developing a HTML5 video playing app,
-and we all know that video shouldn&#8217;t be played at background due to strange UX,
+and we all know that video shouldn&rsquo;t be played at background due to strange UX,
 you should also consider to set content channel because video is expected to interrupt the current background playing media.</li>
 </ul>
 
@@ -465,10 +238,10 @@ you should also consider to set content channel because video is expected to int
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Proposal: System Modualization Plan]]></title>
-    <link href="http://alivedise.github.com/blog/2013/07/10/system-modulization-plan/"/>
-    <updated>2013-07-10T18:04:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2013/07/10/system-modulization-plan</id>
+    <title type="html"><![CDATA[Proposal: System Modulization Plan]]></title>
+    <link href="http://alivedise.github.io/blog/2013/07/10/system-modulization-plan/"/>
+    <updated>2013-07-10T18:04:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2013/07/10/system-modulization-plan</id>
     <content type="html"><![CDATA[<h4>Source</h4>
 
 <p><a href="https://github.com/mozilla-b2g/gaia/tree/master/apps/system">https://github.com/mozilla-b2g/gaia/tree/master/apps/system</a></p>
@@ -477,16 +250,16 @@ you should also consider to set content channel because video is expected to int
 
 <ol>
 <li>Some modules directly invokes others.</li>
-<li><code>'LockScreen is undefined.'</code> message appears oftenly right after device boots up.</li>
-<li>Memory concern - Most of the modules are not always needed. Most of the UI view doesn&#8217;t need to live in the DOM tree at first.</li>
-<li>Performance concern - device bootup time is getting longer and longer.</li>
+<li><code>&lsquo;LockScreen is undefined.&rsquo;</code> message appears oftenly right after device boots up.</li>
+<li>Memory concern &ndash; Most of the modules are not always needed. Most of the UI view doesn&rsquo;t need to live in the DOM tree at first.</li>
+<li>Performance concern &ndash; device bootup time is getting longer and longer.</li>
 </ol>
 
 
 <h4>Proposal: Core modules and side modules</h4>
 
-<p>We could figure out what&#8217;s definitely necessary in an operating system and what&#8217;s not.
-For example, <code>Window Management</code> relevant modules should be a core module but <code>Captive Portal</code> shouldn&#8217;t be.</p>
+<p>We could figure out what&rsquo;s definitely necessary in an operating system and what&rsquo;s not.
+For example, <code>Window Management</code> relevant modules should be a core module but <code>Captive Portal</code> shouldn&rsquo;t be.</p>
 
 <p>The main idea is the same as any other app performanace tuning:
 Lazy load anything on demand.</p>
@@ -517,9 +290,9 @@ For example, lazy load the Captive Portal:</p>
 * expose handleEvent in any side module for Event Dispatcher to invoke when they are firt time loaded by Event Dispatcher.</p>
 
 <p>With this, we could even lazy load lockscreen,
-because if lockscreen is disabled by the user, we don&#8217;t need to load it when the device boots.</p>
+because if lockscreen is disabled by the user, we don&rsquo;t need to load it when the device boots.</p>
 
-<p>IMO there&#8217;re only few core modules now:</p>
+<p>IMO there&rsquo;re only few core modules now:</p>
 
 <ul>
 <li>Window Management
@@ -532,7 +305,7 @@ because if lockscreen is disabled by the user, we don&#8217;t need to load it wh
 <li>Utility-tray</li>
 <li>Statusbar</li>
 <li>Init Logo Handler (But this is useless after device boot finishes.)</li>
-<li>Screen Management (Exactly, it&#8217;s indeed Wake Lock Management)</li>
+<li>Screen Management (Exactly, it&rsquo;s indeed Wake Lock Management)</li>
 <li>Applications (API Wrapper for mozApp)</li>
 </ul>
 
@@ -557,20 +330,20 @@ because if lockscreen is disabled by the user, we don&#8217;t need to load it wh
 
 <h5>Chanllenge</h5>
 
-<p>If we want to &#8220;unload&#8221; the module and its view using iframe,
+<p>If we want to &ldquo;unload&rdquo; the module and its view using iframe,
 we need a way for modules inside iframe to communicate.
 The first thing come to my mind is <code>window.parent.postMessage</code></p>
 
-<p>Second, we need to consider dependency problems if it&#8217;s too complex.</p>
+<p>Second, we need to consider dependency problems if it&rsquo;s too complex.</p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[[Window Management] Transition state machine]]></title>
-    <link href="http://alivedise.github.com/blog/2013/07/05/transition-state-machine/"/>
-    <updated>2013-07-05T14:53:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2013/07/05/transition-state-machine</id>
-    <content type="html"><![CDATA[<p>The article is inspired by Tim&#8217;s <a href="http://blog.timc.idv.tw/posts/css-classes-state-machine-puzzle/">CSS Classes State Machine Puzzle</a>.</p>
+    <link href="http://alivedise.github.io/blog/2013/07/05/transition-state-machine/"/>
+    <updated>2013-07-05T14:53:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2013/07/05/transition-state-machine</id>
+    <content type="html"><![CDATA[<p>The article is inspired by Tim&rsquo;s <a href="http://blog.timc.idv.tw/posts/css-classes-state-machine-puzzle/">CSS Classes State Machine Puzzle</a>.</p>
 
 <p>We had some frustrations all the times, on animating a window correctly.</p>
 
@@ -578,36 +351,36 @@ The first thing come to my mind is <code>window.parent.postMessage</code></p>
 But at first I need to apologize for my poor knowledge and thought about css transitions using class names.</p>
 
 <p>In the past I usually thought it was stupid to use class list to control the style.
-I thought it was ambiguous and strange if we ran into a situation that there&#8217;re more than one classes of same type put on one element. And an element full of different class names for different purposes may conflict. Recently I see <a href="https://github.com/h5bp/Effeckt.css">Effeckt</a> and know this is the trend: a simple class name stands for a kind of animation.</p>
+I thought it was ambiguous and strange if we ran into a situation that there&rsquo;re more than one classes of same type put on one element. And an element full of different class names for different purposes may conflict. Recently I see <a href="https://github.com/h5bp/Effeckt.css">Effeckt</a> and know this is the trend: a simple class name stands for a kind of animation.</p>
 
 <p>The real problem is that we should never put wrong class on the DOM element, in javascript. So this now turns to be a pure javascript puzzle.</p>
 
-<p>We know, that, in certain moment, the app window is always in a specific state A, not B nor C. So what&#8217;s the problem? It&#8217;s how could we switch the state correctly.</p>
+<p>We know, that, in certain moment, the app window is always in a specific state A, not B nor C. So what&rsquo;s the problem? It&rsquo;s how could we switch the state correctly.</p>
 
-<p>Let&#8217;s create a real state machine in javascript!</p>
+<p>Let&rsquo;s create a real state machine in javascript!</p>
 
-<p>So far it doesn&#8217;t take times for us to figure out that a window should have 4 basic transition state: <code>closed</code>, <code>opening</code>, <code>opened</code>, <code>closing</code>.</p>
+<p>So far it doesn&rsquo;t take times for us to figure out that a window should have 4 basic transition state: <code>closed</code>, <code>opening</code>, <code>opened</code>, <code>closing</code>.</p>
 
 <p>A basic transition life cycle of a window could be:</p>
 
 <blockquote><p>(initial) -> closed -> opening -> opened &#8212;&#8212;> closing -> opening &#8212;&#8212;> &#8230;.</p></blockquote>
 
 
-<p>Now we have 4 states, the next is what&#8217;s the trigger to states switching?</p>
+<p>Now we have 4 states, the next is what&rsquo;s the trigger to states switching?</p>
 
-<p>In finite state machine, what triggers state change is named for <a href="https://en.wikipedia.org/wiki/Finite-state_machine">&#8216;event&#8217;</a>.</p>
+<p>In finite state machine, what triggers state change is named for <a href="https://en.wikipedia.org/wiki/Finite-state_machine">&lsquo;event&rsquo;</a>.</p>
 
-<p>We know that at least we have 2 events: &#8216;open&#8217; and &#8216;close&#8217;.</p>
+<p>We know that at least we have 2 events: &lsquo;open&rsquo; and &lsquo;close&rsquo;.</p>
 
 <ul>
-<li>&#8216;open&#8217; would trigger <code>closed</code> switches to <code>opening</code></li>
-<li>&#8216;close&#8217; would trigger <code>opened</code> switches to <code>closing</code></li>
-<li>If we sends &#8216;open&#8217; event into the state machine continously,
+<li>&lsquo;open&rsquo; would trigger <code>closed</code> switches to <code>opening</code></li>
+<li>&lsquo;close&rsquo; would trigger <code>opened</code> switches to <code>closing</code></li>
+<li>If we sends &lsquo;open&rsquo; event into the state machine continously,
 the second event would be ignored.
-(Exactly it depends on what policy we choose. For example, we could devide &#8216;opening&#8217; state into &#8216;opening-part-1&#8217; and &#8216;opening-part-2&#8217; states. And implement the async state change. But if we need s two-state opening, it sounds like a CSS design problem to me. Let&#8217;s discuss this later if necessary.)</li>
-<li>In order to gurantee the transition does really end and thus being independent from the &#8216;animationend&#8217; event(The event here is HTML DOM Event), we need to add a timer between &#8216;opening&#8217; and &#8216;opened&#8217; state. Also between &#8216;closing&#8217; and &#8216;closed&#8217; state.</li>
-<li>Let&#8217;s call the new event &#8216;timeout&#8217;, the timing we set the timer is right after the transitioning from &#8216;closed&#8217; to &#8216;opening&#8217;, and from &#8216;opened&#8217; to &#8216;closing&#8217; successfully occurs.</li>
-<li>For some use case we may want to cancel the transition. The &#8216;cancel&#8217; event is only valid in &#8216;opening&#8217; and &#8216;closing&#8217; state.</li>
+(Exactly it depends on what policy we choose. For example, we could devide &lsquo;opening&rsquo; state into &lsquo;opening-part-1&rsquo; and &lsquo;opening-part-2&rsquo; states. And implement the async state change. But if we need s two-state opening, it sounds like a CSS design problem to me. Let&rsquo;s discuss this later if necessary.)</li>
+<li>In order to gurantee the transition does really end and thus being independent from the &lsquo;animationend&rsquo; event(The event here is HTML DOM Event), we need to add a timer between &lsquo;opening&rsquo; and &lsquo;opened&rsquo; state. Also between &lsquo;closing&rsquo; and &lsquo;closed&rsquo; state.</li>
+<li>Let&rsquo;s call the new event &lsquo;timeout&rsquo;, the timing we set the timer is right after the transitioning from &lsquo;closed&rsquo; to &lsquo;opening&rsquo;, and from &lsquo;opened&rsquo; to &lsquo;closing&rsquo; successfully occurs.</li>
+<li>For some use case we may want to cancel the transition. The &lsquo;cancel&rsquo; event is only valid in &lsquo;opening&rsquo; and &lsquo;closing&rsquo; state.</li>
 </ul>
 
 
@@ -1247,15 +1020,15 @@ the second event would be ignored.
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h5>The state machine&#8217;s usage and notes</h5>
+<h5>The state machine&rsquo;s usage and notes</h5>
 
 <ol>
-<li>A single app window instance would send &#8216;open&#8217; and &#8216;close&#8217; event due to user action:
+<li>A single app window instance would send &lsquo;open&rsquo; and &lsquo;close&rsquo; event due to user action:
 <code>
-transitionStateMachine.<em>processEvent('open');
-transitionStateMachine.</em>processEvent('close');
+transitionStateMachine.<em>processEvent(&lsquo;open&rsquo;);
+transitionStateMachine.</em>processEvent(&lsquo;close&rsquo;);
 </code>
-Note, app window doesn&#8217;t need to know current state of the state machine.</li>
+Note, app window doesn&rsquo;t need to know current state of the state machine.</li>
 <li>The state machine itself is the one who creates/removes the timer which triggers timeout event. I am also thinking about moving this out of the state machine and do this in another mixin, only have the callback functions provided by the state machine. But I am not sure.</li>
 <li>The state machine has some callback for others(other state machine!) listed below:
 
@@ -1273,20 +1046,20 @@ Maybe we could define the level of the callback into three here, according to th
 </ol>
 
 
-<p>Finally, back to the problems addressed in Tim&#8217;s article:</p>
+<p>Finally, back to the problems addressed in Tim&rsquo;s article:</p>
 
 <ul>
 <li>Do we need intermediate state?
 
 <ul>
-<li>I don&#8217;t think so, at least for now. If we really need to goto next state when we successfully from state A to state B, we could call <code>_processEvent</code> again in the inner callback of the state machine. This doesn&#8217;t violate the policy that only state machine ifself could decide its next state.</li>
-<li>If the intermediate state needs to acquire other type of state &#8211; just fetch the current state of the other state machine. Or, if we need, register an one-time callback if the current state doesn&#8217;t meet our requirement.</li>
+<li>I don&rsquo;t think so, at least for now. If we really need to goto next state when we successfully from state A to state B, we could call <code>_processEvent</code> again in the inner callback of the state machine. This doesn&rsquo;t violate the policy that only state machine ifself could decide its next state.</li>
+<li>If the intermediate state needs to acquire other type of state &mdash; just fetch the current state of the other state machine. Or, if we need, register an one-time callback if the current state doesn&rsquo;t meet our requirement.</li>
 </ul>
 </li>
 <li>How about state conflict between two apps?
 
 <ul>
-<li>That won&#8217;t happen if we deal with the state changes correctly and independently in each app&#8217;s scope. I hope so.</li>
+<li>That won&rsquo;t happen if we deal with the state changes correctly and independently in each app&rsquo;s scope. I hope so.</li>
 </ul>
 </li>
 </ul>
@@ -1296,10 +1069,10 @@ Maybe we could define the level of the callback into three here, according to th
   
   <entry>
     <title type="html"><![CDATA[HTML5 Page visibility on Fx OS]]></title>
-    <link href="http://alivedise.github.com/blog/2013/07/05/page-visibility-on-firefox-os/"/>
-    <updated>2013-07-05T04:23:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2013/07/05/page-visibility-on-firefox-os</id>
-    <content type="html"><![CDATA[<p>在桌面版本的網頁開發中，我們可以透過 HTML5 的 page visibility API 來知道目前的網頁是否為使用者焦點，或者目前不可為使用者所見，來達成某些目的：如停止 UI 更新，資料交換&#8230;等，範例程式如下：</p>
+    <link href="http://alivedise.github.io/blog/2013/07/05/page-visibility-on-firefox-os/"/>
+    <updated>2013-07-05T04:23:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2013/07/05/page-visibility-on-firefox-os</id>
+    <content type="html"><![CDATA[<p>在桌面版本的網頁開發中，我們可以透過 HTML5 的 page visibility API 來知道目前的網頁是否為使用者焦點，或者目前不可為使用者所見，來達成某些目的：如停止 UI 更新，資料交換&hellip;等，範例程式如下：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -1331,7 +1104,7 @@ Maybe we could define the level of the callback into three here, according to th
 
 <p>聽起來很抽象嗎？先來張系統模組介面架構圖：
 <img src="http://i.imgur.com/ypJSsQg.jpg">
-Gaia System Architecture Diagram (source from https://docs.google.com/drawings/d/18DnhTgQBK3M0KBeLGJkWW1hfiYBB6GgTmfdbUnT2SLs/edit?usp=sharing)</p>
+Gaia System Architecture Diagram (source from <a href="https://docs.google.com/drawings/d/18DnhTgQBK3M0KBeLGJkWW1hfiYBB6GgTmfdbUnT2SLs/edit?usp=sharing">https://docs.google.com/drawings/d/18DnhTgQBK3M0KBeLGJkWW1hfiYBB6GgTmfdbUnT2SLs/edit?usp=sharing</a>)</p>
 
 <p>簡單的說，手機系統介面在特定狀態下會將目前已經是前景的 app 設定為背景狀態，其優先層級如下：</p>
 
@@ -1345,7 +1118,7 @@ Gaia System Architecture Diagram (source from https://docs.google.com/drawings/d
 </ol>
 
 
-<p>而這些事件又可能會同時發生而產生互相影響，如：inline activity 作用時電話打進來，多重 inline activities 中第一次產生的 activity frame 會被第二次的 activity frame 蓋掉&#8230;等。</p>
+<p>而這些事件又可能會同時發生而產生互相影響，如：inline activity 作用時電話打進來，多重 inline activities 中第一次產生的 activity frame 會被第二次的 activity frame 蓋掉&hellip;等。</p>
 
 <p>這些決策發生在哪呢？與桌面瀏覽器不同，決定這一切的是發生在 Gaia，也就是 Firefox OS 的 UI 層：換句話說，是以 JavaScript 撰寫的噢。而實現的方式是系統中各個模組對各個底層 moz-*  API 的 callback 重新包覆並以 custom event 的形式通知其他模組，最後集中給 system app 中的 Window Manager 來做統一管理。</p>
 
@@ -1358,11 +1131,11 @@ Gaia System Architecture Diagram (source from https://docs.google.com/drawings/d
 
 <ul>
 <li>(Gaia) [Screen Manager] mozPower.screenEnabled = false</li>
-<li>(Gaia) [Screen Manager] send custom &#8216;screenchange&#8217; event</li>
-<li>(Gaia) [Lockscreen] get &#8216;screenchange&#8217; event, check the settings of &#8220;lockscreen.enabled&#8221; and dispatch custom &#8216;lock&#8217; event</li>
-<li>(Gaia) [Window Manager] get &#8216;lock&#8217; event, and then set visibility = false for current app(focused one).</li>
-<li>(Gonk) [/sys/power] See mozPower.screenEnabled is modified and send &#8216;sizemodechange&#8217; to simulate the content window is minimized.</li>
-<li>(Gecko) [shell] Get &#8216;sizemodechange&#8217; event, set visibility = false for the whole system app</li>
+<li>(Gaia) [Screen Manager] send custom &lsquo;screenchange&rsquo; event</li>
+<li>(Gaia) [Lockscreen] get &lsquo;screenchange&rsquo; event, check the settings of &ldquo;lockscreen.enabled&rdquo; and dispatch custom &lsquo;lock&rsquo; event</li>
+<li>(Gaia) [Window Manager] get &lsquo;lock&rsquo; event, and then set visibility = false for current app(focused one).</li>
+<li>(Gonk) [/sys/power] See mozPower.screenEnabled is modified and send &lsquo;sizemodechange&rsquo; to simulate the content window is minimized.</li>
+<li>(Gecko) [shell] Get &lsquo;sizemodechange&rsquo; event, set visibility = false for the whole system app</li>
 </ul>
 
 
@@ -1370,9 +1143,9 @@ Gaia System Architecture Diagram (source from https://docs.google.com/drawings/d
 
 <ul>
 <li>(Gecko) Get keypress event of sleep-button, and then send mozChromeEvent to gaia</li>
-<li>(Gaia) [Hardware Button Manager] Get mozChromeEvent with type = &#8220;sleep-button-press&#8221;, wrap the event to &#8216;wake&#8217; event</li>
+<li>(Gaia) [Hardware Button Manager] Get mozChromeEvent with type = &ldquo;sleep-button-press&rdquo;, wrap the event to &lsquo;wake&rsquo; event</li>
 <li>(Gaia) [Screen Manager] mozPower.screenEnabled = true</li>
-<li>(Gecko) [shell] Get &#8216;sizemodechange&#8217; event, set visibility = true for the whole system app
+<li>(Gecko) [shell] Get &lsquo;sizemodechange&rsquo; event, set visibility = true for the whole system app
 [NOTE] the current app is still invisible now, but the system app is visible.</li>
 </ul>
 
@@ -1380,8 +1153,8 @@ Gaia System Architecture Diagram (source from https://docs.google.com/drawings/d
 <h5>Unlock the lockscreen:</h5>
 
 <ul>
-<li>(Gaia) [Lockscreen] Send custom &#8216;unlock&#8217; event.</li>
-<li>(Gaia) [Widow Manager] Get &#8216;unlock&#8217; event and turn on the active app&#8217;s visibility.</li>
+<li>(Gaia) [Lockscreen] Send custom &lsquo;unlock&rsquo; event.</li>
+<li>(Gaia) [Widow Manager] Get &lsquo;unlock&rsquo; event and turn on the active app&rsquo;s visibility.</li>
 </ul>
 
 
@@ -1393,9 +1166,9 @@ Gaia System Architecture Diagram (source from https://docs.google.com/drawings/d
   
   <entry>
     <title type="html"><![CDATA[My first year at Mozilla]]></title>
-    <link href="http://alivedise.github.com/blog/2013/07/05/one-year-at-mozilla/"/>
-    <updated>2013-07-05T02:31:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2013/07/05/one-year-at-mozilla</id>
+    <link href="http://alivedise.github.io/blog/2013/07/05/one-year-at-mozilla/"/>
+    <updated>2013-07-05T02:31:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2013/07/05/one-year-at-mozilla</id>
     <content type="html"><![CDATA[<h3>Achievements</h3>
 
 <ul>
@@ -1432,7 +1205,7 @@ Gaia System Architecture Diagram (source from https://docs.google.com/drawings/d
 <img src="http://i.imgur.com/OBv99Ty.jpg">
 <img src="http://i.imgur.com/7u3g8IC.jpg"></p>
 
-<h4>Berlin - Snow!</h4>
+<h4>Berlin &ndash; Snow!</h4>
 
 <p><img src="http://i.imgur.com/cO74ubC.jpg">
 <img src="http://i.imgur.com/EULi3MV.jpg">
@@ -1449,8 +1222,8 @@ Gaia System Architecture Diagram (source from https://docs.google.com/drawings/d
 <h4>Japan</h4>
 
 <ul>
-<li>自助旅行 - 是的，這其實跟工作無關，不過也因為是在這裡，請長假出國玩絕對不是太困難的事情。</li>
-<li>我在日本期間去了日本Mozilla辦公室 - 位在六本木，一個很棒的空間。
+<li>自助旅行 &ndash; 是的，這其實跟工作無關，不過也因為是在這裡，請長假出國玩絕對不是太困難的事情。</li>
+<li>我在日本期間去了日本Mozilla辦公室 &ndash; 位在六本木，一個很棒的空間。
 <img src="http://i.imgur.com/z4ekB4W.jpg">
 <img src="http://i.imgur.com/2ErLpTd.jpg">
 <img src="http://i.imgur.com/qtQGJuH.jpg">
@@ -1477,9 +1250,9 @@ Gaia System Architecture Diagram (source from https://docs.google.com/drawings/d
   
   <entry>
     <title type="html"><![CDATA[Recent side projects: Alvitr, Lucifer, GaiaSystemAPIDOC]]></title>
-    <link href="http://alivedise.github.com/blog/2013/06/18/alvitr/"/>
-    <updated>2013-06-18T12:33:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2013/06/18/alvitr</id>
+    <link href="http://alivedise.github.io/blog/2013/06/18/alvitr/"/>
+    <updated>2013-06-18T12:33:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2013/06/18/alvitr</id>
     <content type="html"><![CDATA[<h3>Alvitr</h3>
 
 <p>Alvitr(艾爾薇妲）是北歐神話中戰女神的其中一名，其名意為「全知」。</p>
@@ -1523,22 +1296,22 @@ Gaia System Architecture Diagram (source from https://docs.google.com/drawings/d
 <a href="https://github.com/alivedise/jsdoc3-bootstrap">JSDOC3 bootstrap template</a>
 不知道為什麼jsdoc2我電腦一直裝不成功，jsdoc3倒是很簡單的用npm就裝好了。</p>
 
-<p>找了一下找不到專門給jsdoc3用的好看template&#8230;我就自己套bootstrap上去了，成果如上。</p>
+<p>找了一下找不到專門給jsdoc3用的好看template&hellip;我就自己套bootstrap上去了，成果如上。</p>
 
 <h3>其他</h3>
 
-<p>我還有一兩個一直很想做的probject&#8230;不過總是因為懶惰作罷:P</p>
+<p>我還有一兩個一直很想做的probject&hellip;不過總是因為懶惰作罷:P</p>
 
-<p>回首到Mozilla也一年了，感覺自身還有很多不足&#8230;.
+<p>回首到Mozilla也一年了，感覺自身還有很多不足&hellip;.
 督促自己寫side project只是開始而已，還要再努力阿！</p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[Javascript從變形矩陣反推scale以及rotate]]></title>
-    <link href="http://alivedise.github.com/blog/2013/05/27/rotation-matrix/"/>
-    <updated>2013-05-27T15:41:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2013/05/27/rotation-matrix</id>
+    <link href="http://alivedise.github.io/blog/2013/05/27/rotation-matrix/"/>
+    <updated>2013-05-27T15:41:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2013/05/27/rotation-matrix</id>
     <content type="html"><![CDATA[<p>原文：
 <a href="http://css-tricks.com/get-value-of-css-rotation-through-javascript/">http://css-tricks.com/get-value-of-css-rotation-through-javascript/</a></p>
 
@@ -1667,9 +1440,9 @@ Gaia System Architecture Diagram (source from https://docs.google.com/drawings/d
   
   <entry>
     <title type="html"><![CDATA[From browser to browser. (1)]]></title>
-    <link href="http://alivedise.github.com/blog/2013/02/23/from-browser-to-browser/"/>
-    <updated>2013-02-23T17:40:00+01:00</updated>
-    <id>http://alivedise.github.com/blog/2013/02/23/from-browser-to-browser</id>
+    <link href="http://alivedise.github.io/blog/2013/02/23/from-browser-to-browser/"/>
+    <updated>2013-02-23T17:40:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2013/02/23/from-browser-to-browser</id>
     <content type="html"><![CDATA[<h3>Firefox OS</h3>
 
 <p><img src="http://cdn0.mos.techradar.futurecdn.net///art/mobile_phones/Mozilla/FireFoxOS/DeveloperHandsets/FirefoxOSDev-Press-01-580-75.jpg"></p>
@@ -1677,7 +1450,7 @@ Gaia System Architecture Diagram (source from https://docs.google.com/drawings/d
 <h3>System app</h3>
 
 <p>Exactly, Firefox OS, also known for boot 2 gecko, is having only one app/one page.
-It&#8217;s the system app, which controls all web app&#8217;s life cycle.
+It&rsquo;s the system app, which controls all web app&rsquo;s life cycle.
 When FirefoxOS is booted, it would load the system app from <code>system/index.html</code>.
 Then system app would take care of the remaing stuff.</p>
 
@@ -1697,7 +1470,7 @@ An app, indeed, is a web page.</p>
 
 <h3>Browser API</h3>
 
-<p>See https://developer.mozilla.org/en-US/docs/DOM/Using_the_Browser_API</p>
+<p>See <a href="https://developer.mozilla.org/en-US/docs/DOM/Using_the_Browser_API">https://developer.mozilla.org/en-US/docs/DOM/Using_the_Browser_API</a></p>
 
 <p>A browser here means that the web page acts like it is living in a browser <code>frame</code>.
 We are replacing nearly every XUL-based UI with HTML to <code>port</code> the WEB to the phone.</p>
@@ -1750,7 +1523,7 @@ A module pattern looks like:</p>
 
 <p>Thus the Window Manager object only has 2 public attributes.
 This looks fine, but it would be a nightmare if this pattern grows to over 2000 lines.
-And it&#8217;s having countless private functions now.</p>
+And it&rsquo;s having countless private functions now.</p>
 
 <p>This module now is not unit testable nor maintainable.</p>
 
@@ -1758,9 +1531,9 @@ And it&#8217;s having countless private functions now.</p>
 
 <h4>From the browser to the browser</h4>
 
-<p>Let&#8217;s define a new object to contain and manage itself in its own scope.</p>
+<p>Let&rsquo;s define a new object to contain and manage itself in its own scope.</p>
 
-<p>It&#8217;s called <code>browserFrame</code>.</p>
+<p>It&rsquo;s called <code>browserFrame</code>.</p>
 
 <h5>The responsibility of browserFrame</h5>
 
@@ -1893,9 +1666,9 @@ And it&#8217;s having countless private functions now.</p>
   
   <entry>
     <title type="html"><![CDATA[Mocha: MockMozActivity與global leak]]></title>
-    <link href="http://alivedise.github.com/blog/2013/02/23/mock-moz-activity/"/>
-    <updated>2013-02-23T16:56:00+01:00</updated>
-    <id>http://alivedise.github.com/blog/2013/02/23/mock-moz-activity</id>
+    <link href="http://alivedise.github.io/blog/2013/02/23/mock-moz-activity/"/>
+    <updated>2013-02-23T16:56:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2013/02/23/mock-moz-activity</id>
     <content type="html"><![CDATA[<p>之前在寫單元測試時，需要測到MozActivity的呼叫。</p>
 
 <p>當我們嘗試去取代window object中的MozActivity時，會遇到：</p>
@@ -1987,9 +1760,9 @@ And it&#8217;s having countless private functions now.</p>
   
   <entry>
     <title type="html"><![CDATA[Javascript memorization]]></title>
-    <link href="http://alivedise.github.com/blog/2012/12/22/javascript-memorization/"/>
-    <updated>2012-12-22T00:28:00+01:00</updated>
-    <id>http://alivedise.github.com/blog/2012/12/22/javascript-memorization</id>
+    <link href="http://alivedise.github.io/blog/2012/12/22/javascript-memorization/"/>
+    <updated>2012-12-22T00:28:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2012/12/22/javascript-memorization</id>
     <content type="html"><![CDATA[<p>As you know, function in javascript is also an object,
 you could use a property of the object to keep function result.
 This is called <code>Memorization</code>.</p>
@@ -2012,7 +1785,7 @@ This is called <code>Memorization</code>.</p>
 
 
 <p><code>getOffOrigin</code> has to use some logic to compare the two arguments and return a string.
-The result wouldn&#8217;t change if the arguments are the same.
+The result wouldn&rsquo;t change if the arguments are the same.
 Therefore, to avoid calling the function many times, the result could be stored in the function itself.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -2071,7 +1844,7 @@ Therefore, to avoid calling the function many times, the result could be stored 
 <ul>
 <li><p>If we only have one arguments we could use it as the key to cache directly.
 But we have multiple arguments in this case, we then use stringilized JSON to be the key.</p></li>
-<li><p>Hence we don&#8217;t need to do the same thing every time we enter this function if the arguments are used before.</p></li>
+<li><p>Hence we don&rsquo;t need to do the same thing every time we enter this function if the arguments are used before.</p></li>
 <li><p>Have fun with your function cache!</p></li>
 </ul>
 
@@ -2080,9 +1853,9 @@ But we have multiple arguments in this case, we then use stringilized JSON to be
   
   <entry>
     <title type="html"><![CDATA[Web activity]]></title>
-    <link href="http://alivedise.github.com/blog/2012/09/04/web-activity/"/>
-    <updated>2012-09-04T15:45:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2012/09/04/web-activity</id>
+    <link href="http://alivedise.github.io/blog/2012/09/04/web-activity/"/>
+    <updated>2012-09-04T15:45:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2012/09/04/web-activity</id>
     <content type="html"><![CDATA[<p>Web activity是由Mozilla設計並開發，用來使web app之間共享資源的框架。
 在Firefox OS中已經存在Platform/UI上的實作，並且有一些內建的主要Web app已經利用Web activity來達成跨應用程式溝通的目的。
 （如：Gallery使用它來讓其他程式從它挑選圖片，也用同一技術來實現圖片分享到不同應用）</p>
@@ -2263,14 +2036,14 @@ Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
   
   <entry>
     <title type="html"><![CDATA[[gaia] HTML5 Window Shade]]></title>
-    <link href="http://alivedise.github.com/blog/2012/07/05/gaia-window-shade/"/>
-    <updated>2012-07-05T13:58:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2012/07/05/gaia-window-shade</id>
+    <link href="http://alivedise.github.io/blog/2012/07/05/gaia-window-shade/"/>
+    <updated>2012-07-05T13:58:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2012/07/05/gaia-window-shade</id>
     <content type="html"><![CDATA[<h1>Window Shade</h1>
 
 <p>我手上的Samsung Galaxy S3的作業系統是Android 4.0.4。</p>
 
-<p>當我收到facebook/google+/&#8230;等程式通知的時候，最上面那條bar會出現對應的圖示。</p>
+<p>當我收到facebook/google+/&hellip;等程式通知的時候，最上面那條bar會出現對應的圖示。</p>
 
 <p>這時候可以透過將bar「滑下來」的動作拉出一個UI，裡面會有</p>
 
@@ -2291,7 +2064,7 @@ Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
 
 <h1>GAIA也有notification panel</h1>
 
-<p>Firefox OS的UI - <a href="http://github.com/mozilla-central/gaia">GAIA</a>裡面也有定義功能列以及通知面板這件事，
+<p>Firefox OS的UI &ndash; <a href="http://github.com/mozilla-central/gaia">GAIA</a>裡面也有定義功能列以及通知面板這件事，
 這個功能正在開發中。</p>
 
 <p>有一天我們收到某個contributor提交的pull request：</p>
@@ -2399,7 +2172,7 @@ Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
 
 <h1>不過就在昨天同事發現了一個關於功能列的issue</h1>
 
-<p>於是我開始看發生了什麼事。然後上面那兩個function耗費了我一個下午&#8230;.XD</p>
+<p>於是我開始看發生了什麼事。然後上面那兩個function耗費了我一個下午&hellip;.XD</p>
 
 <p>@colinfrei其實做了一件非常有趣但是很難從code裡面看出端倪的事情。
 甚至也很難用語言來描述，不過我想試著說明發生了什麼事，怎麼做到的。</p>
@@ -2417,11 +2190,11 @@ Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
 <h1>真相其實是：</h1>
 
 <ol>
-<li><code>utility-tray</code>是一個絕對定位的<code>div</code>，平常位置定在螢幕上方<code>-moz-calc(100% - UTILITY_TRAY_HEIGHT)</code>。</li>
+<li><code>utility-tray</code>是一個絕對定位的<code>div</code>，平常位置定在螢幕上方<code>-moz-calc(100% &ndash; UTILITY_TRAY_HEIGHT)</code>。</li>
 <li><p>當你開始Touch的時候，根據你的移動距離計算<code>translateY</code>，使它產生位移</p>
 
 <p> 你可以把<code>-moz-transform: translateY(px)</code>當成是<code>top: px</code>在CSS3的新招。
- 它提供了更快速的rendering &#8211; 當你想利用<code>-moz-transition: -moz-transform</code>來做位移動畫的時候。
+ 它提供了更快速的rendering &mdash; 當你想利用<code>-moz-transition: -moz-transform</code>來做位移動畫的時候。
  這件事情可以另外寫一篇文章來說（挖洞的意味）。</p></li>
 <li><p>當你放開拉bar的時候而且如果已經超過「要讓通知面板掉下來的合法距離」：</p>
 
@@ -2509,7 +2282,7 @@ Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
 <ol>
 <li>讓<code>utility-tray</code>先定速往上移動/讓<code>quick-setting</code>定速往下移動到底端。</li>
 <li>等到<code>utility-tray</code>的transition結束時，會收到<code>transitionend</code>的事件。
- 這時候再讓<code>utility-tray</code>進行第二次transition&#8230;而目的地就是螢幕頂端。
+ 這時候再讓<code>utility-tray</code>進行第二次transition&hellip;而目的地就是螢幕頂端。
  同時<code>quick-setting</code>就不再動作了，讓它跟著<code>utility-tray</code>一起被往上卷走。</li>
 </ol>
 
@@ -2521,15 +2294,15 @@ Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
 <h1>the end?</h1>
 
 <p>其實UX還沒有定義這個行為，所以pull request本身沒有被接受。
-不過&#8230;I did learn something from these codes:)</p>
+不過&hellip;I did learn something from these codes:)</p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[[WEB] Web Application Core]]></title>
-    <link href="http://alivedise.github.com/blog/2012/06/10/web-application-core/"/>
-    <updated>2012-06-10T17:06:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2012/06/10/web-application-core</id>
+    <link href="http://alivedise.github.io/blog/2012/06/10/web-application-core/"/>
+    <updated>2012-06-10T17:06:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2012/06/10/web-application-core</id>
     <content type="html"><![CDATA[<p>最近看到這篇文章<a href="http://addyosmani.github.com/backbone-aura/">Backbone Aura</a>難得的有提到一個web application core該做些什麼事情？跟我想的蠻相似的，這邊將他列出來：
 * 管理widget的life cycle的能力。
 * 低階DOM操作處理
@@ -2614,9 +2387,9 @@ Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
   
   <entry>
     <title type="html"><![CDATA[[javascript] function hoisting應用]]></title>
-    <link href="http://alivedise.github.com/blog/2012/06/10/function-hoisting-appliance/"/>
-    <updated>2012-06-10T16:17:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2012/06/10/function-hoisting-appliance</id>
+    <link href="http://alivedise.github.io/blog/2012/06/10/function-hoisting-appliance/"/>
+    <updated>2012-06-10T16:17:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2012/06/10/function-hoisting-appliance</id>
     <content type="html"><![CDATA[<h1>function hoisting是什麼？</h1>
 
 <p>一個不說你也不會知道的js語言特性，是指js看到function xxx(){}這種宣告時會把定義搬到scope最頂端
@@ -2667,9 +2440,9 @@ Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
   
   <entry>
     <title type="html"><![CDATA[把assignment變數轉成JSON格式]]></title>
-    <link href="http://alivedise.github.com/blog/2012/05/31/underline-to-json/"/>
-    <updated>2012-05-31T10:53:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2012/05/31/underline-to-json</id>
+    <link href="http://alivedise.github.io/blog/2012/05/31/underline-to-json/"/>
+    <updated>2012-05-31T10:53:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2012/05/31/underline-to-json</id>
     <content type="html"><![CDATA[<p>從Server端收到的資訊是如下格式</p>
 
 <pre><code>user_i0_name=alive
@@ -2730,9 +2503,9 @@ network_hostname=abc1234
   
   <entry>
     <title type="html"><![CDATA[CanJS簡介]]></title>
-    <link href="http://alivedise.github.com/blog/2012/05/30/can-js/"/>
-    <updated>2012-05-30T17:33:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2012/05/30/can-js</id>
+    <link href="http://alivedise.github.io/blog/2012/05/30/can-js/"/>
+    <updated>2012-05-30T17:33:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2012/05/30/can-js</id>
     <content type="html"><![CDATA[<h1>CanJS是什麼？</h1>
 
 <p>CanJS是JMVC團隊把MVC這一塊獨立出來的結果，並且做了一些改良。以往談到JavascriptMVC跟Backbone的時候，其實這兩個框架的目的是不同的。
@@ -2762,9 +2535,9 @@ JMVC除了MVC還提供其他的case solution，而Backbone只專注在MVC身上�
   
   <entry>
     <title type="html"><![CDATA[「WEB」我也有一個故事要說。]]></title>
-    <link href="http://alivedise.github.com/blog/2012/05/30/i-have-also-a-story-to-tell/"/>
-    <updated>2012-05-30T04:15:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2012/05/30/i-have-also-a-story-to-tell</id>
+    <link href="http://alivedise.github.io/blog/2012/05/30/i-have-also-a-story-to-tell/"/>
+    <updated>2012-05-30T04:15:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2012/05/30/i-have-also-a-story-to-tell</id>
     <content type="html"><![CDATA[<p>這個部落格在我的定位中是純技術取向，但這篇應該會是唯一一篇非關技術的文章。</p>
 
 <p>文長。</p>
@@ -2895,6 +2668,50 @@ JMVC除了MVC還提供其他的case solution，而Backbone只專注在MVC身上�
 <ol>
 <li>有人問第4段的那張手寫日期表是什麼？最後一個下班者拿走公司鑰匙的簽名。被我懶得寫跳過的平常日期是：沒回家。假日來公司：不會記。</li>
 </ol>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[JavascriptMVC on Slideshare]]></title>
+    <link href="http://alivedise.github.io/blog/2012/05/24/javascriptmvc-slideshare/"/>
+    <updated>2012-05-24T14:58:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2012/05/24/javascriptmvc-slideshare</id>
+    <content type="html"><![CDATA[<p>陸續看到兩個介紹Backbone的投影片&mdash;JSDC上的<a href="https://speakerdeck.com/u/jaceju/p/refactoring-with-backbonejs">Refactor with Backbone.js</a>，以及在slideshare看到的<a href="http://www.slideshare.net/molily/javascript-application-architecture-with-backbonejs">Javasciprt Application Architecture with Backbone.js</a>，一時手癢就想自己也來做一個介紹JavascriptMVC的投影片丟到Slideshare。</p>
+
+<p>目前Slideshare上跟JavascriptMVC有關的投影片有：</p>
+
+<ol>
+<li><a href="http://www.slideshare.net/4lb0/javascriptmvc">JavascriptMVC</a>:六個月前上傳，德文？撰寫。</li>
+</ol>
+
+
+<div style="width:425px" id="__ss_10174435"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/4lb0/javascriptmvc" title="JavascriptMVC" target="_blank">JavascriptMVC</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/10174435" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" allowfullscreen></iframe></div>
+
+
+<ol>
+<li><a href="http://www.slideshare.net/zukunftsalick/introduction-to-javascriptmvc">Introduction to JavascriptMVC</a>:一年前上傳。</li>
+</ol>
+
+
+<div style="width:425px" id="__ss_7966052"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/zukunftsalick/introduction-to-javascriptmvc" title="Introduction to JavaScriptMVC" target="_blank">Introduction to JavaScriptMVC</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/7966052" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" allowfullscreen></iframe></div>
+
+
+<ol>
+<li><a href="http://www.slideshare.net/tdreyno/jqconf">Organizing Code with JavascriptMVC</a>:兩年前上傳。</li>
+</ol>
+
+
+<div style="width:425px" id="__ss_5467723"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/tdreyno/jqconf" title="Organizing Code with JavascriptMVC" target="_blank">Organizing Code with JavascriptMVC</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/5467723" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" allowfullscreen></iframe></div>
+
+
+<p>比起Backbone實在差太多了&hellip;而且有些還是過時的資訊。</p>
+
+<p>姑且先整理一下之前的Javascript簡介投影片丟上去，下個目標預計是寫一個完整的建置範例，不過目前還沒有想到主題。</p>
+
+<div style="width:425px" id="__ss_13010920"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/DavidSkyAlive/javascriptmvc-another-choice-of-web-framework" title="JavascriptMVC: Another choice of web framework" target="_blank">JavascriptMVC: Another choice of web framework</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/13010920" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" allowfullscreen></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/DavidSkyAlive" target="_blank">Alive Kuo</a> </div> </div>
+
+
 
 ]]></content>
   </entry>

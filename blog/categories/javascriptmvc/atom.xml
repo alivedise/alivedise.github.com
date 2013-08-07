@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: javascriptMVC | Ascheriit]]></title>
-  <link href="http://alivedise.github.com/blog/categories/javascriptmvc/atom.xml" rel="self"/>
-  <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-23T18:10:26+02:00</updated>
-  <id>http://alivedise.github.com/</id>
+  <link href="http://alivedise.github.io/blog/categories/javascriptmvc/atom.xml" rel="self"/>
+  <link href="http://alivedise.github.io/"/>
+  <updated>2013-08-07T09:56:17+08:00</updated>
+  <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[javascriptMVC原始碼分析 - Class實作（下）]]></title>
-    <link href="http://alivedise.github.com/blog/2012/05/17/class-code-trace-3/"/>
-    <updated>2012-05-17T10:36:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2012/05/17/class-code-trace-3</id>
+    <link href="http://alivedise.github.io/blog/2012/05/17/class-code-trace-3/"/>
+    <updated>2012-05-17T10:36:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2012/05/17/class-code-trace-3</id>
     <content type="html"><![CDATA[<h1>Instantiation</h1>
 
 <p>這篇開始先跳出JMVC，從語言來看物件化，類別化，初始化這幾件事。</p>
@@ -26,9 +26,9 @@
   
   <entry>
     <title type="html"><![CDATA[javascriptMVC原始碼分析 - Class實作（中）]]></title>
-    <link href="http://alivedise.github.com/blog/2012/05/15/class-code-trace-2/"/>
-    <updated>2012-05-15T10:44:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2012/05/15/class-code-trace-2</id>
+    <link href="http://alivedise.github.io/blog/2012/05/15/class-code-trace-2/"/>
+    <updated>2012-05-15T10:44:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2012/05/15/class-code-trace-2</id>
     <content type="html"><![CDATA[<h3>fnText Magic</h3>
 
 <p>上一篇忘了提這個很特別的function</p>
@@ -56,7 +56,7 @@ prototype[name] = typeof prop[name] == "function" &amp;&amp; typeof _super[name]
 
 <h5>Source</h5>
 
-<p>Returns a callback function for a function on this Class. Proxy ensures that 'this' is set appropriately.</p>
+<p>Returns a callback function for a function on this Class. Proxy ensures that &lsquo;this&rsquo; is set appropriately.</p>
 
 <pre><code>$.Class("MyClass",{
     getData: function() {
@@ -164,13 +164,10 @@ MyClass.getData(showDataFunc);
 
 <ol>
 <li><code>funcs = args.shift();</code> //this.proxy的第一個參數會是函數名稱字串或函數名稱字串的陣列。取出後剩下的是要傳給這些函數的參數。</li>
-<li><code>return function class_cb(){...}</code> //這邊就是在做Currying: 用另一個函數回傳取代原本的函數。同時將此函數取名class_cb</li>
+<li><code>return function class_cb(){&hellip;}</code> //這邊就是在做Currying: 用另一個函數回傳取代原本的函數。同時將此函數取名class_cb</li>
 <li><code> if (isString &amp;&amp; self._set_called) {
-
-<pre><code>         self.called = func;
-</code></pre>
-
-<p>  } </code>  這一段目前看起來只有$.Controller才用的到，先不管他。</p></li>
+             self.called = func;
+  } </code>  這一段目前看起來只有$.Controller才用的到，先不管他。</li>
 <li>把字串轉成函數<code>self[func]</code></li>
 <li>重寫return，把一開始傳進來的參數再return給下一個函數用</li>
 </ol>
@@ -193,9 +190,9 @@ MyClass.getData(showDataFunc);
   
   <entry>
     <title type="html"><![CDATA[javascriptMVC原始碼分析 - Class實作（上）]]></title>
-    <link href="http://alivedise.github.com/blog/2012/05/15/class-code-trace/"/>
-    <updated>2012-05-15T09:58:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2012/05/15/class-code-trace</id>
+    <link href="http://alivedise.github.io/blog/2012/05/15/class-code-trace/"/>
+    <updated>2012-05-15T09:58:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2012/05/15/class-code-trace</id>
     <content type="html"><![CDATA[<h3>前言</h3>
 
 <p>這系列文章將從javascript patterns的角度來看javascriptMVC的實作方式。</p>
@@ -206,7 +203,7 @@ MyClass.getData(showDataFunc);
 
 <p>javascript有許多種關於類別繼承的實作方式，jMVC中的$.Class實作來自於<a href="http://ejohn.org/blog/simple-javascript-inheritance/">http://ejohn.org/blog/simple-javascript-inheritance/</a></p>
 
-<p>而作者又聲稱他的實作想法來自Base2(http://code.google.com/p/base2/)與Prototype(http://prototypejs.org/)</p>
+<p>而作者又聲稱他的實作想法來自Base2(<a href="http://code.google.com/p/base2/">http://code.google.com/p/base2/</a>)與Prototype(<a href="http://prototypejs.org/">http://prototypejs.org/</a>)</p>
 
 <p>這個最初的實作的要點如下：</p>
 
@@ -336,14 +333,14 @@ MyClass.getData(showDataFunc);
   
   <entry>
     <title type="html"><![CDATA[[ff13-2] chromie - Time labyrinth breaker]]></title>
-    <link href="http://alivedise.github.com/blog/2012/02/29/chromie/"/>
-    <updated>2012-02-29T14:29:00+01:00</updated>
-    <id>http://alivedise.github.com/blog/2012/02/29/chromie</id>
+    <link href="http://alivedise.github.io/blog/2012/02/29/chromie/"/>
+    <updated>2012-02-29T14:29:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2012/02/29/chromie</id>
     <content type="html"><![CDATA[<h3>簡介</h3>
 
 <ul>
 <li>ff13-2裡面有個時鐘小遊戲，<a href="http://www.youtube.com/watch?v=ngJyJDLkRh0&amp;feature=related">影片參考</a>。</li>
-<li>說穿了就是一個排列組合遊戲，比起其他小遊戲這個難度高很多，所以網路上有一些人寫了程式專門解這個小遊戲。其實有很多解答版本，但是都不太好用，UI也...。乾脆自己寫一個！</li>
+<li>說穿了就是一個排列組合遊戲，比起其他小遊戲這個難度高很多，所以網路上有一些人寫了程式專門解這個小遊戲。其實有很多解答版本，但是都不太好用，UI也&hellip;。乾脆自己寫一個！</li>
 <li>有參考某個flash實做，不過我用純html5+js實現。js核心是jquery1.7.1，框架是javascriptMVC。</li>
 </ul>
 
@@ -360,36 +357,33 @@ MyClass.getData(showDataFunc);
 <ol>
 <li>尋徑遞迴演算法
 核心片段
-``` js
+<code>js
  divergence: function(current, attractor_fields, paths, dir){
-
-<pre><code> var self = this;
- var value = attractor_fields[current];
- if(value == null) 
- {
-     return false;
+     var self = this;
+     var value = attractor_fields[current];
+     if(value == null)
+     {
+         return false;
+     }
+     //paths.push(attractor_fields[current].toString()+'['+(current+1)+']'+dir);
+     paths.push(current);
+     attractor_fields[current] = null;
+     if(paths.length == attractor_fields.length)
+     {
+         this.renderSolution(paths);
+         this.renderHistroy(paths);
+         if(this.element.find('#steinsgate span').length &gt; 0)
+             this.element.find('#steinsgate').html('');
+         this.element.find('#steinsgate').append(paths.toString()+'&lt;br/&gt;');
+         return true;
+     }
+     var path_fork1 = paths.slice();
+     var path_fork2 = paths.slice();
+     var af1 = attractor_fields.slice();
+     var af2 = attractor_fields.slice();
+     return this.divergence((attractor_fields.length+current+value)%attractor_fields.length, af1, path_fork1, '+'+value) || this.divergence((attractor_fields.length+current-value)%attractor_fields.length, af2, path_fork2, '-'+value);    
  }
- //paths.push(attractor_fields[current].toString()+'['+(current+1)+']'+dir);
- paths.push(current);
- attractor_fields[current] = null;
- if(paths.length == attractor_fields.length)
- {
-     this.renderSolution(paths);
-     this.renderHistroy(paths);
-     if(this.element.find('#steinsgate span').length &gt; 0)
-         this.element.find('#steinsgate').html('');
-     this.element.find('#steinsgate').append(paths.toString()+'&lt;br/&gt;');
-     return true;
- }
- var path_fork1 = paths.slice();
- var path_fork2 = paths.slice();
- var af1 = attractor_fields.slice();
- var af2 = attractor_fields.slice();
- return this.divergence((attractor_fields.length+current+value)%attractor_fields.length, af1, path_fork1, '+'+value) || this.divergence((attractor_fields.length+current-value)%attractor_fields.length, af2, path_fork2, '-'+value);    
-</code></pre>
-
-<p> }
-```</p></li>
+</code></li>
 <li>Canvas繪圖
 就是查API而已，利用了mozilla的線上開發手冊<a href="https://developer.mozilla.org/zh-TW/">mdn</a></li>
 </ol>
@@ -398,7 +392,7 @@ MyClass.getData(showDataFunc);
 <h3>截圖及操作</h3>
 
 <p>1~6數字輸入刻度，0刪除前一個。
-<img src="http://i.imgur.com/MSugN.png"></p>
+<img class="<a" src="href="http://i.imgur.com/MSugN.png">http://i.imgur.com/MSugN.png</a>"></p>
 
 <h3>Github demo page</h3>
 
@@ -408,9 +402,9 @@ MyClass.getData(showDataFunc);
   
   <entry>
     <title type="html"><![CDATA[[javascriptMVC] Forum 問答]]></title>
-    <link href="http://alivedise.github.com/blog/2012/02/24/jmvc-forum-treasure/"/>
-    <updated>2012-02-24T01:53:00+01:00</updated>
-    <id>http://alivedise.github.com/blog/2012/02/24/jmvc-forum-treasure</id>
+    <link href="http://alivedise.github.io/blog/2012/02/24/jmvc-forum-treasure/"/>
+    <updated>2012-02-24T01:53:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2012/02/24/jmvc-forum-treasure</id>
     <content type="html"><![CDATA[<h3>如何手動觸發model update? 讓'{model} updated'可以被想要接受的人接收</h3>
 
 <ul>

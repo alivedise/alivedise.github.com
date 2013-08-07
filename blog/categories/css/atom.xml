@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: css | Ascheriit]]></title>
-  <link href="http://alivedise.github.com/blog/categories/css/atom.xml" rel="self"/>
-  <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-23T18:10:26+02:00</updated>
-  <id>http://alivedise.github.com/</id>
+  <title><![CDATA[Category: css, | Ascheriit]]></title>
+  <link href="http://alivedise.github.io/blog/categories/css/atom.xml" rel="self"/>
+  <link href="http://alivedise.github.io/"/>
+  <updated>2013-08-07T09:56:17+08:00</updated>
+  <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
     
@@ -15,10 +15,10 @@
   
   <entry>
     <title type="html"><![CDATA[[Window Management] Transition state machine]]></title>
-    <link href="http://alivedise.github.com/blog/2013/07/05/transition-state-machine/"/>
-    <updated>2013-07-05T14:53:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2013/07/05/transition-state-machine</id>
-    <content type="html"><![CDATA[<p>The article is inspired by Tim's <a href="http://blog.timc.idv.tw/posts/css-classes-state-machine-puzzle/">CSS Classes State Machine Puzzle</a>.</p>
+    <link href="http://alivedise.github.io/blog/2013/07/05/transition-state-machine/"/>
+    <updated>2013-07-05T14:53:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2013/07/05/transition-state-machine</id>
+    <content type="html"><![CDATA[<p>The article is inspired by Tim&rsquo;s <a href="http://blog.timc.idv.tw/posts/css-classes-state-machine-puzzle/">CSS Classes State Machine Puzzle</a>.</p>
 
 <p>We had some frustrations all the times, on animating a window correctly.</p>
 
@@ -26,40 +26,40 @@
 But at first I need to apologize for my poor knowledge and thought about css transitions using class names.</p>
 
 <p>In the past I usually thought it was stupid to use class list to control the style.
-I thought it was ambiguous and strange if we ran into a situation that there're more than one classes of same type put on one element. And an element full of different class names for different purposes may conflict. Recently I see <a href="https://github.com/h5bp/Effeckt.css">Effeckt</a> and know this is the trend: a simple class name stands for a kind of animation.</p>
+I thought it was ambiguous and strange if we ran into a situation that there&rsquo;re more than one classes of same type put on one element. And an element full of different class names for different purposes may conflict. Recently I see <a href="https://github.com/h5bp/Effeckt.css">Effeckt</a> and know this is the trend: a simple class name stands for a kind of animation.</p>
 
 <p>The real problem is that we should never put wrong class on the DOM element, in javascript. So this now turns to be a pure javascript puzzle.</p>
 
-<p>We know, that, in certain moment, the app window is always in a specific state A, not B nor C. So what's the problem? It's how could we switch the state correctly.</p>
+<p>We know, that, in certain moment, the app window is always in a specific state A, not B nor C. So what&rsquo;s the problem? It&rsquo;s how could we switch the state correctly.</p>
 
-<p>Let's create a real state machine in javascript!</p>
+<p>Let&rsquo;s create a real state machine in javascript!</p>
 
-<p>So far it doesn't take times for us to figure out that a window should have 4 basic transition state: <code>closed</code>, <code>opening</code>, <code>opened</code>, <code>closing</code>.</p>
+<p>So far it doesn&rsquo;t take times for us to figure out that a window should have 4 basic transition state: <code>closed</code>, <code>opening</code>, <code>opened</code>, <code>closing</code>.</p>
 
 <p>A basic transition life cycle of a window could be:</p>
 
-<p><blockquote><p>(initial) -> closed -> opening -> opened ------> closing -> opening ------> ....</p></blockquote></p>
+<p><blockquote><p>(initial) &ndash;> closed &ndash;> opening &ndash;> opened &mdash;&mdash;&mdash;> closing &ndash;> opening &mdash;&mdash;&mdash;> &hellip;.</p></blockquote></p>
 
-<p>Now we have 4 states, the next is what's the trigger to states switching?</p>
+<p>Now we have 4 states, the next is what&rsquo;s the trigger to states switching?</p>
 
-<p>In finite state machine, what triggers state change is named for <a href="https://en.wikipedia.org/wiki/Finite-state_machine">'event'</a>.</p>
+<p>In finite state machine, what triggers state change is named for <a href="https://en.wikipedia.org/wiki/Finite-state_machine">&lsquo;event&rsquo;</a>.</p>
 
-<p>We know that at least we have 2 events: 'open' and 'close'.</p>
+<p>We know that at least we have 2 events: &lsquo;open&rsquo; and &lsquo;close&rsquo;.</p>
 
 <ul>
-<li>'open' would trigger <code>closed</code> switches to <code>opening</code></li>
-<li>'close' would trigger <code>opened</code> switches to <code>closing</code></li>
-<li>If we sends 'open' event into the state machine continously,
+<li>&lsquo;open&rsquo; would trigger <code>closed</code> switches to <code>opening</code></li>
+<li>&lsquo;close&rsquo; would trigger <code>opened</code> switches to <code>closing</code></li>
+<li>If we sends &lsquo;open&rsquo; event into the state machine continously,
 the second event would be ignored.
-(Exactly it depends on what policy we choose. For example, we could devide 'opening' state into 'opening-part-1' and 'opening-part-2' states. And implement the async state change. But if we need s two-state opening, it sounds like a CSS design problem to me. Let's discuss this later if necessary.)</li>
-<li>In order to gurantee the transition does really end and thus being independent from the 'animationend' event(The event here is HTML DOM Event), we need to add a timer between 'opening' and 'opened' state. Also between 'closing' and 'closed' state.</li>
-<li>Let's call the new event 'timeout', the timing we set the timer is right after the transitioning from 'closed' to 'opening', and from 'opened' to 'closing' successfully occurs.</li>
-<li>For some use case we may want to cancel the transition. The 'cancel' event is only valid in 'opening' and 'closing' state.</li>
+(Exactly it depends on what policy we choose. For example, we could devide &lsquo;opening&rsquo; state into &lsquo;opening-part-1&rsquo; and &lsquo;opening-part-2&rsquo; states. And implement the async state change. But if we need s two-state opening, it sounds like a CSS design problem to me. Let&rsquo;s discuss this later if necessary.)</li>
+<li>In order to gurantee the transition does really end and thus being independent from the &lsquo;animationend&rsquo; event(The event here is HTML DOM Event), we need to add a timer between &lsquo;opening&rsquo; and &lsquo;opened&rsquo; state. Also between &lsquo;closing&rsquo; and &lsquo;closed&rsquo; state.</li>
+<li>Let&rsquo;s call the new event &lsquo;timeout&rsquo;, the timing we set the timer is right after the transitioning from &lsquo;closed&rsquo; to &lsquo;opening&rsquo;, and from &lsquo;opened&rsquo; to &lsquo;closing&rsquo; successfully occurs.</li>
+<li>For some use case we may want to cancel the transition. The &lsquo;cancel&rsquo; event is only valid in &lsquo;opening&rsquo; and &lsquo;closing&rsquo; state.</li>
 </ul>
 
 
 <p>So far, the state machine for transition we have:
-<img src="http://i.imgur.com/MmBj2pY.jpg"></p>
+<img class="<a" src="href="http://i.imgur.com/MmBj2pY.jpg">http://i.imgur.com/MmBj2pY.jpg</a>"></p>
 
 <p>Now the problem is, how to represent this machine in javascript?</p>
 
@@ -67,7 +67,7 @@ the second event would be ignored.
 
 <p>``` js
 (function(window) {
-  'use strict';</p>
+  &lsquo;use strict&rsquo;;</p>
 
 <p>  function capitalize(string)
   {</p>
@@ -101,7 +101,7 @@ CANCEL: 4
 
 <p>  };</p>
 
-<p>  var _EVTARRAY = ['OPEN', 'CLOSE', 'FINISH', 'END', 'CANCEL'];</p>
+<p>  var _EVTARRAY = [&lsquo;OPEN&rsquo;, &lsquo;CLOSE&rsquo;, &lsquo;FINISH&rsquo;, &lsquo;END&rsquo;, &lsquo;CANCEL&rsquo;];</p>
 
 <p>  /<em>*
    * Describe the transition state table.
@@ -109,7 +109,7 @@ CANCEL: 4
    * @example
    * var toState = transitionTable[currentState][event];
    *
-   * The value "null" indicates that the transition won't happen.
+   * The value &ldquo;null&rdquo; indicates that the transition won&rsquo;t happen.
    *
    * @type {Object}
    </em>/
@@ -125,15 +125,15 @@ CANCEL: 4
 <p>  };</p>
 
 <p>  /<strong>
-   * This provides methods and attributes used for transition state handling. It's not meant to
+   * This provides methods and attributes used for transition state handling. It&rsquo;s not meant to
    * be used directly.
    *
    * The finite state machine of transition is working as(being from normal state):
    *
-   * * <code>closed</code>  ---<em>event</em> </strong>OPEN<strong> ----------------> <code>opening</code>
-   * * <code>opening</code> ---<em>event</em> </strong>END/FINISH/CANCEL<strong> ---> <code>opened</code>
-   * * <code>opened</code>  ---<em>event</em> </strong>CLOSE<strong> ---------------> <code>closing</code>
-   * * <code>closing</code> ---<em>event</em> </strong>END/FINISH/CANCEL<strong> ---> <code>closed</code>
+   * * <code>closed</code>  &mdash;&ndash;<em>event</em> </strong>OPEN<strong> &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;> <code>opening</code>
+   * * <code>opening</code> &mdash;&ndash;<em>event</em> </strong>END/FINISH/CANCEL<strong> &mdash;&ndash;> <code>opened</code>
+   * * <code>opened</code>  &mdash;&ndash;<em>event</em> </strong>CLOSE<strong> &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&ndash;> <code>closing</code>
+   * * <code>closing</code> &mdash;&ndash;<em>event</em> </strong>END/FINISH/CANCEL<strong> &mdash;&ndash;> <code>closed</code>
    *
    * If you want to reuse this mixin in your object, you need to define these attributes: <code>this.element</code>
    *
@@ -393,15 +393,15 @@ _setTransition: function aw__setTransition(type, transition) {
 }(this));
 ```</p>
 
-<h5>The state machine's usage and notes</h5>
+<h5>The state machine&rsquo;s usage and notes</h5>
 
 <ol>
-<li>A single app window instance would send 'open' and 'close' event due to user action:
+<li>A single app window instance would send &lsquo;open&rsquo; and &lsquo;close&rsquo; event due to user action:
 <code>
-transitionStateMachine.<em>processEvent('open');
-transitionStateMachine.</em>processEvent('close');
+transitionStateMachine.<em>processEvent(&lsquo;open&rsquo;);
+transitionStateMachine.</em>processEvent(&lsquo;close&rsquo;);
 </code>
-Note, app window doesn't need to know current state of the state machine.</li>
+Note, app window doesn&rsquo;t need to know current state of the state machine.</li>
 <li>The state machine itself is the one who creates/removes the timer which triggers timeout event. I am also thinking about moving this out of the state machine and do this in another mixin, only have the callback functions provided by the state machine. But I am not sure.</li>
 <li>The state machine has some callback for others(other state machine!) listed below:
 
@@ -419,20 +419,20 @@ Maybe we could define the level of the callback into three here, according to th
 </ol>
 
 
-<p>Finally, back to the problems addressed in Tim's article:</p>
+<p>Finally, back to the problems addressed in Tim&rsquo;s article:</p>
 
 <ul>
 <li>Do we need intermediate state?
 
 <ul>
-<li>I don't think so, at least for now. If we really need to goto next state when we successfully from state A to state B, we could call <code>_processEvent</code> again in the inner callback of the state machine. This doesn't violate the policy that only state machine ifself could decide its next state.</li>
-<li>If the intermediate state needs to acquire other type of state -- just fetch the current state of the other state machine. Or, if we need, register an one-time callback if the current state doesn't meet our requirement.</li>
+<li>I don&rsquo;t think so, at least for now. If we really need to goto next state when we successfully from state A to state B, we could call <code>_processEvent</code> again in the inner callback of the state machine. This doesn&rsquo;t violate the policy that only state machine ifself could decide its next state.</li>
+<li>If the intermediate state needs to acquire other type of state &mdash; just fetch the current state of the other state machine. Or, if we need, register an one-time callback if the current state doesn&rsquo;t meet our requirement.</li>
 </ul>
 </li>
 <li>How about state conflict between two apps?
 
 <ul>
-<li>That won't happen if we deal with the state changes correctly and independently in each app's scope. I hope so.</li>
+<li>That won&rsquo;t happen if we deal with the state changes correctly and independently in each app&rsquo;s scope. I hope so.</li>
 </ul>
 </li>
 </ul>

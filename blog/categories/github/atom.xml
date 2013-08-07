@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: github | Ascheriit]]></title>
-  <link href="http://alivedise.github.com/blog/categories/github/atom.xml" rel="self"/>
-  <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-23T18:10:26+02:00</updated>
-  <id>http://alivedise.github.com/</id>
+  <link href="http://alivedise.github.io/blog/categories/github/atom.xml" rel="self"/>
+  <link href="http://alivedise.github.io/"/>
+  <updated>2013-08-07T09:56:17+08:00</updated>
+  <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
     
@@ -15,14 +15,14 @@
   
   <entry>
     <title type="html"><![CDATA[[git] 心得(1) Submodule, Bitbucket]]></title>
-    <link href="http://alivedise.github.com/blog/2012/02/15/git-submodule/"/>
-    <updated>2012-02-15T23:32:00+01:00</updated>
-    <id>http://alivedise.github.com/blog/2012/02/15/git-submodule</id>
+    <link href="http://alivedise.github.io/blog/2012/02/15/git-submodule/"/>
+    <updated>2012-02-15T23:32:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2012/02/15/git-submodule</id>
     <content type="html"><![CDATA[<h1>Bitbucker</h1>
 
 <h1>偶然間發現這個github的競爭者<a href="http://bitbucket.com">Bitbucket</a>推出了無限免費私有倉庫+無限硬碟空間，</h1>
 
-<p>title: "[git] 心得(1) Submodule, Bitbucker"
+<p>title: &ldquo;[git] 心得(1) Submodule, Bitbucker&rdquo;
 date: 2012-02-15 23:32
 comments: true</p>
 

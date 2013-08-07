@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: javascript | Ascheriit]]></title>
-  <link href="http://alivedise.github.com/blog/categories/javascript/atom.xml" rel="self"/>
-  <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-23T18:10:26+02:00</updated>
-  <id>http://alivedise.github.com/</id>
+  <link href="http://alivedise.github.io/blog/categories/javascript/atom.xml" rel="self"/>
+  <link href="http://alivedise.github.io/"/>
+  <updated>2013-08-07T09:56:17+08:00</updated>
+  <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
     
@@ -14,10 +14,10 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Proposal: System Modualization Plan]]></title>
-    <link href="http://alivedise.github.com/blog/2013/07/10/system-modulization-plan/"/>
-    <updated>2013-07-10T18:04:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2013/07/10/system-modulization-plan</id>
+    <title type="html"><![CDATA[Proposal: System Modulization Plan]]></title>
+    <link href="http://alivedise.github.io/blog/2013/07/10/system-modulization-plan/"/>
+    <updated>2013-07-10T18:04:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2013/07/10/system-modulization-plan</id>
     <content type="html"><![CDATA[<h4>Source</h4>
 
 <p><a href="https://github.com/mozilla-b2g/gaia/tree/master/apps/system">https://github.com/mozilla-b2g/gaia/tree/master/apps/system</a></p>
@@ -26,16 +26,16 @@
 
 <ol>
 <li>Some modules directly invokes others.</li>
-<li><code>'LockScreen is undefined.'</code> message appears oftenly right after device boots up.</li>
-<li>Memory concern - Most of the modules are not always needed. Most of the UI view doesn't need to live in the DOM tree at first.</li>
-<li>Performance concern - device bootup time is getting longer and longer.</li>
+<li><code>&lsquo;LockScreen is undefined.&rsquo;</code> message appears oftenly right after device boots up.</li>
+<li>Memory concern &ndash; Most of the modules are not always needed. Most of the UI view doesn&rsquo;t need to live in the DOM tree at first.</li>
+<li>Performance concern &ndash; device bootup time is getting longer and longer.</li>
 </ol>
 
 
 <h4>Proposal: Core modules and side modules</h4>
 
-<p>We could figure out what's definitely necessary in an operating system and what's not.
-For example, <code>Window Management</code> relevant modules should be a core module but <code>Captive Portal</code> shouldn't be.</p>
+<p>We could figure out what&rsquo;s definitely necessary in an operating system and what&rsquo;s not.
+For example, <code>Window Management</code> relevant modules should be a core module but <code>Captive Portal</code> shouldn&rsquo;t be.</p>
 
 <p>The main idea is the same as any other app performanace tuning:
 Lazy load anything on demand.</p>
@@ -46,8 +46,8 @@ Lazy load anything on demand.</p>
 For example, lazy load the Captive Portal:</p>
 
 <p>``` js
-window.addEventListener('mozChromeEvent', function(e) {
-  if (e.detail.type == 'captive-portal-login' &amp;&amp; typeof(CaptivePortal) == 'undefined') {</p>
+window.addEventListener(&lsquo;mozChromeEvent&rsquo;, function(e) {
+  if (e.detail.type == &lsquo;captive-portal-login&rsquo; &amp;&amp; typeof(CaptivePortal) == &lsquo;undefined&rsquo;) {</p>
 
 <pre><code>lazy-load('captive-portal', function onReadyCallback() {   // lazy load captive portal and its HTML part.
   CaptivePortal.handleEvent(e);  // Pass the event
@@ -61,9 +61,9 @@ So another rule would be:
 * expose handleEvent in any side module for Event Dispatcher to invoke when they are firt time loaded by Event Dispatcher.</p>
 
 <p>With this, we could even lazy load lockscreen,
-because if lockscreen is disabled by the user, we don't need to load it when the device boots.</p>
+because if lockscreen is disabled by the user, we don&rsquo;t need to load it when the device boots.</p>
 
-<p>IMO there're only few core modules now:</p>
+<p>IMO there&rsquo;re only few core modules now:</p>
 
 <ul>
 <li>Window Management
@@ -76,7 +76,7 @@ because if lockscreen is disabled by the user, we don't need to load it when the
 <li>Utility-tray</li>
 <li>Statusbar</li>
 <li>Init Logo Handler (But this is useless after device boot finishes.)</li>
-<li>Screen Management (Exactly, it's indeed Wake Lock Management)</li>
+<li>Screen Management (Exactly, it&rsquo;s indeed Wake Lock Management)</li>
 <li>Applications (API Wrapper for mozApp)</li>
 </ul>
 
@@ -101,20 +101,20 @@ because if lockscreen is disabled by the user, we don't need to load it when the
 
 <h5>Chanllenge</h5>
 
-<p>If we want to "unload" the module and its view using iframe,
+<p>If we want to &ldquo;unload&rdquo; the module and its view using iframe,
 we need a way for modules inside iframe to communicate.
 The first thing come to my mind is <code>window.parent.postMessage</code></p>
 
-<p>Second, we need to consider dependency problems if it's too complex.</p>
+<p>Second, we need to consider dependency problems if it&rsquo;s too complex.</p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[[Window Management] Transition state machine]]></title>
-    <link href="http://alivedise.github.com/blog/2013/07/05/transition-state-machine/"/>
-    <updated>2013-07-05T14:53:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2013/07/05/transition-state-machine</id>
-    <content type="html"><![CDATA[<p>The article is inspired by Tim's <a href="http://blog.timc.idv.tw/posts/css-classes-state-machine-puzzle/">CSS Classes State Machine Puzzle</a>.</p>
+    <link href="http://alivedise.github.io/blog/2013/07/05/transition-state-machine/"/>
+    <updated>2013-07-05T14:53:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2013/07/05/transition-state-machine</id>
+    <content type="html"><![CDATA[<p>The article is inspired by Tim&rsquo;s <a href="http://blog.timc.idv.tw/posts/css-classes-state-machine-puzzle/">CSS Classes State Machine Puzzle</a>.</p>
 
 <p>We had some frustrations all the times, on animating a window correctly.</p>
 
@@ -122,40 +122,40 @@ The first thing come to my mind is <code>window.parent.postMessage</code></p>
 But at first I need to apologize for my poor knowledge and thought about css transitions using class names.</p>
 
 <p>In the past I usually thought it was stupid to use class list to control the style.
-I thought it was ambiguous and strange if we ran into a situation that there're more than one classes of same type put on one element. And an element full of different class names for different purposes may conflict. Recently I see <a href="https://github.com/h5bp/Effeckt.css">Effeckt</a> and know this is the trend: a simple class name stands for a kind of animation.</p>
+I thought it was ambiguous and strange if we ran into a situation that there&rsquo;re more than one classes of same type put on one element. And an element full of different class names for different purposes may conflict. Recently I see <a href="https://github.com/h5bp/Effeckt.css">Effeckt</a> and know this is the trend: a simple class name stands for a kind of animation.</p>
 
 <p>The real problem is that we should never put wrong class on the DOM element, in javascript. So this now turns to be a pure javascript puzzle.</p>
 
-<p>We know, that, in certain moment, the app window is always in a specific state A, not B nor C. So what's the problem? It's how could we switch the state correctly.</p>
+<p>We know, that, in certain moment, the app window is always in a specific state A, not B nor C. So what&rsquo;s the problem? It&rsquo;s how could we switch the state correctly.</p>
 
-<p>Let's create a real state machine in javascript!</p>
+<p>Let&rsquo;s create a real state machine in javascript!</p>
 
-<p>So far it doesn't take times for us to figure out that a window should have 4 basic transition state: <code>closed</code>, <code>opening</code>, <code>opened</code>, <code>closing</code>.</p>
+<p>So far it doesn&rsquo;t take times for us to figure out that a window should have 4 basic transition state: <code>closed</code>, <code>opening</code>, <code>opened</code>, <code>closing</code>.</p>
 
 <p>A basic transition life cycle of a window could be:</p>
 
-<p><blockquote><p>(initial) -> closed -> opening -> opened ------> closing -> opening ------> ....</p></blockquote></p>
+<p><blockquote><p>(initial) &ndash;> closed &ndash;> opening &ndash;> opened &mdash;&mdash;&mdash;> closing &ndash;> opening &mdash;&mdash;&mdash;> &hellip;.</p></blockquote></p>
 
-<p>Now we have 4 states, the next is what's the trigger to states switching?</p>
+<p>Now we have 4 states, the next is what&rsquo;s the trigger to states switching?</p>
 
-<p>In finite state machine, what triggers state change is named for <a href="https://en.wikipedia.org/wiki/Finite-state_machine">'event'</a>.</p>
+<p>In finite state machine, what triggers state change is named for <a href="https://en.wikipedia.org/wiki/Finite-state_machine">&lsquo;event&rsquo;</a>.</p>
 
-<p>We know that at least we have 2 events: 'open' and 'close'.</p>
+<p>We know that at least we have 2 events: &lsquo;open&rsquo; and &lsquo;close&rsquo;.</p>
 
 <ul>
-<li>'open' would trigger <code>closed</code> switches to <code>opening</code></li>
-<li>'close' would trigger <code>opened</code> switches to <code>closing</code></li>
-<li>If we sends 'open' event into the state machine continously,
+<li>&lsquo;open&rsquo; would trigger <code>closed</code> switches to <code>opening</code></li>
+<li>&lsquo;close&rsquo; would trigger <code>opened</code> switches to <code>closing</code></li>
+<li>If we sends &lsquo;open&rsquo; event into the state machine continously,
 the second event would be ignored.
-(Exactly it depends on what policy we choose. For example, we could devide 'opening' state into 'opening-part-1' and 'opening-part-2' states. And implement the async state change. But if we need s two-state opening, it sounds like a CSS design problem to me. Let's discuss this later if necessary.)</li>
-<li>In order to gurantee the transition does really end and thus being independent from the 'animationend' event(The event here is HTML DOM Event), we need to add a timer between 'opening' and 'opened' state. Also between 'closing' and 'closed' state.</li>
-<li>Let's call the new event 'timeout', the timing we set the timer is right after the transitioning from 'closed' to 'opening', and from 'opened' to 'closing' successfully occurs.</li>
-<li>For some use case we may want to cancel the transition. The 'cancel' event is only valid in 'opening' and 'closing' state.</li>
+(Exactly it depends on what policy we choose. For example, we could devide &lsquo;opening&rsquo; state into &lsquo;opening-part-1&rsquo; and &lsquo;opening-part-2&rsquo; states. And implement the async state change. But if we need s two-state opening, it sounds like a CSS design problem to me. Let&rsquo;s discuss this later if necessary.)</li>
+<li>In order to gurantee the transition does really end and thus being independent from the &lsquo;animationend&rsquo; event(The event here is HTML DOM Event), we need to add a timer between &lsquo;opening&rsquo; and &lsquo;opened&rsquo; state. Also between &lsquo;closing&rsquo; and &lsquo;closed&rsquo; state.</li>
+<li>Let&rsquo;s call the new event &lsquo;timeout&rsquo;, the timing we set the timer is right after the transitioning from &lsquo;closed&rsquo; to &lsquo;opening&rsquo;, and from &lsquo;opened&rsquo; to &lsquo;closing&rsquo; successfully occurs.</li>
+<li>For some use case we may want to cancel the transition. The &lsquo;cancel&rsquo; event is only valid in &lsquo;opening&rsquo; and &lsquo;closing&rsquo; state.</li>
 </ul>
 
 
 <p>So far, the state machine for transition we have:
-<img src="http://i.imgur.com/MmBj2pY.jpg"></p>
+<img class="<a" src="href="http://i.imgur.com/MmBj2pY.jpg">http://i.imgur.com/MmBj2pY.jpg</a>"></p>
 
 <p>Now the problem is, how to represent this machine in javascript?</p>
 
@@ -163,7 +163,7 @@ the second event would be ignored.
 
 <p>``` js
 (function(window) {
-  'use strict';</p>
+  &lsquo;use strict&rsquo;;</p>
 
 <p>  function capitalize(string)
   {</p>
@@ -197,7 +197,7 @@ CANCEL: 4
 
 <p>  };</p>
 
-<p>  var _EVTARRAY = ['OPEN', 'CLOSE', 'FINISH', 'END', 'CANCEL'];</p>
+<p>  var _EVTARRAY = [&lsquo;OPEN&rsquo;, &lsquo;CLOSE&rsquo;, &lsquo;FINISH&rsquo;, &lsquo;END&rsquo;, &lsquo;CANCEL&rsquo;];</p>
 
 <p>  /<em>*
    * Describe the transition state table.
@@ -205,7 +205,7 @@ CANCEL: 4
    * @example
    * var toState = transitionTable[currentState][event];
    *
-   * The value "null" indicates that the transition won't happen.
+   * The value &ldquo;null&rdquo; indicates that the transition won&rsquo;t happen.
    *
    * @type {Object}
    </em>/
@@ -221,15 +221,15 @@ CANCEL: 4
 <p>  };</p>
 
 <p>  /<strong>
-   * This provides methods and attributes used for transition state handling. It's not meant to
+   * This provides methods and attributes used for transition state handling. It&rsquo;s not meant to
    * be used directly.
    *
    * The finite state machine of transition is working as(being from normal state):
    *
-   * * <code>closed</code>  ---<em>event</em> </strong>OPEN<strong> ----------------> <code>opening</code>
-   * * <code>opening</code> ---<em>event</em> </strong>END/FINISH/CANCEL<strong> ---> <code>opened</code>
-   * * <code>opened</code>  ---<em>event</em> </strong>CLOSE<strong> ---------------> <code>closing</code>
-   * * <code>closing</code> ---<em>event</em> </strong>END/FINISH/CANCEL<strong> ---> <code>closed</code>
+   * * <code>closed</code>  &mdash;&ndash;<em>event</em> </strong>OPEN<strong> &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;> <code>opening</code>
+   * * <code>opening</code> &mdash;&ndash;<em>event</em> </strong>END/FINISH/CANCEL<strong> &mdash;&ndash;> <code>opened</code>
+   * * <code>opened</code>  &mdash;&ndash;<em>event</em> </strong>CLOSE<strong> &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&ndash;> <code>closing</code>
+   * * <code>closing</code> &mdash;&ndash;<em>event</em> </strong>END/FINISH/CANCEL<strong> &mdash;&ndash;> <code>closed</code>
    *
    * If you want to reuse this mixin in your object, you need to define these attributes: <code>this.element</code>
    *
@@ -489,15 +489,15 @@ _setTransition: function aw__setTransition(type, transition) {
 }(this));
 ```</p>
 
-<h5>The state machine's usage and notes</h5>
+<h5>The state machine&rsquo;s usage and notes</h5>
 
 <ol>
-<li>A single app window instance would send 'open' and 'close' event due to user action:
+<li>A single app window instance would send &lsquo;open&rsquo; and &lsquo;close&rsquo; event due to user action:
 <code>
-transitionStateMachine.<em>processEvent('open');
-transitionStateMachine.</em>processEvent('close');
+transitionStateMachine.<em>processEvent(&lsquo;open&rsquo;);
+transitionStateMachine.</em>processEvent(&lsquo;close&rsquo;);
 </code>
-Note, app window doesn't need to know current state of the state machine.</li>
+Note, app window doesn&rsquo;t need to know current state of the state machine.</li>
 <li>The state machine itself is the one who creates/removes the timer which triggers timeout event. I am also thinking about moving this out of the state machine and do this in another mixin, only have the callback functions provided by the state machine. But I am not sure.</li>
 <li>The state machine has some callback for others(other state machine!) listed below:
 
@@ -515,20 +515,20 @@ Maybe we could define the level of the callback into three here, according to th
 </ol>
 
 
-<p>Finally, back to the problems addressed in Tim's article:</p>
+<p>Finally, back to the problems addressed in Tim&rsquo;s article:</p>
 
 <ul>
 <li>Do we need intermediate state?
 
 <ul>
-<li>I don't think so, at least for now. If we really need to goto next state when we successfully from state A to state B, we could call <code>_processEvent</code> again in the inner callback of the state machine. This doesn't violate the policy that only state machine ifself could decide its next state.</li>
-<li>If the intermediate state needs to acquire other type of state -- just fetch the current state of the other state machine. Or, if we need, register an one-time callback if the current state doesn't meet our requirement.</li>
+<li>I don&rsquo;t think so, at least for now. If we really need to goto next state when we successfully from state A to state B, we could call <code>_processEvent</code> again in the inner callback of the state machine. This doesn&rsquo;t violate the policy that only state machine ifself could decide its next state.</li>
+<li>If the intermediate state needs to acquire other type of state &mdash; just fetch the current state of the other state machine. Or, if we need, register an one-time callback if the current state doesn&rsquo;t meet our requirement.</li>
 </ul>
 </li>
 <li>How about state conflict between two apps?
 
 <ul>
-<li>That won't happen if we deal with the state changes correctly and independently in each app's scope. I hope so.</li>
+<li>That won&rsquo;t happen if we deal with the state changes correctly and independently in each app&rsquo;s scope. I hope so.</li>
 </ul>
 </li>
 </ul>
@@ -538,9 +538,9 @@ Maybe we could define the level of the callback into three here, according to th
   
   <entry>
     <title type="html"><![CDATA[Javascript從變形矩陣反推scale以及rotate]]></title>
-    <link href="http://alivedise.github.com/blog/2013/05/27/rotation-matrix/"/>
-    <updated>2013-05-27T15:41:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2013/05/27/rotation-matrix</id>
+    <link href="http://alivedise.github.io/blog/2013/05/27/rotation-matrix/"/>
+    <updated>2013-05-27T15:41:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2013/05/27/rotation-matrix</id>
     <content type="html"><![CDATA[<p>原文：
 <a href="http://css-tricks.com/get-value-of-css-rotation-through-javascript/">http://css-tricks.com/get-value-of-css-rotation-through-javascript/</a></p>
 
@@ -555,13 +555,13 @@ Maybe we could define the level of the callback into three here, according to th
 <p>```js
   /<em>*
    * Construct a mutation observer.
-   * See https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
+   * See <a href="https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver">https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver</a>
    </em>/</p>
 
 <p>  /<strong>
-   * var target = document.querySelector('#id');
+   * var target = document.querySelector(&lsquo;#id&rsquo;);
    */
-  var target = document.querySelector('#id');
+  var target = document.querySelector(&lsquo;#id&rsquo;);
   /</strong>
    * create an observer instance
    */
@@ -620,9 +620,9 @@ console.log('Scale: ' + scale + ';Rotate: ' + angle + 'deg');
   
   <entry>
     <title type="html"><![CDATA[Mocha: MockMozActivity與global leak]]></title>
-    <link href="http://alivedise.github.com/blog/2013/02/23/mock-moz-activity/"/>
-    <updated>2013-02-23T16:56:00+01:00</updated>
-    <id>http://alivedise.github.com/blog/2013/02/23/mock-moz-activity</id>
+    <link href="http://alivedise.github.io/blog/2013/02/23/mock-moz-activity/"/>
+    <updated>2013-02-23T16:56:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2013/02/23/mock-moz-activity</id>
     <content type="html"><![CDATA[<p>之前在寫單元測試時，需要測到MozActivity的呼叫。</p>
 
 <p>當我們嘗試去取代window object中的MozActivity時，會遇到：</p>
@@ -667,7 +667,7 @@ data: { type: 'url', url: url }
 <p>然後從MockMozActivity裡面留個變數記錄被呼叫的參數狀況來判斷程式是否正確的執行呼叫activity。</p>
 
 <p>``` js
-'use strict';</p>
+&lsquo;use strict&rsquo;;</p>
 
 <p>var mockMozActivityInstance = null;</p>
 
@@ -688,7 +688,7 @@ data: { type: 'url', url: url }
 
 <p>``` js
 // Captive Portal Test
-  test('system/captive portal login w/o manual enable wifi', function() {</p>
+  test(&lsquo;system/captive portal login w/o manual enable wifi&rsquo;, function() {</p>
 
 <pre><code>CaptivePortal.handleEvent(event);
 MockSettingsListener.mCallback(true);
@@ -704,9 +704,9 @@ assert.equal(mockMozActivityInstance.name, 'view');
   
   <entry>
     <title type="html"><![CDATA[Javascript memorization]]></title>
-    <link href="http://alivedise.github.com/blog/2012/12/22/javascript-memorization/"/>
-    <updated>2012-12-22T00:28:00+01:00</updated>
-    <id>http://alivedise.github.com/blog/2012/12/22/javascript-memorization</id>
+    <link href="http://alivedise.github.io/blog/2012/12/22/javascript-memorization/"/>
+    <updated>2012-12-22T00:28:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2012/12/22/javascript-memorization</id>
     <content type="html"><![CDATA[<p>As you know, function in javascript is also an object,
 you could use a property of the object to keep function result.
 This is called <code>Memorization</code>.</p>
@@ -727,7 +727,7 @@ This is called <code>Memorization</code>.</p>
 <p>```</p>
 
 <p><code>getOffOrigin</code> has to use some logic to compare the two arguments and return a string.
-The result wouldn't change if the arguments are the same.
+The result wouldn&rsquo;t change if the arguments are the same.
 Therefore, to avoid calling the function many times, the result could be stored in the function itself.</p>
 
 <p>``` javascript
@@ -764,7 +764,7 @@ return getOffOrigin.cache[cacheKey];
   But we have multiple arguments in this case, we then use stringilized JSON to be the key.</p>
 
 <ul>
-<li><p>Hence we don't need to do the same thing every time we enter this function if the arguments are used before.</p></li>
+<li><p>Hence we don&rsquo;t need to do the same thing every time we enter this function if the arguments are used before.</p></li>
 <li><p>Have fun with your function cache!</p></li>
 </ul>
 

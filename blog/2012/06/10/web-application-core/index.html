@@ -24,11 +24,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://alivedise.github.com/blog/2012/06/10/web-application-core/">
+  <link rel="canonical" href="http://alivedise.github.io/blog/2012/06/10/web-application-core/">
   <link href="/favicon.png" rel="icon">
   <link href='http://fonts.googleapis.com/css?family=Cantarell' rel='stylesheet' type='text/css'>
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="Ascheriit" type="application/atom+xml">
+  <link href="http://feeds.feedburner.com/ascheriit" rel="alternate" title="Ascheriit" type="application/atom+xml">
   <meta name="og:type" content="website" />
   <meta name="og:site_name" content="Ascheriit" />
   <meta name="og:title" content="[WEB] Web Application Core" />
@@ -36,8 +36,8 @@
 * 管理widget的life cycle的能力。
 * 低階DOM操作處理
 * 提供publish/ &hellip;" />
-  <meta name="og:url" content="http://alivedise.github.com/blog/2012/06/10/web-application-core/"/>
-  <meta name="url" content="http://alivedise.github.com/blog/2012/06/10/web-application-core/">
+  <meta name="og:url" content="http://alivedise.github.io/blog/2012/06/10/web-application-core/"/>
+  <meta name="url" content="http://alivedise.github.io/blog/2012/06/10/web-application-core/">
   
   <meta name="subject" content="javascript"/>
   <meta name="category" content="javascript"/>
@@ -72,13 +72,13 @@
       <li><a href="/blog/archives">Archives</a></li>
     </ul>
     <ul class="nav" data-subscription="rss">
-      <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+      <li><a href="http://feeds.feedburner.com/ascheriit" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
       
     </ul>
       
     <form class="navbar-form" action="http://google.com/search" method="get">
       <fieldset role="search">
-        <input type="hidden" name="q" value="site:alivedise.github.com" />
+        <input type="hidden" name="q" value="site:alivedise.github.io" />
         <input class="span2" type="text" name="q" results="0" placeholder="Search"/>
       </fieldset>
     </form>
@@ -119,7 +119,7 @@
   
 
 
-<time datetime="2012-06-10T17:06:00+02:00" pubdate data-updated="true">Jun 10<span>th</span>, 2012</time> - 
+<time datetime="2012-06-10T17:06:00+08:00" pubdate data-updated="true">Jun 10<span>th</span>, 2012</time> - 
         
 
 posted in
@@ -130,6 +130,8 @@ posted in
 </span>
 
 
+        
+         | <a href="#disqus_thread">Comments</a>
         
       </p>
     
@@ -228,7 +230,7 @@ posted in
     <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
   
 
-
+ - 
       
 
 
@@ -241,7 +243,7 @@ posted in
   
 
 
-<time datetime="2012-06-10T17:06:00+02:00" pubdate data-updated="true">Jun 10<span>th</span>, 2012</time>
+<time datetime="2012-06-10T17:06:00+08:00" pubdate data-updated="true">Jun 10<span>th</span>, 2012</time> - 
       
 
 posted in
@@ -254,18 +256,16 @@ posted in
 
     </p>
     
-      <div class="share">
-	<div class="addthis_toolbox addthis_default_style ">
-	
-	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
-	
-	
-	<a class="addthis_button_tweet"></a>
-	
-	
-	<a class="addthis_counter addthis_pill_style"></a>
-	</div>
-  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://alivedise.github.io/blog/2012/06/10/web-application-core/" data-via="alivedise" data-counturl="http://alivedise.github.io/blog/2012/06/10/web-application-core/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
 </div>
 
     
@@ -297,15 +297,11 @@ posted in
     <ul class="recent_posts">
       
         <li>
-          <a href="/blog/2013/07/23/sandbox-iframe/">Modules inside iframe</a>
+          <a href="/blog/2013/08/06/coscup-2013/">[COSCUP 2013] Audio competing in FxOS</a>
         </li>
       
         <li>
-          <a href="/blog/2013/07/19/audio-competing-again/">[FxOS] Audio Competing Policies</a>
-        </li>
-      
-        <li>
-          <a href="/blog/2013/07/18/window-manager-decoupling/">[FxOS] Plan: Window Management Module Decoupling</a>
+          <a href="/blog/2013/07/18/window-manager-decoupling/">[FxOS] Plan: Window Management decoupling (CONT.)</a>
         </li>
       
         <li>
@@ -313,7 +309,11 @@ posted in
         </li>
       
         <li>
-          <a href="/blog/2013/07/10/system-modulization-plan/">Proposal: System Modualization Plan</a>
+          <a href="/blog/2013/07/10/system-modulization-plan/">Proposal: System Modulization Plan</a>
+        </li>
+      
+        <li>
+          <a href="/blog/2013/07/05/transition-state-machine/">[Window Management] Transition state machine</a>
         </li>
       
     </ul>
@@ -388,8 +388,8 @@ posted in
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://alivedise.github.com/blog/2012/06/10/web-application-core/';
-        var disqus_url = 'http://alivedise.github.com/blog/2012/06/10/web-application-core/';
+        var disqus_identifier = 'http://alivedise.github.io/blog/2012/06/10/web-application-core/';
+        var disqus_url = 'http://alivedise.github.io/blog/2012/06/10/web-application-core/';
         var disqus_script = 'embed.js';
       
     (function () {
@@ -411,6 +411,14 @@ posted in
 }(document, 'script', 'facebook-jssdk'));</script>
 
 
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
 
 
 

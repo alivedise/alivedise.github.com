@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: github,javascript | Ascheriit]]></title>
-  <link href="http://alivedise.github.com/blog/categories/github-javascript/atom.xml" rel="self"/>
-  <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-23T18:10:26+02:00</updated>
-  <id>http://alivedise.github.com/</id>
+  <link href="http://alivedise.github.io/blog/categories/github-javascript/atom.xml" rel="self"/>
+  <link href="http://alivedise.github.io/"/>
+  <updated>2013-08-07T09:56:17+08:00</updated>
+  <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Recent side projects: Alvitr, Lucifer, GaiaSystemAPIDOC]]></title>
-    <link href="http://alivedise.github.com/blog/2013/06/18/alvitr/"/>
-    <updated>2013-06-18T12:33:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2013/06/18/alvitr</id>
+    <link href="http://alivedise.github.io/blog/2013/06/18/alvitr/"/>
+    <updated>2013-06-18T12:33:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2013/06/18/alvitr</id>
     <content type="html"><![CDATA[<h3>Alvitr</h3>
 
 <p>Alvitr(艾爾薇妲）是北歐神話中戰女神的其中一名，其名意為「全知」。</p>
@@ -60,13 +60,13 @@
 <a href="https://github.com/alivedise/jsdoc3-bootstrap">JSDOC3 bootstrap template</a>
 不知道為什麼jsdoc2我電腦一直裝不成功，jsdoc3倒是很簡單的用npm就裝好了。</p>
 
-<p>找了一下找不到專門給jsdoc3用的好看template...我就自己套bootstrap上去了，成果如上。</p>
+<p>找了一下找不到專門給jsdoc3用的好看template&hellip;我就自己套bootstrap上去了，成果如上。</p>
 
 <h3>其他</h3>
 
-<p>我還有一兩個一直很想做的probject...不過總是因為懶惰作罷:P</p>
+<p>我還有一兩個一直很想做的probject&hellip;不過總是因為懶惰作罷:P</p>
 
-<p>回首到Mozilla也一年了，感覺自身還有很多不足....
+<p>回首到Mozilla也一年了，感覺自身還有很多不足&hellip;.
 督促自己寫side project只是開始而已，還要再努力阿！</p>
 ]]></content>
   </entry>

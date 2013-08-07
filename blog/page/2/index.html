@@ -14,7 +14,7 @@
   
     
   
-  <meta name="description" content=" Test ">
+  <meta name="description" content=" I'm alive. A web developer from Taipei, Taiwan. ">
   
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -22,17 +22,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://alivedise.github.com/blog/page/2/">
+  <link rel="canonical" href="http://alivedise.github.io/blog/page/2/">
   <link href="/favicon.png" rel="icon">
   <link href='http://fonts.googleapis.com/css?family=Cantarell' rel='stylesheet' type='text/css'>
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="Ascheriit" type="application/atom+xml">
+  <link href="http://feeds.feedburner.com/ascheriit" rel="alternate" title="Ascheriit" type="application/atom+xml">
   <meta name="og:type" content="website" />
   <meta name="og:site_name" content="Ascheriit" />
   <meta name="og:title" content="Ascheriit" />
-  <meta name="og:description" content=" Test " />
-  <meta name="og:url" content="http://alivedise.github.com/blog/page/2/index.html"/>
-  <meta name="url" content="http://alivedise.github.com/blog/page/2/index.html">
+  <meta name="og:description" content=" I'm alive. A web developer from Taipei, Taiwan. " />
+  <meta name="og:url" content="http://alivedise.github.io/blog/page/2/index.html"/>
+  <meta name="url" content="http://alivedise.github.io/blog/page/2/index.html">
   
   <meta name="distribution" content="global">
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
@@ -63,8 +63,7 @@
   <h1>
     Ascheriit
   </h1>
-  <h2>I am <em>Alive</em>, a Front-end Developer from <em>Taiwan</em>.</h2>
-  <span class="label">Taipei</span> <span class="label">Tokyo</span> <span class="label">Paris</span> <span class="label">San Francisco</span> <span class="label">Berlin</span> <span class="label">Madrid</span>
+  <h2></h2>
 </div>
 
     </div>
@@ -74,14 +73,8 @@
       <div class="row">
   <div class="span4">
     <h2>about me</h2>
-<pre>
-  (function() {
-    var Alive = new WebDeveloper();
-    Alive.live(_.Taipei);
-    Alive.work(_.Mozilla);
-    Alive.speak(_.Javascript);
-  }());
-</pre>
+<p>A little something about me.</p>
+
   </div>
   <div class="span6">
     
@@ -129,281 +122,6 @@
 
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/02/23/from-browser-to-browser/">From Browser to Browser. (1)</a></h1>
-    
-    
-      <p class="meta">
-        
-  
-
-
-  
-    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
-  
-
- - 
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-02-23T17:40:00+01:00" pubdate data-updated="true">Feb 23<span>rd</span>, 2013</time> - 
-        
-
-posted in
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/gaia/'>gaia</a>
-  
-</span>
-
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3>Firefox OS</h3>
-
-<p><img src="http://cdn0.mos.techradar.futurecdn.net///art/mobile_phones/Mozilla/FireFoxOS/DeveloperHandsets/FirefoxOSDev-Press-01-580-75.jpg"></p>
-
-<h3>System app</h3>
-
-<p>Exactly, Firefox OS, also known for boot 2 gecko, is having only one app/one page.
-It&#8217;s the system app, which controls all web app&#8217;s life cycle.
-When FirefoxOS is booted, it would load the system app from <code>system/index.html</code>.
-Then system app would take care of the remaing stuff.</p>
-
-<ul>
-<li>Load modules</li>
-<li>Init homescreen app</li>
-<li>Etc.</li>
-</ul>
-
-
-<h3>Window Manager</h3>
-
-<p>Window Manager is the core of Firefox OS, the core of system app, which is in charge of creating/maintaining/killing apps.
-An app, indeed, is a web page.</p>
-
-<p>We use a magic, calling browser API, to make a web page act like an app.</p>
-
-<h3>Browser API</h3>
-
-<p>See https://developer.mozilla.org/en-US/docs/DOM/Using_the_Browser_API</p>
-
-<p>A browser here means that the web page acts like it is living in a browser <code>frame</code>.
-We are replacing nearly every XUL-based UI with HTML to <code>port</code> the WEB to the phone.</p>
-
-<h3>Module Pattern</h3>
-
-<p>Module pattern is the way Window Manager being imeplemented.
-A module pattern looks like:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">WindowManager</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">_id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">_running</span> <span class="o">=</span> <span class="p">{};</span>
-</span><span class='line'>  <span class="kd">function</span> <span class="nx">createApp</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>     <span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">App</span><span class="p">();</span>
-</span><span class='line'>     <span class="nx">_running</span><span class="p">[</span><span class="nx">_id</span><span class="p">]</span> <span class="o">=</span> <span class="nx">app</span><span class="p">;</span>
-</span><span class='line'>     <span class="nx">_id</span><span class="o">++</span><span class="p">;</span>
-</span><span class='line'>     <span class="k">return</span> <span class="nx">app</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kd">function</span> <span class="nx">killApp</span><span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">delete</span> <span class="nx">_running</span><span class="p">[</span><span class="nx">id</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">return</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">create</span><span class="o">:</span> <span class="nx">createApp</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">kill</span><span class="o">:</span> <span class="nx">killApp</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">})();</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Thus the Window Manager object only has 2 public attributes.
-This looks fine, but it would be a nightmare if this pattern grows to over 2000 lines.
-And it&#8217;s having countless private functions now.</p>
-
-<p>This module now is not unit testable nor maintainable.</p>
-
-<h3>Break it!</h3>
-
-<h4>From the browser to the browser</h4>
-
-<p>Let&#8217;s define a new object to contain and manage itself in its own scope.</p>
-
-<p>It&#8217;s called <code>browserFrame</code>.</p>
-
-<h5>The responsibility of browserFrame</h5>
-
-<p>It would create an iframe with all attributes needed for BrowserAPI.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">/* Define a basic mozbrowser iframe class.</span>
-</span><span class='line'><span class="cm"> * It creates a mozbrowser iframe,</span>
-</span><span class='line'><span class="cm"> * and finally returns the DOM element it just created.</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">BrowserFrame</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span> <span class="nx">invocation</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kd">function</span> <span class="nx">BrowserFrame</span><span class="p">()</span> <span class="p">{</span> <span class="c1">// This constructor function is a local variable.</span>
-</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">element</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">nextId</span><span class="o">++</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">callbacks</span> <span class="o">=</span> <span class="p">{};</span>
-</span><span class='line'>    <span class="nx">createFrame</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span> <span class="c1">// All arguments are values to createFrame</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nx">BrowserFrame</span><span class="p">.</span><span class="nx">className</span> <span class="o">=</span> <span class="s1">&#39;browser&#39;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">// These are helper functions and variables used by the methods above</span>
-</span><span class='line'>  <span class="c1">// They&#39;re not part of the public API of the module, but they&#39;re hidden</span>
-</span><span class='line'>  <span class="c1">// within this function scope so we don&#39;t have to define them as a</span>
-</span><span class='line'>  <span class="c1">// property of Browser or prefix them with underscores.</span>
-</span><span class='line'>  <span class="kd">function</span> <span class="nx">createFrame</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="nx">origin</span><span class="p">,</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">manifestURL</span><span class="p">,</span> <span class="nx">oop</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">browser</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">&#39;iframe&#39;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">browser</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;mozallowfullscreen&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// Most apps currently need to be hosted in a special &#39;mozbrowser&#39; iframe.</span>
-</span><span class='line'>    <span class="c1">// They also need to be marked as &#39;mozapp&#39; to be recognized as apps by the</span>
-</span><span class='line'>    <span class="c1">// platform.</span>
-</span><span class='line'>    <span class="nx">browser</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;mozbrowser&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">oop</span><span class="p">)</span>
-</span><span class='line'>      <span class="nx">browser</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;remote&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">manifestURL</span><span class="p">)</span>
-</span><span class='line'>      <span class="nx">browser</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s1">&#39;mozapp&#39;</span><span class="p">,</span> <span class="nx">manifestURL</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">origin</span><span class="p">)</span>
-</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">origin</span> <span class="o">=</span> <span class="nx">origin</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">name</span><span class="p">)</span>
-</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">browser</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="nx">url</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">browser</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">className</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">browser</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">BrowserFrame</span><span class="p">.</span><span class="nx">className</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// Store the element</span>
-</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">element</span> <span class="o">=</span> <span class="nx">browser</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">nextId</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="c1">// The public API for this module is the Browser() constructor function.</span>
-</span><span class='line'>  <span class="c1">// We need to export that function from this private namespace so that</span>
-</span><span class='line'>  <span class="c1">// it can be used on the outside. In this case, we export the constructor</span>
-</span><span class='line'>  <span class="c1">// by returning it. It becomes the value of the assignment expression</span>
-</span><span class='line'>  <span class="c1">// on the first line above.</span>
-</span><span class='line'>  <span class="k">return</span> <span class="nx">BrowserFrame</span><span class="p">;</span>
-</span><span class='line'><span class="p">}());</span> <span class="c1">// Invoke the function immediately after defining it.</span>
-</span></code></pre></td></tr></table></div></figure>
-
-</div>
-  
-  
-
-
-</div>
-
-      </article>
-    
-    
-      <article class="span4">
-        <div class="article-format">
-
-  <header>
-    
       <h1 class="entry-title"><a href="/blog/2013/02/23/mock-moz-activity/">Mocha: MockMozActivity與global Leak</a></h1>
     
     
@@ -429,7 +147,7 @@ And it&#8217;s having countless private functions now.</p>
   
 
 
-<time datetime="2013-02-23T16:56:00+01:00" pubdate data-updated="true">Feb 23<span>rd</span>, 2013</time> - 
+<time datetime="2013-02-23T16:56:00+08:00" pubdate data-updated="true">Feb 23<span>rd</span>, 2013</time> - 
         
 
 posted in
@@ -440,6 +158,8 @@ posted in
 </span>
 
 
+        
+         | <a href="/blog/2013/02/23/mock-moz-activity/#disqus_thread">Comments</a>
         
       </p>
     
@@ -572,7 +292,7 @@ posted in
   
 
 
-<time datetime="2012-12-22T00:28:00+01:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2012</time> - 
+<time datetime="2012-12-22T00:28:00+08:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2012</time> - 
         
 
 posted in
@@ -583,6 +303,8 @@ posted in
 </span>
 
 
+        
+         | <a href="/blog/2012/12/22/javascript-memorization/#disqus_thread">Comments</a>
         
       </p>
     
@@ -611,7 +333,7 @@ This is called <code>Memorization</code>.</p>
 
 
 <p><code>getOffOrigin</code> has to use some logic to compare the two arguments and return a string.
-The result wouldn&#8217;t change if the arguments are the same.
+The result wouldn&rsquo;t change if the arguments are the same.
 Therefore, to avoid calling the function many times, the result could be stored in the function itself.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -670,7 +392,7 @@ Therefore, to avoid calling the function many times, the result could be stored 
 <ul>
 <li><p>If we only have one arguments we could use it as the key to cache directly.
 But we have multiple arguments in this case, we then use stringilized JSON to be the key.</p></li>
-<li><p>Hence we don&#8217;t need to do the same thing every time we enter this function if the arguments are used before.</p></li>
+<li><p>Hence we don&rsquo;t need to do the same thing every time we enter this function if the arguments are used before.</p></li>
 <li><p>Have fun with your function cache!</p></li>
 </ul>
 
@@ -714,7 +436,7 @@ But we have multiple arguments in this case, we then use stringilized JSON to be
   
 
 
-<time datetime="2012-09-04T15:45:00+02:00" pubdate data-updated="true">Sep 4<span>th</span>, 2012</time> - 
+<time datetime="2012-09-04T15:45:00+08:00" pubdate data-updated="true">Sep 4<span>th</span>, 2012</time> - 
         
 
 posted in
@@ -725,6 +447,8 @@ posted in
 </span>
 
 
+        
+         | <a href="/blog/2012/09/04/web-activity/#disqus_thread">Comments</a>
         
       </p>
     
@@ -946,7 +670,7 @@ Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
   
 
 
-<time datetime="2012-07-05T13:58:00+02:00" pubdate data-updated="true">Jul 5<span>th</span>, 2012</time> - 
+<time datetime="2012-07-05T13:58:00+08:00" pubdate data-updated="true">Jul 5<span>th</span>, 2012</time> - 
         
 
 posted in
@@ -958,6 +682,8 @@ posted in
 
 
         
+         | <a href="/blog/2012/07/05/gaia-window-shade/#disqus_thread">Comments</a>
+        
       </p>
     
   </header>
@@ -967,7 +693,7 @@ posted in
 
 <p>我手上的Samsung Galaxy S3的作業系統是Android 4.0.4。</p>
 
-<p>當我收到facebook/google+/&#8230;等程式通知的時候，最上面那條bar會出現對應的圖示。</p>
+<p>當我收到facebook/google+/&hellip;等程式通知的時候，最上面那條bar會出現對應的圖示。</p>
 
 <p>這時候可以透過將bar「滑下來」的動作拉出一個UI，裡面會有</p>
 
@@ -988,7 +714,7 @@ posted in
 
 <h1>GAIA也有notification panel</h1>
 
-<p>Firefox OS的UI - <a href="http://github.com/mozilla-central/gaia">GAIA</a>裡面也有定義功能列以及通知面板這件事，
+<p>Firefox OS的UI &ndash; <a href="http://github.com/mozilla-central/gaia">GAIA</a>裡面也有定義功能列以及通知面板這件事，
 這個功能正在開發中。</p>
 
 <p>有一天我們收到某個contributor提交的pull request：</p>
@@ -1096,7 +822,7 @@ posted in
 
 <h1>不過就在昨天同事發現了一個關於功能列的issue</h1>
 
-<p>於是我開始看發生了什麼事。然後上面那兩個function耗費了我一個下午&#8230;.XD</p>
+<p>於是我開始看發生了什麼事。然後上面那兩個function耗費了我一個下午&hellip;.XD</p>
 
 <p>@colinfrei其實做了一件非常有趣但是很難從code裡面看出端倪的事情。
 甚至也很難用語言來描述，不過我想試著說明發生了什麼事，怎麼做到的。</p>
@@ -1114,11 +840,11 @@ posted in
 <h1>真相其實是：</h1>
 
 <ol>
-<li><code>utility-tray</code>是一個絕對定位的<code>div</code>，平常位置定在螢幕上方<code>-moz-calc(100% - UTILITY_TRAY_HEIGHT)</code>。</li>
+<li><code>utility-tray</code>是一個絕對定位的<code>div</code>，平常位置定在螢幕上方<code>-moz-calc(100% &ndash; UTILITY_TRAY_HEIGHT)</code>。</li>
 <li><p>當你開始Touch的時候，根據你的移動距離計算<code>translateY</code>，使它產生位移</p>
 
 <p> 你可以把<code>-moz-transform: translateY(px)</code>當成是<code>top: px</code>在CSS3的新招。
- 它提供了更快速的rendering &#8211; 當你想利用<code>-moz-transition: -moz-transform</code>來做位移動畫的時候。
+ 它提供了更快速的rendering &mdash; 當你想利用<code>-moz-transition: -moz-transform</code>來做位移動畫的時候。
  這件事情可以另外寫一篇文章來說（挖洞的意味）。</p></li>
 <li><p>當你放開拉bar的時候而且如果已經超過「要讓通知面板掉下來的合法距離」：</p>
 
@@ -1206,7 +932,7 @@ posted in
 <ol>
 <li>讓<code>utility-tray</code>先定速往上移動/讓<code>quick-setting</code>定速往下移動到底端。</li>
 <li>等到<code>utility-tray</code>的transition結束時，會收到<code>transitionend</code>的事件。
- 這時候再讓<code>utility-tray</code>進行第二次transition&#8230;而目的地就是螢幕頂端。
+ 這時候再讓<code>utility-tray</code>進行第二次transition&hellip;而目的地就是螢幕頂端。
  同時<code>quick-setting</code>就不再動作了，讓它跟著<code>utility-tray</code>一起被往上卷走。</li>
 </ol>
 
@@ -1218,7 +944,7 @@ posted in
 <h1>the end?</h1>
 
 <p>其實UX還沒有定義這個行為，所以pull request本身沒有被接受。
-不過&#8230;I did learn something from these codes:)</p>
+不過&hellip;I did learn something from these codes:)</p>
 </div>
   
   
@@ -1259,7 +985,7 @@ posted in
   
 
 
-<time datetime="2012-06-10T17:06:00+02:00" pubdate data-updated="true">Jun 10<span>th</span>, 2012</time> - 
+<time datetime="2012-06-10T17:06:00+08:00" pubdate data-updated="true">Jun 10<span>th</span>, 2012</time> - 
         
 
 posted in
@@ -1270,6 +996,8 @@ posted in
 </span>
 
 
+        
+         | <a href="/blog/2012/06/10/web-application-core/#disqus_thread">Comments</a>
         
       </p>
     
@@ -1395,7 +1123,7 @@ posted in
   
 
 
-<time datetime="2012-06-10T16:17:00+02:00" pubdate data-updated="true">Jun 10<span>th</span>, 2012</time> - 
+<time datetime="2012-06-10T16:17:00+08:00" pubdate data-updated="true">Jun 10<span>th</span>, 2012</time> - 
         
 
 posted in
@@ -1406,6 +1134,8 @@ posted in
 </span>
 
 
+        
+         | <a href="/blog/2012/06/10/function-hoisting-appliance/#disqus_thread">Comments</a>
         
       </p>
     
@@ -1497,7 +1227,7 @@ posted in
   
 
 
-<time datetime="2012-05-31T10:53:00+02:00" pubdate data-updated="true">May 31<span>st</span>, 2012</time> - 
+<time datetime="2012-05-31T10:53:00+08:00" pubdate data-updated="true">May 31<span>st</span>, 2012</time> - 
         
 
 posted in
@@ -1508,6 +1238,8 @@ posted in
 </span>
 
 
+        
+         | <a href="/blog/2012/05/31/underline-to-json/#disqus_thread">Comments</a>
         
       </p>
     
@@ -1609,7 +1341,7 @@ network_hostname=abc1234
   
 
 
-<time datetime="2012-05-30T17:33:00+02:00" pubdate data-updated="true">May 30<span>th</span>, 2012</time> - 
+<time datetime="2012-05-30T17:33:00+08:00" pubdate data-updated="true">May 30<span>th</span>, 2012</time> - 
         
 
 posted in
@@ -1620,6 +1352,8 @@ posted in
 </span>
 
 
+        
+         | <a href="/blog/2012/05/30/can-js/#disqus_thread">Comments</a>
         
       </p>
     
@@ -1690,7 +1424,7 @@ JMVC除了MVC還提供其他的case solution，而Backbone只專注在MVC身上�
   
 
 
-<time datetime="2012-05-30T04:15:00+02:00" pubdate data-updated="true">May 30<span>th</span>, 2012</time> - 
+<time datetime="2012-05-30T04:15:00+08:00" pubdate data-updated="true">May 30<span>th</span>, 2012</time> - 
         
 
 posted in
@@ -1701,6 +1435,8 @@ posted in
 </span>
 
 
+        
+         | <a href="/blog/2012/05/30/i-have-also-a-story-to-tell/#disqus_thread">Comments</a>
         
       </p>
     
@@ -1847,6 +1583,101 @@ posted in
 
       </article>
     
+    
+      <article class="span4">
+        <div class="article-format">
+
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/05/24/javascriptmvc-slideshare/">JavascriptMVC on Slideshare</a></h1>
+    
+    
+      <p class="meta">
+        
+  
+
+
+  
+    <span class="byline author vcard">by <span class="fn">Alive Kuo</span></span>
+  
+
+ - 
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-05-24T14:58:00+08:00" pubdate data-updated="true">May 24<span>th</span>, 2012</time> - 
+        
+
+posted in
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascriptmvc/'>javascriptmvc</a>
+  
+</span>
+
+
+        
+         | <a href="/blog/2012/05/24/javascriptmvc-slideshare/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>陸續看到兩個介紹Backbone的投影片&mdash;JSDC上的<a href="https://speakerdeck.com/u/jaceju/p/refactoring-with-backbonejs">Refactor with Backbone.js</a>，以及在slideshare看到的<a href="http://www.slideshare.net/molily/javascript-application-architecture-with-backbonejs">Javasciprt Application Architecture with Backbone.js</a>，一時手癢就想自己也來做一個介紹JavascriptMVC的投影片丟到Slideshare。</p>
+
+<p>目前Slideshare上跟JavascriptMVC有關的投影片有：</p>
+
+<ol>
+<li><a href="http://www.slideshare.net/4lb0/javascriptmvc">JavascriptMVC</a>:六個月前上傳，德文？撰寫。</li>
+</ol>
+
+
+<div style="width:425px" id="__ss_10174435"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/4lb0/javascriptmvc" title="JavascriptMVC" target="_blank">JavascriptMVC</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/10174435" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" allowfullscreen></iframe></div>
+
+
+<ol>
+<li><a href="http://www.slideshare.net/zukunftsalick/introduction-to-javascriptmvc">Introduction to JavascriptMVC</a>:一年前上傳。</li>
+</ol>
+
+
+<div style="width:425px" id="__ss_7966052"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/zukunftsalick/introduction-to-javascriptmvc" title="Introduction to JavaScriptMVC" target="_blank">Introduction to JavaScriptMVC</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/7966052" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" allowfullscreen></iframe></div>
+
+
+<ol>
+<li><a href="http://www.slideshare.net/tdreyno/jqconf">Organizing Code with JavascriptMVC</a>:兩年前上傳。</li>
+</ol>
+
+
+<div style="width:425px" id="__ss_5467723"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/tdreyno/jqconf" title="Organizing Code with JavascriptMVC" target="_blank">Organizing Code with JavascriptMVC</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/5467723" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" allowfullscreen></iframe></div>
+
+
+<p>比起Backbone實在差太多了&hellip;而且有些還是過時的資訊。</p>
+
+<p>姑且先整理一下之前的Javascript簡介投影片丟上去，下個目標預計是寫一個完整的建置範例，不過目前還沒有想到主題。</p>
+
+<div style="width:425px" id="__ss_13010920"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/DavidSkyAlive/javascriptmvc-another-choice-of-web-framework" title="JavascriptMVC: Another choice of web framework" target="_blank">JavascriptMVC: Another choice of web framework</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/13010920" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" allowfullscreen></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/DavidSkyAlive" target="_blank">Alive Kuo</a> </div> </div>
+
+
+
+</div>
+  
+  
+
+
+</div>
+
+      </article>
+    
     </div>
       <div class="row">
         <ul class="pager">
@@ -1874,15 +1705,11 @@ posted in
     <ul class="recent_posts">
       
         <li>
-          <a href="/blog/2013/07/23/sandbox-iframe/">Modules inside iframe</a>
+          <a href="/blog/2013/08/06/coscup-2013/">[COSCUP 2013] Audio competing in FxOS</a>
         </li>
       
         <li>
-          <a href="/blog/2013/07/19/audio-competing-again/">[FxOS] Audio Competing Policies</a>
-        </li>
-      
-        <li>
-          <a href="/blog/2013/07/18/window-manager-decoupling/">[FxOS] Plan: Window Management Module Decoupling</a>
+          <a href="/blog/2013/07/18/window-manager-decoupling/">[FxOS] Plan: Window Management decoupling (CONT.)</a>
         </li>
       
         <li>
@@ -1890,7 +1717,11 @@ posted in
         </li>
       
         <li>
-          <a href="/blog/2013/07/10/system-modulization-plan/">Proposal: System Modualization Plan</a>
+          <a href="/blog/2013/07/10/system-modulization-plan/">Proposal: System Modulization Plan</a>
+        </li>
+      
+        <li>
+          <a href="/blog/2013/07/05/transition-state-machine/">[Window Management] Transition state machine</a>
         </li>
       
     </ul>
@@ -1985,6 +1816,14 @@ posted in
 }(document, 'script', 'facebook-jssdk'));</script>
 
 
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
 
 
 

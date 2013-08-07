@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: audio | Ascheriit]]></title>
-  <link href="http://alivedise.github.com/blog/categories/audio/atom.xml" rel="self"/>
-  <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-23T18:10:26+02:00</updated>
-  <id>http://alivedise.github.com/</id>
+  <link href="http://alivedise.github.io/blog/categories/audio/atom.xml" rel="self"/>
+  <link href="http://alivedise.github.io/"/>
+  <updated>2013-08-07T09:56:17+08:00</updated>
+  <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
     
@@ -14,87 +14,11 @@
 
   
   <entry>
-    <title type="html"><![CDATA[[FxOS] Audio Competing Policies]]></title>
-    <link href="http://alivedise.github.com/blog/2013/07/19/audio-competing-again/"/>
-    <updated>2013-07-19T18:43:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2013/07/19/audio-competing-again</id>
-    <content type="html"><![CDATA[<p>I mentioned current audio competing policies in preivous "Background play" article.</p>
-
-<p>This article is trying to decribe it more precisely.</p>
-
-<h2>Preface</h2>
-
-<p>All these API and policies are coming from these similar requirements:</p>
-
-<p><blockquote><p>"As an user I want the music is automatically muted when call incoming."<br/>"As an user I want the music is able to play at background."<br/>"As an user I want the music to stop the background playing content."</p></blockquote></p>
-
-<p>As you may know this doesn't exist on desktop browser (yet).</p>
-
-<h2>Initial proposal: Multiple audio stream.</h2>
-
-<p><script async="true" class="speakerdeck-embed" data-id="e77e4870d5d70130ea8666ea2df61d46" src="//speakerdeck.com/assets/embed.js"> </script></p>
-
-<p>The initial proposal is, control everything from UI side.</p>
-
-<p>Gaia knows which app is foreground and which app is background,</p>
-
-<p>so what we want is just:</p>
-
-<ul>
-<li>Ability to mute the whole page/app.</li>
-<li>Be able to know which page/app is playing audio.</li>
-<li>Use permission model to distinguish the priority.</li>
-</ul>
-
-
-<h2>Current policy: the UX logic is living in platform</h2>
-
-<ul>
-<li>Foreground app could always be playable.</li>
-<li>Only content or higher channel could play at background.</li>
-<li>Only active app is able to play when screen is off.</li>
-<li>Higher channel would interrupt lower channel.</li>
-</ul>
-
-
-<h2>Future policy: ?</h2>
-
-<ul>
-<li>Basic competing unit is a page but not an app.</li>
-<li>Separate competing and background play.</li>
-<li>Control from UI side, again.</li>
-<li>Video: Exactly....video doesn't need channel.</li>
-<li><a href="http://bugzil.la/835101">New audio channel API is ongoing.</a>
-
-<ul>
-<li>To resolve background play problem with normal channel.</li>
-<li>Ability to control the mozbrowser iframe to play or pause.</li>
-</ul>
-</li>
-</ul>
-
-
-<h2>Learned</h2>
-
-<ul>
-<li>We should consider existing web pages/apps as well as new API.</li>
-<li>Shall we dance with user experience?
-
-<ul>
-<li>UX is the king, but logic is another thing.</li>
-</ul>
-</li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
     <title type="html"><![CDATA[[Fx OS] Background media play]]></title>
-    <link href="http://alivedise.github.com/blog/2013/07/16/audio-competing-in-fxos/"/>
-    <updated>2013-07-16T19:16:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2013/07/16/audio-competing-in-fxos</id>
-    <content type="html"><![CDATA[<p><img src="https://blog.mozilla.org/press/files/2012/09/FXOS_Music_Grid.jpg"></p>
+    <link href="http://alivedise.github.io/blog/2013/07/16/audio-competing-in-fxos/"/>
+    <updated>2013-07-16T19:16:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2013/07/16/audio-competing-in-fxos</id>
+    <content type="html"><![CDATA[<p><img class="<a" src="href="https://blog.mozilla.org/press/files/2012/09/FXOS_Music_Grid.jpg">https://blog.mozilla.org/press/files/2012/09/FXOS_Music_Grid.jpg</a>"></p>
 
 <p>If you want to have you own media playing app to be able to run at background,
 and/or has the ability to interrupt other playing audio, please view this article for what to do.</p>
@@ -103,7 +27,7 @@ and/or has the ability to interrupt other playing audio, please view this articl
 
 <p>You need to specify this permission in the manifest of your app.</p>
 
-<p>And yes, this means we don't allow a web page without the manifest to play at background.</p>
+<p>And yes, this means we don&rsquo;t allow a web page without the manifest to play at background.</p>
 
 <p><code>js
 "permissions": {
@@ -113,7 +37,7 @@ and/or has the ability to interrupt other playing audio, please view this articl
 
 <p>The <code>content</code> represents the name of the audio channel.</p>
 
-<p>Note: Video's permission also uses the same <code>audio-channel-content</code>.</p>
+<p>Note: Video&rsquo;s permission also uses the same <code>audio-channel-content</code>.</p>
 
 <h3>Audio Channel Types</h3>
 
@@ -141,7 +65,7 @@ and/or has the ability to interrupt other playing audio, please view this articl
 <h3>Audio Competing Rules</h3>
 
 <ol>
-<li>We're interrupting the lower channel when higher channel occurs.</li>
+<li>We&rsquo;re interrupting the lower channel when higher channel occurs.</li>
 <li>If the same channel are playing and using content channel,
 the one who gets visibility (go to foreground) would be the winner.</li>
 <li>The foreground page/app is always playable. However the channel type decides it could interrupt background playing content or not.</li>
@@ -163,7 +87,7 @@ and the page/app is the current displayed one.</li>
 
 <p>Please keep in mind you need relevant channel permission.</p>
 
-<p><blockquote><p>Note: It's <code>mozaudiochannel</code> instead of <code>mozaudiopchanneltype</code> here.</p></blockquote></p>
+<p><blockquote><p>Note: It&rsquo;s <code>mozaudiochannel</code> instead of <code>mozaudiopchanneltype</code> here.</p></blockquote></p>
 
 <h2>[Dynamically] Javascript</h2>
 
@@ -171,34 +95,34 @@ and the page/app is the current displayed one.</li>
 
 <p>```js
 var audio = new Audio();
-audio.mozAudioChannelType = 'content';</p>
+audio.mozAudioChannelType = &lsquo;content&rsquo;;</p>
 
 <p>// Set audio channel type before setting src to avoid decoder confuses.
-audio.src = 'xxx.ogg';
+audio.src = &lsquo;xxx.ogg&rsquo;;
 ```</p>
 
 <p>Change the channel of the audio to another type is not allowed.</p>
 
 <p>You should create another audio/video instance if you want to be played in another channel.</p>
 
-<h2>(OPTIONAL) If you want to know you're interrupted by higher channel</h2>
+<h2>(OPTIONAL) If you want to know you&rsquo;re interrupted by higher channel</h2>
 
 <p>Add mozinterruptbegin/mozinterruptend event handler if you need to do something with interruptions.</p>
 
 <p>```js
-  var player = document.getElementById('audio#my-player');</p>
+  var player = document.getElementById(&lsquo;audio#my-player&rsquo;);</p>
 
-<p>  // ...
+<p>  // &hellip;
   // The event is fired on the media element.
-  player.addEventListener('mozinterruptbegin', function onInterrupted() {//do sth....});
-  player.addEventListener('mozinterruptend', function onResumed() {// do sth....});
+  player.addEventListener(&lsquo;mozinterruptbegin&rsquo;, function onInterrupted() {//do sth&hellip;.});
+  player.addEventListener(&lsquo;mozinterruptend&rsquo;, function onResumed() {// do sth&hellip;.});
 ```</p>
 
 <h2>Notices</h2>
 
 <ul>
 <li>Even if your are developing a HTML5 video playing app,
-and we all know that video shouldn't be played at background due to strange UX,
+and we all know that video shouldn&rsquo;t be played at background due to strange UX,
 you should also consider to set content channel because video is expected to interrupt the current background playing media.</li>
 </ul>
 

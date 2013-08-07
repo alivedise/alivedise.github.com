@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: w3c | Ascheriit]]></title>
-  <link href="http://alivedise.github.com/blog/categories/w3c/atom.xml" rel="self"/>
-  <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-23T18:10:26+02:00</updated>
-  <id>http://alivedise.github.com/</id>
+  <link href="http://alivedise.github.io/blog/categories/w3c/atom.xml" rel="self"/>
+  <link href="http://alivedise.github.io/"/>
+  <updated>2013-08-07T09:56:17+08:00</updated>
+  <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[[HTML] 多行tooltip(title)]]></title>
-    <link href="http://alivedise.github.com/blog/2012/02/09/multiline-tooltip/"/>
-    <updated>2012-02-09T11:46:00+01:00</updated>
-    <id>http://alivedise.github.com/blog/2012/02/09/multiline-tooltip</id>
+    <link href="http://alivedise.github.io/blog/2012/02/09/multiline-tooltip/"/>
+    <updated>2012-02-09T11:46:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2012/02/09/multiline-tooltip</id>
     <content type="html"><![CDATA[<p>html原生tooltip(title屬性)顯示多行的方法：</p>
 
 <p>``` html</p>
@@ -26,7 +26,7 @@
 </code></pre>
 
 <p>```
-殘念得是很難得的firefox有bug，多行會變成空白字元....
+殘念得是很難得的firefox有bug，多行會變成空白字元&hellip;.
 IE跟Chrome是正常的。</p>
 
 <h2>jsfiddle</h2>

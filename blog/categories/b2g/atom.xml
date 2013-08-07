@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: b2g | Ascheriit]]></title>
-  <link href="http://alivedise.github.com/blog/categories/b2g/atom.xml" rel="self"/>
-  <link href="http://alivedise.github.com/"/>
-  <updated>2013-07-23T18:10:26+02:00</updated>
-  <id>http://alivedise.github.com/</id>
+  <link href="http://alivedise.github.io/blog/categories/b2g/atom.xml" rel="self"/>
+  <link href="http://alivedise.github.io/"/>
+  <updated>2013-08-07T09:56:17+08:00</updated>
+  <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
     
@@ -14,10 +14,10 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Proposal: System Modualization Plan]]></title>
-    <link href="http://alivedise.github.com/blog/2013/07/10/system-modulization-plan/"/>
-    <updated>2013-07-10T18:04:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2013/07/10/system-modulization-plan</id>
+    <title type="html"><![CDATA[Proposal: System Modulization Plan]]></title>
+    <link href="http://alivedise.github.io/blog/2013/07/10/system-modulization-plan/"/>
+    <updated>2013-07-10T18:04:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2013/07/10/system-modulization-plan</id>
     <content type="html"><![CDATA[<h4>Source</h4>
 
 <p><a href="https://github.com/mozilla-b2g/gaia/tree/master/apps/system">https://github.com/mozilla-b2g/gaia/tree/master/apps/system</a></p>
@@ -26,16 +26,16 @@
 
 <ol>
 <li>Some modules directly invokes others.</li>
-<li><code>'LockScreen is undefined.'</code> message appears oftenly right after device boots up.</li>
-<li>Memory concern - Most of the modules are not always needed. Most of the UI view doesn't need to live in the DOM tree at first.</li>
-<li>Performance concern - device bootup time is getting longer and longer.</li>
+<li><code>&lsquo;LockScreen is undefined.&rsquo;</code> message appears oftenly right after device boots up.</li>
+<li>Memory concern &ndash; Most of the modules are not always needed. Most of the UI view doesn&rsquo;t need to live in the DOM tree at first.</li>
+<li>Performance concern &ndash; device bootup time is getting longer and longer.</li>
 </ol>
 
 
 <h4>Proposal: Core modules and side modules</h4>
 
-<p>We could figure out what's definitely necessary in an operating system and what's not.
-For example, <code>Window Management</code> relevant modules should be a core module but <code>Captive Portal</code> shouldn't be.</p>
+<p>We could figure out what&rsquo;s definitely necessary in an operating system and what&rsquo;s not.
+For example, <code>Window Management</code> relevant modules should be a core module but <code>Captive Portal</code> shouldn&rsquo;t be.</p>
 
 <p>The main idea is the same as any other app performanace tuning:
 Lazy load anything on demand.</p>
@@ -46,8 +46,8 @@ Lazy load anything on demand.</p>
 For example, lazy load the Captive Portal:</p>
 
 <p>``` js
-window.addEventListener('mozChromeEvent', function(e) {
-  if (e.detail.type == 'captive-portal-login' &amp;&amp; typeof(CaptivePortal) == 'undefined') {</p>
+window.addEventListener(&lsquo;mozChromeEvent&rsquo;, function(e) {
+  if (e.detail.type == &lsquo;captive-portal-login&rsquo; &amp;&amp; typeof(CaptivePortal) == &lsquo;undefined&rsquo;) {</p>
 
 <pre><code>lazy-load('captive-portal', function onReadyCallback() {   // lazy load captive portal and its HTML part.
   CaptivePortal.handleEvent(e);  // Pass the event
@@ -61,9 +61,9 @@ So another rule would be:
 * expose handleEvent in any side module for Event Dispatcher to invoke when they are firt time loaded by Event Dispatcher.</p>
 
 <p>With this, we could even lazy load lockscreen,
-because if lockscreen is disabled by the user, we don't need to load it when the device boots.</p>
+because if lockscreen is disabled by the user, we don&rsquo;t need to load it when the device boots.</p>
 
-<p>IMO there're only few core modules now:</p>
+<p>IMO there&rsquo;re only few core modules now:</p>
 
 <ul>
 <li>Window Management
@@ -76,7 +76,7 @@ because if lockscreen is disabled by the user, we don't need to load it when the
 <li>Utility-tray</li>
 <li>Statusbar</li>
 <li>Init Logo Handler (But this is useless after device boot finishes.)</li>
-<li>Screen Management (Exactly, it's indeed Wake Lock Management)</li>
+<li>Screen Management (Exactly, it&rsquo;s indeed Wake Lock Management)</li>
 <li>Applications (API Wrapper for mozApp)</li>
 </ul>
 
@@ -101,24 +101,24 @@ because if lockscreen is disabled by the user, we don't need to load it when the
 
 <h5>Chanllenge</h5>
 
-<p>If we want to "unload" the module and its view using iframe,
+<p>If we want to &ldquo;unload&rdquo; the module and its view using iframe,
 we need a way for modules inside iframe to communicate.
 The first thing come to my mind is <code>window.parent.postMessage</code></p>
 
-<p>Second, we need to consider dependency problems if it's too complex.</p>
+<p>Second, we need to consider dependency problems if it&rsquo;s too complex.</p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[[gaia] HTML5 Window Shade]]></title>
-    <link href="http://alivedise.github.com/blog/2012/07/05/gaia-window-shade/"/>
-    <updated>2012-07-05T13:58:00+02:00</updated>
-    <id>http://alivedise.github.com/blog/2012/07/05/gaia-window-shade</id>
+    <link href="http://alivedise.github.io/blog/2012/07/05/gaia-window-shade/"/>
+    <updated>2012-07-05T13:58:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2012/07/05/gaia-window-shade</id>
     <content type="html"><![CDATA[<h1>Window Shade</h1>
 
 <p>我手上的Samsung Galaxy S3的作業系統是Android 4.0.4。</p>
 
-<p>當我收到facebook/google+/...等程式通知的時候，最上面那條bar會出現對應的圖示。</p>
+<p>當我收到facebook/google+/&hellip;等程式通知的時候，最上面那條bar會出現對應的圖示。</p>
 
 <p>這時候可以透過將bar「滑下來」的動作拉出一個UI，裡面會有</p>
 
@@ -128,7 +128,7 @@ The first thing come to my mind is <code>window.parent.postMessage</code></p>
 </ol>
 
 
-<p><img src="http://i.imgur.com/nU76i.png"></p>
+<p><img class="<a" src="href="http://i.imgur.com/nU76i.png">http://i.imgur.com/nU76i.png</a>"></p>
 
 <p>這個UX，Google把它稱為<b>Window shade</b></p>
 
@@ -139,7 +139,7 @@ The first thing come to my mind is <code>window.parent.postMessage</code></p>
 
 <h1>GAIA也有notification panel</h1>
 
-<p>Firefox OS的UI - <a href="http://github.com/mozilla-central/gaia">GAIA</a>裡面也有定義功能列以及通知面板這件事，
+<p>Firefox OS的UI &ndash; <a href="http://github.com/mozilla-central/gaia">GAIA</a>裡面也有定義功能列以及通知面板這件事，
 這個功能正在開發中。</p>
 
 <p>有一天我們收到某個contributor提交的pull request：</p>
@@ -176,7 +176,7 @@ style.MozTransform = 'translateY(' + dy + 'px)';
 </code></pre>
 
 <p>  },
-  //....skiped...
+  //&hellip;.skiped&hellip;
   show: function ut_show(dy) {</p>
 
 <pre><code>var alreadyShown = this.shown,
@@ -207,7 +207,7 @@ if (!alreadyShown) {
 
 <h1>不過就在昨天同事發現了一個關於功能列的issue</h1>
 
-<p>於是我開始看發生了什麼事。然後上面那兩個function耗費了我一個下午....XD</p>
+<p>於是我開始看發生了什麼事。然後上面那兩個function耗費了我一個下午&hellip;.XD</p>
 
 <p>@colinfrei其實做了一件非常有趣但是很難從code裡面看出端倪的事情。
 甚至也很難用語言來描述，不過我想試著說明發生了什麼事，怎麼做到的。</p>
@@ -225,11 +225,11 @@ if (!alreadyShown) {
 <h1>真相其實是：</h1>
 
 <ol>
-<li><code>utility-tray</code>是一個絕對定位的<code>div</code>，平常位置定在螢幕上方<code>-moz-calc(100% - UTILITY_TRAY_HEIGHT)</code>。</li>
+<li><code>utility-tray</code>是一個絕對定位的<code>div</code>，平常位置定在螢幕上方<code>-moz-calc(100% &ndash; UTILITY_TRAY_HEIGHT)</code>。</li>
 <li><p>當你開始Touch的時候，根據你的移動距離計算<code>translateY</code>，使它產生位移</p>
 
 <p> 你可以把<code>-moz-transform: translateY(px)</code>當成是<code>top: px</code>在CSS3的新招。
- 它提供了更快速的rendering -- 當你想利用<code>-moz-transition: -moz-transform</code>來做位移動畫的時候。
+ 它提供了更快速的rendering &mdash; 當你想利用<code>-moz-transition: -moz-transform</code>來做位移動畫的時候。
  這件事情可以另外寫一篇文章來說（挖洞的意味）。</p></li>
 <li><p>當你放開拉bar的時候而且如果已經超過「要讓通知面板掉下來的合法距離」：</p>
 
@@ -292,7 +292,7 @@ if (!alreadyShown) {
 <ol>
 <li>讓<code>utility-tray</code>先定速往上移動/讓<code>quick-setting</code>定速往下移動到底端。</li>
 <li>等到<code>utility-tray</code>的transition結束時，會收到<code>transitionend</code>的事件。
- 這時候再讓<code>utility-tray</code>進行第二次transition...而目的地就是螢幕頂端。
+ 這時候再讓<code>utility-tray</code>進行第二次transition&hellip;而目的地就是螢幕頂端。
  同時<code>quick-setting</code>就不再動作了，讓它跟著<code>utility-tray</code>一起被往上卷走。</li>
 </ol>
 
@@ -304,7 +304,7 @@ if (!alreadyShown) {
 <h1>the end?</h1>
 
 <p>其實UX還沒有定義這個行為，所以pull request本身沒有被接受。
-不過...I did learn something from these codes:)</p>
+不過&hellip;I did learn something from these codes:)</p>
 ]]></content>
   </entry>
   
