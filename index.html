@@ -643,11 +643,6 @@ posted in
 <li>看到很多以前沒有遇過的pattern，現在回去看一年前寫的東西感覺又不同了。</li>
 <li>當然也看到一些不好的設計，很希望有機會能夠改變它。</li>
 <li>認識一些除了我之外在工作之餘還是對技術玩意很有熱忱的人。</li>
-<li>目前身分是自由球員，理論上被允許去做任何我想做的事，不太被干涉，我非常，非常喜歡這件事。也很感謝我的主管&#8221;縱容&#8221;我。</li>
-<li>養了叫bug的貓。<img src="http://i.imgur.com/JPR0wzu.jpg"></li>
-<li><a href="http://coscup.org/2012/en/program/">在COSCUP 2012給過talk</a>。</li>
-<li><a href="http://coscup.org/2013/zh-tw/program/">今年還有一次跟FxOS有關的talk</a>。</li>
-<li>在柏林的時候人生第一次看到雪。<img src="http://i.imgur.com/ffpaudD.jpg"></li>
 </ul>
 
 
@@ -806,120 +801,12 @@ posted in
 所以要用getComputedStyle拿出變形矩陣後算出來：
 （skew跟translate的值原文沒有提供算法，看了一下網路文章似乎沒辦法逆推。）</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'>  <span class="cm">/**</span>
-</span><span class='line'><span class="cm">   * Construct a mutation observer.</span>
-</span><span class='line'><span class="cm">   * See https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver</span>
-</span><span class='line'><span class="cm">   */</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="cm">/**</span>
-</span><span class='line'><span class="cm">   * var target = document.querySelector(&#39;#id&#39;);</span>
-</span><span class='line'><span class="cm">   */</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">target</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">&#39;#id&#39;</span><span class="p">);</span>
-</span><span class='line'>  <span class="cm">/**</span>
-</span><span class='line'><span class="cm">   * create an observer instance</span>
-</span><span class='line'><span class="cm">   */</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">observer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MutationObserver</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">mutations</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="cm">/**</span>
-</span><span class='line'><span class="cm">     * We could iterate the mutations here,</span>
-</span><span class='line'><span class="cm">     * but I don&#39;t really care it now.</span>
-</span><span class='line'><span class="cm">     */</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">st</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">getComputedStyle</span><span class="p">(</span><span class="nx">target</span><span class="p">,</span> <span class="kc">null</span><span class="p">);</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">tr</span> <span class="o">=</span> <span class="nx">st</span><span class="p">.</span><span class="nx">getPropertyValue</span><span class="p">(</span><span class="s2">&quot;-webkit-transform&quot;</span><span class="p">)</span> <span class="o">||</span>
-</span><span class='line'>             <span class="nx">st</span><span class="p">.</span><span class="nx">getPropertyValue</span><span class="p">(</span><span class="s2">&quot;-moz-transform&quot;</span><span class="p">)</span> <span class="o">||</span>
-</span><span class='line'>             <span class="nx">st</span><span class="p">.</span><span class="nx">getPropertyValue</span><span class="p">(</span><span class="s2">&quot;-ms-transform&quot;</span><span class="p">)</span> <span class="o">||</span>
-</span><span class='line'>             <span class="nx">st</span><span class="p">.</span><span class="nx">getPropertyValue</span><span class="p">(</span><span class="s2">&quot;-o-transform&quot;</span><span class="p">)</span> <span class="o">||</span>
-</span><span class='line'>             <span class="nx">st</span><span class="p">.</span><span class="nx">getPropertyValue</span><span class="p">(</span><span class="s2">&quot;transform&quot;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Matrix: &#39;</span> <span class="o">+</span> <span class="nx">tr</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// rotation matrix - http://en.wikipedia.org/wiki/Rotation_matrix</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">values</span> <span class="o">=</span> <span class="nx">tr</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">];</span>
-</span><span class='line'>    <span class="nx">values</span> <span class="o">=</span> <span class="nx">values</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;)&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span>
-</span><span class='line'>    <span class="nx">values</span> <span class="o">=</span> <span class="nx">values</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">);</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="nx">values</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="nx">values</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="nx">values</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">d</span> <span class="o">=</span> <span class="nx">values</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">scale</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">a</span><span class="o">*</span><span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span><span class="o">*</span><span class="nx">b</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// arc sin, convert from radians to degrees, round</span>
-</span><span class='line'>    <span class="c1">// DO NOT USE: see update below</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">sin</span> <span class="o">=</span> <span class="nx">b</span><span class="o">/</span><span class="nx">scale</span><span class="p">;</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">angle</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">asin</span><span class="p">(</span><span class="nx">sin</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">180</span><span class="o">/</span><span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span><span class="p">));</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// works!</span>
-</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Scale: &#39;</span> <span class="o">+</span> <span class="nx">scale</span> <span class="o">+</span> <span class="s1">&#39;;Rotate: &#39;</span> <span class="o">+</span> <span class="nx">angle</span> <span class="o">+</span> <span class="s1">&#39;deg&#39;</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">});</span>
-</span><span class='line'>  <span class="cm">/**</span>
-</span><span class='line'><span class="cm">    * Configuration of mutation observer.</span>
-</span><span class='line'><span class="cm">    */</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">config</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">attributes</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">childList</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">characterData</span><span class="o">:</span> <span class="kc">true</span> <span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="cm">/**</span>
-</span><span class='line'><span class="cm">   * pass in the target node, as well as the observer options</span>
-</span><span class='line'><span class="cm">   */</span>
-</span><span class='line'>  <span class="nx">observer</span><span class="p">.</span><span class="nx">observe</span><span class="p">(</span><span class="nx">target</span><span class="p">,</span> <span class="nx">config</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/05/27/rotation-matrix/">Read on &rarr;</a>
+    </footer>
   
 
 

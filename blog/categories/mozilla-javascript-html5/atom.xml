@@ -4,7 +4,7 @@
   <title><![CDATA[Category: mozilla,javascript,html5 | Ascheriit]]></title>
   <link href="http://alivedise.github.io/blog/categories/mozilla-javascript-html5/atom.xml" rel="self"/>
   <link href="http://alivedise.github.io/"/>
-  <updated>2013-08-07T10:33:59+08:00</updated>
+  <updated>2013-08-07T10:54:50+08:00</updated>
   <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -23,6 +23,9 @@
 （如：Gallery使用它來讓其他程式從它挑選圖片，也用同一技術來實現圖片分享到不同應用）</p>
 
 <p>以下介紹如何使用這個新穎的技術。</p>
+
+<!--more-->
+
 
 <h3>Request</h3>
 

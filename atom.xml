@@ -4,7 +4,7 @@
   <title><![CDATA[Ascheriit]]></title>
   <link href="http://alivedise.github.io/atom.xml" rel="self"/>
   <link href="http://alivedise.github.io/"/>
-  <updated>2013-08-07T10:33:59+08:00</updated>
+  <updated>2013-08-07T10:54:50+08:00</updated>
   <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -1200,15 +1200,19 @@ Gaia System Architecture Diagram (source from <a href="https://docs.google.com/d
 <li>看到很多以前沒有遇過的pattern，現在回去看一年前寫的東西感覺又不同了。</li>
 <li>當然也看到一些不好的設計，很希望有機會能夠改變它。</li>
 <li>認識一些除了我之外在工作之餘還是對技術玩意很有熱忱的人。</li>
+</ul>
+
+
+<!--more-->
+
+
+<ul>
 <li>目前身分是自由球員，理論上被允許去做任何我想做的事，不太被干涉，我非常，非常喜歡這件事。也很感謝我的主管&#8221;縱容&#8221;我。</li>
 <li>養了叫bug的貓。<img src="http://i.imgur.com/JPR0wzu.jpg"></li>
 <li><a href="http://coscup.org/2012/en/program/">在COSCUP 2012給過talk</a>。</li>
 <li><a href="http://coscup.org/2013/zh-tw/program/">今年還有一次跟FxOS有關的talk</a>。</li>
 <li>在柏林的時候人生第一次看到雪。<img src="http://i.imgur.com/ffpaudD.jpg"></li>
 </ul>
-
-
-<!--more-->
 
 
 <h3>Canvas</h3>
@@ -1345,6 +1349,11 @@ Gaia System Architecture Diagram (source from <a href="https://docs.google.com/d
 因為transform沒辦法直接用element.style直接拿到scale的值，
 所以要用getComputedStyle拿出變形矩陣後算出來：
 （skew跟translate的值原文沒有提供算法，看了一下網路文章似乎沒辦法逆推。）</p>
+
+<!--more-->
+
+
+
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -1705,6 +1714,9 @@ And it&rsquo;s having countless private functions now.</p>
 
 <p>解決方法：</p>
 
+<!--more-->
+
+
 <p>在程式前面加上<code>mocha.setup({ignoreLeaks: true});</code></p>
 
 <p>最後加上<code>mocha.setup({ignoreLeaks: true});</code></p>
@@ -1810,6 +1822,11 @@ This is called <code>Memorization</code>.</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
+
+
+<!--more-->
+
+
 <p><code>getOffOrigin</code> has to use some logic to compare the two arguments and return a string.
 The result wouldn&rsquo;t change if the arguments are the same.
 Therefore, to avoid calling the function many times, the result could be stored in the function itself.</p>
@@ -1887,6 +1904,9 @@ But we have multiple arguments in this case, we then use stringilized JSON to be
 （如：Gallery使用它來讓其他程式從它挑選圖片，也用同一技術來實現圖片分享到不同應用）</p>
 
 <p>以下介紹如何使用這個新穎的技術。</p>
+
+<!--more-->
+
 
 <h3>Request</h3>
 
@@ -2571,6 +2591,9 @@ JMVC除了MVC還提供其他的case solution，而Backbone只專注在MVC身上�
 <p>我在確定得到新工作的那一天，在ptt soft_job以及web_design版發表了那段時間的面試心得，內容是有關前端工程師的工作面試經歷。（文章在<a href="http://www.ptt.cc/bbs/Soft_Job/M.1335873183.A.F23.html">http://www.ptt.cc/bbs/Soft_Job/M.1335873183.A.F23.html</a>）因為那篇文章我收到很多回應，也很感謝所有來信的人的鼓勵。就在明天我將要離開現在的公司然後到新公司報到，我想在這邊簡單寫下一個平凡的網頁工程師一路走來的心路歷程。一些細碎片段構成的過往。</p>
 
 <p><img src="http://i.imgur.com/CB6eE.jpg"></p>
+
+<!--more-->
+
 
 <h3>0</h3>
 

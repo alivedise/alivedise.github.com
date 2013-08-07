@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | Ascheriit]]></title>
   <link href="http://alivedise.github.io/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://alivedise.github.io/"/>
-  <updated>2013-08-07T10:33:59+08:00</updated>
+  <updated>2013-08-07T10:54:50+08:00</updated>
   <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -558,6 +558,9 @@ Maybe we could define the level of the callback into three here, according to th
 所以要用getComputedStyle拿出變形矩陣後算出來：
 （skew跟translate的值原文沒有提供算法，看了一下網路文章似乎沒辦法逆推。）</p>
 
+<!--more-->
+
+
 <p>```js
   /<em>*
    * Construct a mutation observer.
@@ -638,6 +641,9 @@ console.log('Scale: ' + scale + ';Rotate: ' + angle + 'deg');
 </code></p>
 
 <p>解決方法：</p>
+
+<!--more-->
+
 
 <p>在程式前面加上<code>mocha.setup({ignoreLeaks: true});</code></p>
 
@@ -731,6 +737,9 @@ This is called <code>Memorization</code>.</p>
 </code></pre>
 
 <p>```</p>
+
+<!--more-->
+
 
 <p><code>getOffOrigin</code> has to use some logic to compare the two arguments and return a string.
 The result wouldn&rsquo;t change if the arguments are the same.
