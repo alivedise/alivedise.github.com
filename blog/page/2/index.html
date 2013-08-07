@@ -411,246 +411,12 @@ posted in
 
 <p>這個UX，Google把它稱為<b>Window shade</b></p>
 
-<p>神奇的地方在於當你在拉下或拉上面板的同時，
-快速設定與通知項目是會先「掉下來」到底端，
-到了項目的頂端出現之後才會黏在頂部。
-（相信我你沒有特別注意這件事情，而且用久了會覺得理所當然）</p>
-
-<h1>GAIA也有notification panel</h1>
-
-<p>Firefox OS的UI &ndash; <a href="http://github.com/mozilla-central/gaia">GAIA</a>裡面也有定義功能列以及通知面板這件事，
-這個功能正在開發中。</p>
-
-<p>有一天我們收到某個contributor提交的pull request：</p>
-
-<p><a href="https://github.com/mozilla-b2g/gaia/pull/1898">Gaia pull request#1898</a>
-節錄重要的修改如下：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="nx">onTouchMove</span><span class="o">:</span> <span class="kd">function</span> <span class="nx">ut_onTouchMove</span><span class="p">(</span><span class="nx">touch</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">screenHeight</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">overlay</span><span class="p">.</span><span class="nx">getBoundingClientRect</span><span class="p">().</span><span class="nx">height</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">gripBarHeight</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">gripBar</span><span class="p">.</span><span class="nx">getBoundingClientRect</span><span class="p">().</span><span class="nx">height</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">dy</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">startY</span> <span class="o">-</span> <span class="nx">touch</span><span class="p">.</span><span class="nx">pageY</span><span class="p">),</span>
-</span><span class='line'>        <span class="nx">newHeight</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">shown</span><span class="p">)</span>
-</span><span class='line'>      <span class="nx">dy</span> <span class="o">+=</span> <span class="nx">screenHeight</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">dy</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="nx">screenHeight</span><span class="p">,</span> <span class="nx">dy</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">dy</span> <span class="o">&gt;</span> <span class="nx">gripBarHeight</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">quickSettingsHeight</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">quickSettings</span><span class="p">.</span><span class="nx">getBoundingClientRect</span><span class="p">().</span><span class="nx">height</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">dy</span> <span class="o">&lt;</span> <span class="nx">quickSettingsHeight</span> <span class="o">+</span> <span class="nx">gripBarHeight</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">newHeight</span> <span class="o">=</span> <span class="nx">screenHeight</span> <span class="o">-</span> <span class="nx">quickSettingsHeight</span> <span class="o">-</span> <span class="nx">gripBarHeight</span><span class="p">;</span>
-</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">newHeight</span> <span class="o">=</span> <span class="nx">screenHeight</span> <span class="o">-</span> <span class="nx">dy</span><span class="p">;</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">quickSettings</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">MozTransition</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
-</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">quickSettings</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">MozTransform</span> <span class="o">=</span> <span class="s1">&#39;translateY(&#39;</span> <span class="o">+</span> <span class="nx">newHeight</span> <span class="o">+</span> <span class="s1">&#39;px)&#39;</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">style</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">overlay</span><span class="p">.</span><span class="nx">style</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">style</span><span class="p">.</span><span class="nx">MozTransition</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">style</span><span class="p">.</span><span class="nx">MozTransform</span> <span class="o">=</span> <span class="s1">&#39;translateY(&#39;</span> <span class="o">+</span> <span class="nx">dy</span> <span class="o">+</span> <span class="s1">&#39;px)&#39;</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">},</span>
-</span><span class='line'>  <span class="c1">//....skiped...</span>
-</span><span class='line'>  <span class="nx">show</span><span class="o">:</span> <span class="kd">function</span> <span class="nx">ut_show</span><span class="p">(</span><span class="nx">dy</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">alreadyShown</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">shown</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">trayStyle</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">overlay</span><span class="p">.</span><span class="nx">style</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">quickSettingsStyle</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">quickSettings</span><span class="p">.</span><span class="nx">style</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">trayStyle</span><span class="p">.</span><span class="nx">MozTransition</span> <span class="o">=</span> <span class="s1">&#39;-moz-transform 0.2s linear&#39;</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">trayStyle</span><span class="p">.</span><span class="nx">MozTransform</span> <span class="o">=</span> <span class="s1">&#39;translateY(100%)&#39;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">quickSettingsStyle</span><span class="p">.</span><span class="nx">MozTransition</span> <span class="o">=</span> <span class="s1">&#39;-moz-transform 0.2s linear&#39;</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">quickSettingsStyle</span><span class="p">.</span><span class="nx">MozTransform</span> <span class="o">=</span> <span class="s1">&#39;translateY(0px)&#39;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">shown</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">screen</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="s1">&#39;utility-tray&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">alreadyShown</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">evt</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createEvent</span><span class="p">(</span><span class="s1">&#39;CustomEvent&#39;</span><span class="p">);</span>
-</span><span class='line'>      <span class="nx">evt</span><span class="p">.</span><span class="nx">initCustomEvent</span><span class="p">(</span><span class="s1">&#39;utilitytrayshow&#39;</span><span class="p">,</span> <span class="kc">true</span><span class="p">,</span> <span class="kc">true</span><span class="p">,</span> <span class="kc">null</span><span class="p">);</span>
-</span><span class='line'>      <span class="nb">window</span><span class="p">.</span><span class="nx">dispatchEvent</span><span class="p">(</span><span class="nx">evt</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>  <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>原作者提到他做這件事是要讓<code>quick-setting</code>更快的出現。
-這段code也已經被merge了。</p>
-
-<h1>不過就在昨天同事發現了一個關於功能列的issue</h1>
-
-<p>於是我開始看發生了什麼事。然後上面那兩個function耗費了我一個下午&hellip;.XD</p>
-
-<p>@colinfrei其實做了一件非常有趣但是很難從code裡面看出端倪的事情。
-甚至也很難用語言來描述，不過我想試著說明發生了什麼事，怎麼做到的。</p>
-
-<p>簡單的說，他利用兩個「不同」區塊的CSS3的Transition「同步化」來實現剛剛所提的Window Shade的行為。</p>
-
-<h2>CSS: Transition</h2>
-
-<p><a href="https://developer.mozilla.org/en/CSS/transition">參閱MDN: transition</a></p>
-
-<h2>CSS: Transform</h2>
-
-<p><a href="https://developer.mozilla.org/en/CSS/transform">參閱MDN: transform</a></p>
-
-<h1>真相其實是：</h1>
-
-<ol>
-<li><code>utility-tray</code>是一個絕對定位的<code>div</code>，平常位置定在螢幕上方<code>-moz-calc(100% &ndash; UTILITY_TRAY_HEIGHT)</code>。</li>
-<li><p>當你開始Touch的時候，根據你的移動距離計算<code>translateY</code>，使它產生位移</p>
-
-<p> 你可以把<code>-moz-transform: translateY(px)</code>當成是<code>top: px</code>在CSS3的新招。
- 它提供了更快速的rendering &mdash; 當你想利用<code>-moz-transition: -moz-transform</code>來做位移動畫的時候。
- 這件事情可以另外寫一篇文章來說（挖洞的意味）。</p></li>
-<li><p>當你放開拉bar的時候而且如果已經超過「要讓通知面板掉下來的合法距離」：</p>
-
-<ul>
-<li>設定一個<code>MozTransition</code>給<code>utility-tray-overlay</code></li>
-<li>再設定一個<code>MozTransition</code>給<code>quick-setting</code></li>
-</ul>
-</li>
-</ol>
-
-
-<p>4.讓<code>utility-tray</code>整個以某個定速掉下來到螢幕底端 + 讓<code>quick-setting</code>以同樣的定速往上移動到<code>utility-tray</code>的開端</p>
-
-<p>  = 於是就造成了<code>quick-setting</code>似乎黏在通知列下方不動但整個面板是往下掉的假象！</p>
-
-<h1>the story continues</h1>
-
-<p>不過可惜的是似乎沒有考慮到當通知面板要滑上去的時候，</p>
-
-<p>「有物件的部份也應該留在頂端直到被拉bar撞到一起彈上去」這件事</p>
-
-<p>於是我也仿造這個作法另外送了一個pull request</p>
-
-<p><a href="https://github.com/mozilla-b2g/gaia/pull/2181">GAIA pull request#2181</a></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="k">case</span> <span class="s1">&#39;transitionend&#39;</span><span class="o">:</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">shown</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">screen</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="s1">&#39;utility-tray&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">overlayStyle</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">overlay</span><span class="p">;</span>
-</span><span class='line'>      <span class="kd">var</span> <span class="nx">firstShownStyle</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">firstShowStyle</span><span class="p">;</span>
-</span><span class='line'>      <span class="nx">firstShownStyle</span><span class="p">.</span><span class="nx">MozTransition</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">phase2hide</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">firstShownStyle</span><span class="p">.</span><span class="nx">MozTransition</span> <span class="o">=</span> <span class="s1">&#39;-moz-transform 0.2s linear&#39;</span><span class="p">;</span>
-</span><span class='line'>        <span class="nx">firstShownStyle</span><span class="p">.</span><span class="nx">MozTransform</span> <span class="o">=</span>
-</span><span class='line'>          <span class="s1">&#39;translateY(&#39;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">firstShownPosition</span> <span class="o">+</span> <span class="s1">&#39;px)&#39;</span><span class="p">;</span>
-</span><span class='line'>        <span class="nx">overlayStyle</span><span class="p">.</span><span class="nx">MozTransition</span> <span class="o">=</span> <span class="s1">&#39;-moz-transform 0.2s linear&#39;</span><span class="p">;</span>
-</span><span class='line'>        <span class="nx">overlayStyle</span><span class="p">.</span><span class="nx">MozTransform</span> <span class="o">=</span> <span class="s1">&#39;translateY(0)&#39;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// Check the transition event is triggered at firstShown.</span>
-</span><span class='line'>        <span class="c1">// If so, turn off the flag which represent for</span>
-</span><span class='line'>        <span class="c1">// &#39;The overlay has already reached the bottom of quick-setting&#39;</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="nx">evt</span><span class="p">.</span><span class="nx">target</span> <span class="o">==</span> <span class="k">this</span><span class="p">.</span><span class="nx">firstShown</span><span class="p">)</span>
-</span><span class='line'>          <span class="k">this</span><span class="p">.</span><span class="nx">phase2hide</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
-</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">// Reset position of this.firstShown</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">firstShown</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">MozTransition</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">firstShown</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">MozTransform</span> <span class="o">=</span> <span class="s1">&#39;translateY(0)&#39;</span><span class="p">;</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">break</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>利用<code>transitionend</code> event callback，透過連續兩次的<code>Transition</code>來：</p>
-
-<ol>
-<li>讓<code>utility-tray</code>先定速往上移動/讓<code>quick-setting</code>定速往下移動到底端。</li>
-<li>等到<code>utility-tray</code>的transition結束時，會收到<code>transitionend</code>的事件。
- 這時候再讓<code>utility-tray</code>進行第二次transition&hellip;而目的地就是螢幕頂端。
- 同時<code>quick-setting</code>就不再動作了，讓它跟著<code>utility-tray</code>一起被往上卷走。</li>
-</ol>
-
-
-<h2>transitionend</h2>
-
-<p><a href="https://developer.mozilla.org/zh_tw/CSS_%E8%BD%89%E5%A0%B4#.E5.81.B5.E6.B8.AC_transition_.E7.9A.84.E5.AE.8C.E6.88.90">參閱MDN: transitionend</a></p>
-
-<h1>the end?</h1>
-
-<p>其實UX還沒有定義這個行為，所以pull request本身沒有被接受。
-不過&hellip;I did learn something from these codes:)</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/07/05/gaia-window-shade/">Read on &rarr;</a>
+    </footer>
   
 
 
@@ -855,44 +621,12 @@ posted in
 
 <p>原文出自PTT Web_Design版「<a href="http://www.ptt.cc/bbs/Ajax/M.1339127132.A.226.html">[問題] jQuery 參數的問題~</a>」，這名網友問為什麼下面的js不能用？</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#test&quot;</span><span class="p">).</span><span class="nx">bind</span><span class="p">(</span><span class="s2">&quot;click&quot;</span><span class="p">,</span> <span class="nx">aaa</span><span class="p">);</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">aaa</span><span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;yo&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>好傻好天真？</h2>
-
-<p>雖然不知道為什麼提問者堅持要把函數宣告放在用它之前，不過既然他問了，剛好這情況可以利用function hoisting來做，只是要修改一些小地方。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#test&quot;</span><span class="p">).</span><span class="nx">bind</span><span class="p">(</span><span class="s2">&quot;click&quot;</span><span class="p">,</span> <span class="nx">aaa</span><span class="p">);</span>
-</span><span class='line'><span class="kd">function</span> <span class="nx">aaa</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;yo&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="cm">/* function expression instead of function declaration */</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>我另外寫了一個jsfiddle來測試：</p>
-
-<iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/Ytmqw/embedded/js,resources,html,css,result/light/"></iframe>
-
-
-<h1>做的到，只不過真的有必要嗎？</h1>
-
-<p>真的有太多理由不建議這樣做。原po在我回文後也沒出現，看來也無從得知他這樣做的理由了。</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/06/10/function-hoisting-appliance/">Read on &rarr;</a>
+    </footer>
   
 
 
@@ -1222,36 +956,16 @@ posted in
 
 <p>目前Slideshare上跟JavascriptMVC有關的投影片有：</p>
 
-<ol>
-<li>Using JavascriptMVC</li>
-</ol>
-
-
-<script async="true" class="speakerdeck-embed" data-id="4ee4ade96058ee0050007d3d" src="//speakerdeck.com/assets/embed.js"> </script>
-
-
-<ol>
-<li>Event oriented architecture and client side applications</li>
-</ol>
-
-
-<script async="true" class="speakerdeck-embed" data-id="29c5118012220130193c22000a9d05ac" src="//speakerdeck.com/assets/embed.js"> </script>
-
-
-<ol>
-<li>Organizing Code with JavascriptMVC</li>
-</ol>
-
-
-<script async="true" class="speakerdeck-embed" data-id="4e97ec08711977005400d42f" src="//speakerdeck.com/assets/embed.js"> </script>
-
-
-<ol>
-<li>CanJS</li>
-</ol>
-
-
-<script async="true" class="speakerdeck-embed" data-id="b0b6728084a8013077c512313d091c2d" src="//speakerdeck.com/assets/embed.js"> </script>
+<ul>
+<li>Using JavascriptMVC
+<script async="true" class="speakerdeck-embed" data-id="4ee4ade96058ee0050007d3d" src="//speakerdeck.com/assets/embed.js"> </script></li>
+<li>Event oriented architecture and client side applications
+<script async="true" class="speakerdeck-embed" data-id="29c5118012220130193c22000a9d05ac" src="//speakerdeck.com/assets/embed.js"> </script></li>
+<li>Organizing Code with JavascriptMVC
+<script async="true" class="speakerdeck-embed" data-id="4e97ec08711977005400d42f" src="//speakerdeck.com/assets/embed.js"> </script></li>
+<li>CanJS
+<script async="true" class="speakerdeck-embed" data-id="b0b6728084a8013077c512313d091c2d" src="//speakerdeck.com/assets/embed.js"> </script></li>
+</ul>
 
 
 <p>比起Backbone實在差太多了&hellip;而且有些還是過時的資訊。</p>

@@ -153,15 +153,24 @@ posted in
 
 <p>Then, start loading things and using them like:</p>
 
-<pre><code> steal('myapp/tabs.js',
-       'myapp/slider.js', 
-       'myapp/style.css',function(){
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'> <span class="nx">steal</span><span class="p">(</span><span class="s1">&#39;myapp/tabs.js&#39;</span><span class="p">,</span>
+</span><span class='line'>       <span class="s1">&#39;myapp/slider.js&#39;</span><span class="p">,</span>
+</span><span class='line'>       <span class="s1">&#39;myapp/style.css&#39;</span><span class="p">,</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// tabs and slider have loaded </span>
+</span><span class='line'>    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#tabs&#39;</span><span class="p">).</span><span class="nx">tabs</span><span class="p">();</span>
+</span><span class='line'>    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#slider&#39;</span><span class="p">).</span><span class="nx">slider</span><span class="p">()</span>
+</span><span class='line'> <span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
 
-    // tabs and slider have loaded 
-    $('#tabs').tabs();
-    $('#slider').slider()
- })
-</code></pre>
 
 <p>Make sure your widgets load their dependencies too:</p>
 

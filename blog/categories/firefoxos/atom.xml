@@ -4,7 +4,7 @@
   <title><![CDATA[Category: firefoxos | Ascheriit]]></title>
   <link href="http://alivedise.github.io/blog/categories/firefoxos/atom.xml" rel="self"/>
   <link href="http://alivedise.github.io/"/>
-  <updated>2013-08-07T11:22:10+08:00</updated>
+  <updated>2013-08-07T11:26:37+08:00</updated>
   <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -124,6 +124,9 @@ Gaia System Architecture Diagram (source from <a href="https://docs.google.com/d
 <p><img class="<a" src="href="http://i.imgur.com/nU76i.png">http://i.imgur.com/nU76i.png</a>"></p>
 
 <p>這個UX，Google把它稱為<b>Window shade</b></p>
+
+<!--more-->
+
 
 <p>神奇的地方在於當你在拉下或拉上面板的同時，
 快速設定與通知項目是會先「掉下來」到底端，

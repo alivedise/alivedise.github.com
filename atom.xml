@@ -4,7 +4,7 @@
   <title><![CDATA[Ascheriit]]></title>
   <link href="http://alivedise.github.io/atom.xml" rel="self"/>
   <link href="http://alivedise.github.io/"/>
-  <updated>2013-08-07T11:22:10+08:00</updated>
+  <updated>2013-08-07T11:26:37+08:00</updated>
   <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -2101,6 +2101,9 @@ Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
 
 <p>這個UX，Google把它稱為<b>Window shade</b></p>
 
+<!--more-->
+
+
 <p>神奇的地方在於當你在拉下或拉上面板的同時，
 快速設定與通知項目是會先「掉下來」到底端，
 到了項目的頂端出現之後才會黏在頂部。
@@ -2443,6 +2446,11 @@ Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
 
 <p>原文出自PTT Web_Design版「<a href="http://www.ptt.cc/bbs/Ajax/M.1339127132.A.226.html">[問題] jQuery 參數的問題~</a>」，這名網友問為什麼下面的js不能用？</p>
 
+<!--more-->
+
+
+
+
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -2728,36 +2736,16 @@ JMVC除了MVC還提供其他的case solution，而Backbone只專注在MVC身上�
 
 <p>目前Slideshare上跟JavascriptMVC有關的投影片有：</p>
 
-<ol>
-<li>Using JavascriptMVC</li>
-</ol>
-
-
-<script async="true" class="speakerdeck-embed" data-id="4ee4ade96058ee0050007d3d" src="http://alivedise.github.io//speakerdeck.com/assets/embed.js"> </script>
-
-
-<ol>
-<li>Event oriented architecture and client side applications</li>
-</ol>
-
-
-<script async="true" class="speakerdeck-embed" data-id="29c5118012220130193c22000a9d05ac" src="http://alivedise.github.io//speakerdeck.com/assets/embed.js"> </script>
-
-
-<ol>
-<li>Organizing Code with JavascriptMVC</li>
-</ol>
-
-
-<script async="true" class="speakerdeck-embed" data-id="4e97ec08711977005400d42f" src="http://alivedise.github.io//speakerdeck.com/assets/embed.js"> </script>
-
-
-<ol>
-<li>CanJS</li>
-</ol>
-
-
-<script async="true" class="speakerdeck-embed" data-id="b0b6728084a8013077c512313d091c2d" src="http://alivedise.github.io//speakerdeck.com/assets/embed.js"> </script>
+<ul>
+<li>Using JavascriptMVC
+<script async="true" class="speakerdeck-embed" data-id="4ee4ade96058ee0050007d3d" src="http://alivedise.github.io//speakerdeck.com/assets/embed.js"> </script></li>
+<li>Event oriented architecture and client side applications
+<script async="true" class="speakerdeck-embed" data-id="29c5118012220130193c22000a9d05ac" src="http://alivedise.github.io//speakerdeck.com/assets/embed.js"> </script></li>
+<li>Organizing Code with JavascriptMVC
+<script async="true" class="speakerdeck-embed" data-id="4e97ec08711977005400d42f" src="http://alivedise.github.io//speakerdeck.com/assets/embed.js"> </script></li>
+<li>CanJS
+<script async="true" class="speakerdeck-embed" data-id="b0b6728084a8013077c512313d091c2d" src="http://alivedise.github.io//speakerdeck.com/assets/embed.js"> </script></li>
+</ul>
 
 
 <p>比起Backbone實在差太多了&hellip;而且有些還是過時的資訊。</p>
