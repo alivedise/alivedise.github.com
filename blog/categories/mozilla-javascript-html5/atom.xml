@@ -4,7 +4,7 @@
   <title><![CDATA[Category: mozilla,javascript,html5 | Ascheriit]]></title>
   <link href="http://alivedise.github.io/blog/categories/mozilla-javascript-html5/atom.xml" rel="self"/>
   <link href="http://alivedise.github.io/"/>
-  <updated>2013-08-07T11:19:55+08:00</updated>
+  <updated>2013-08-07T11:20:26+08:00</updated>
   <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -148,9 +148,9 @@ case 'webcontacts/email':
 
 <p>比如圖片應用程式可以分享的對象有兩個以上的時候，
 Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
-{% img <a href="http://i.imgur.com/V2rgq.jpg">http://i.imgur.com/V2rgq.jpg</a> %}
-{% img <a href="http://i.imgur.com/xcgBK.png">http://i.imgur.com/xcgBK.png</a> %}
-{% img <a href="http://i.imgur.com/UpaOC.png">http://i.imgur.com/UpaOC.png</a> %}</p>
+<img class="<a" src="href="http://i.imgur.com/V2rgq.jpg">http://i.imgur.com/V2rgq.jpg</a>">
+<img class="<a" src="href="http://i.imgur.com/xcgBK.png">http://i.imgur.com/xcgBK.png</a>">
+<img class="<a" src="href="http://i.imgur.com/UpaOC.png">http://i.imgur.com/UpaOC.png</a>"></p>
 
 <h3>結論</h3>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: gaia | Ascheriit]]></title>
   <link href="http://alivedise.github.io/blog/categories/gaia/atom.xml" rel="self"/>
   <link href="http://alivedise.github.io/"/>
-  <updated>2013-08-07T11:19:55+08:00</updated>
+  <updated>2013-08-07T11:20:26+08:00</updated>
   <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -119,7 +119,7 @@ The first thing come to my mind is <code>window.parent.postMessage</code></p>
     <id>http://alivedise.github.io/blog/2013/02/23/from-browser-to-browser</id>
     <content type="html"><![CDATA[<h3>Firefox OS</h3>
 
-<p>{% img <a href="http://cdn0.mos.techradar.futurecdn.net///art/mobile_phones/Mozilla/FireFoxOS/DeveloperHandsets/FirefoxOSDev-Press-01-580-75.jpg">http://cdn0.mos.techradar.futurecdn.net///art/mobile_phones/Mozilla/FireFoxOS/DeveloperHandsets/FirefoxOSDev-Press-01-580-75.jpg</a> %}</p>
+<p><img class="<a" src="href="http://cdn0.mos.techradar.futurecdn.net///art/mobile_phones/Mozilla/FireFoxOS/DeveloperHandsets/FirefoxOSDev-Press-01-580-75.jpg">http://cdn0.mos.techradar.futurecdn.net///art/mobile_phones/Mozilla/FireFoxOS/DeveloperHandsets/FirefoxOSDev-Press-01-580-75.jpg</a>"></p>
 
 <h3>System app</h3>
 
@@ -296,7 +296,7 @@ this.element = browser;
 </ol>
 
 
-<p>{% img <a href="http://i.imgur.com/nU76i.png">http://i.imgur.com/nU76i.png</a> %}</p>
+<p><img class="<a" src="href="http://i.imgur.com/nU76i.png">http://i.imgur.com/nU76i.png</a>"></p>
 
 <p>這個UX，Google把它稱為<b>Window shade</b></p>
 
@@ -484,7 +484,7 @@ if (!alreadyShown) {
     <content type="html"><![CDATA[<ul>
 <li><p>本文來自<a href="https://github.com/jrburke/gaia-devserver">https://github.com/jrburke/gaia-devserver</a></p></li>
 <li><p>安裝Node
-<code>shell
+<code>
  PKG: [https://sites.google.com/site/nodejsmacosx/](https://sites.google.com/site/nodejsmacosx/)
 </code></p></li>
 <li>安裝<a href="http://nightly.mozilla.org/">Firefox Nightly Build</a></li>
@@ -493,7 +493,7 @@ if (!alreadyShown) {
  127.0.0.1     gaiamobile.org
 </code></li>
 <li>安裝gaia
-<code>shell
+<code>
  mkdir b2g
  cd b2g
  git clone git://github.com/andreasgal/gaia.git
@@ -504,13 +504,13 @@ if (!alreadyShown) {
  node gaia-devserver/devserver.js docRoot=gaia/apps
 </code></li>
 <li>啟動Firefox Nightly
-<code>shell
+<code>
  /Applications/FirefoxNightly.app/Contents/MacOS/firefox -profile /Users/alive/b2g/gaia/profile --no-remote http://homescreen.gaiamobile.org:8424
 </code></li>
 <li>開新分頁<code>about:config</code>，把<code>browser.offline-apps.notify</code>設成false</li>
 <li>加入一個新的Boolean設定值名為<code>dom.w3c_touch_events.enabled</code>設成true</li>
 <li>完成了！
-{% img <a href="https://lh6.googleusercontent.com/-an0dqr9lhAM/T6Qjwhk5emI/AAAAAAAAC5k/6-4SRu5Wv7Q/s1162/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2012-05-05+%E4%B8%8A%E5%8D%882.44.59.png">https://lh6.googleusercontent.com/-an0dqr9lhAM/T6Qjwhk5emI/AAAAAAAAC5k/6-4SRu5Wv7Q/s1162/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2012-05-05+%E4%B8%8A%E5%8D%882.44.59.png</a> %}</li>
+<img class="<a" src="href="https://lh6.googleusercontent.com/-an0dqr9lhAM/T6Qjwhk5emI/AAAAAAAAC5k/6-4SRu5Wv7Q/s1162/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2012-05-05+%E4%B8%8A%E5%8D%882.44.59.png">https://lh6.googleusercontent.com/-an0dqr9lhAM/T6Qjwhk5emI/AAAAAAAAC5k/6-4SRu5Wv7Q/s1162/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2012-05-05+%E4%B8%8A%E5%8D%882.44.59.png</a>"></li>
 </ul>
 
 ]]></content>

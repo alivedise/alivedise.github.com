@@ -14,9 +14,8 @@
     
   
   <meta name="description" content="本文來自https://github.com/jrburke/gaia-devserver
-安裝Node PKG: https://sites.google.com/site/nodejsmacosx/
-安裝Firefox Nightly Build
-修改/etc/hosts加入 127.0.0 &hellip;">
+安裝Node 1
+PKG: [https://sites.google.com/site/nodejsmacosx/](https://sites.google.com/site/nodejsmacosx &hellip;">
   
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -33,9 +32,8 @@
   <meta name="og:site_name" content="Ascheriit" />
   <meta name="og:title" content="Setup Gaia on Mac with Firefox Nightly build" />
   <meta name="og:description" content="本文來自https://github.com/jrburke/gaia-devserver
-安裝Node PKG: https://sites.google.com/site/nodejsmacosx/
-安裝Firefox Nightly Build
-修改/etc/hosts加入 127.0.0 &hellip;" />
+安裝Node 1
+PKG: [https://sites.google.com/site/nodejsmacosx/](https://sites.google.com/site/nodejsmacosx &hellip;" />
   <meta name="og:url" content="http://alivedise.github.io/blog/2012/05/05/gaia/"/>
   <meta name="url" content="http://alivedise.github.io/blog/2012/05/05/gaia/">
   
@@ -140,30 +138,62 @@ posted in
 
   <div class="entry-content"><ul>
 <li><p>本文來自<a href="https://github.com/jrburke/gaia-devserver">https://github.com/jrburke/gaia-devserver</a></p></li>
-<li><p>安裝Node
- PKG: <a href="https://sites.google.com/site/nodejsmacosx/">https://sites.google.com/site/nodejsmacosx/</a></p></li>
+<li><p>安裝Node</p></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>PKG: [https://sites.google.com/site/nodejsmacosx/](https://sites.google.com/site/nodejsmacosx/)</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
 <li>安裝<a href="http://nightly.mozilla.org/">Firefox Nightly Build</a></li>
-<li><p>修改<code>/etc/hosts</code>加入</p>
+<li>修改<code>/etc/hosts</code>加入</li>
+</ol>
 
-<p> 127.0.0.1     gaiamobile.org</p></li>
-<li><p>安裝gaia</p>
 
-<p> mkdir b2g
- cd b2g
- git clone git://github.com/andreasgal/gaia.git
- git clone git://github.com/jrburke/gaia-devserver.git
- cd gaia
- GAIA_DOMAIN=gaiamobile.org:8424 make
- cd ..
- node gaia-devserver/devserver.js docRoot=gaia/apps</p></li>
-<li><p>啟動Firefox Nightly</p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>127.0.0.1     gaiamobile.org</span></code></pre></td></tr></table></div></figure>
 
-<p> /Applications/FirefoxNightly.app/Contents/MacOS/firefox -profile /Users/alive/b2g/gaia/profile &mdash;no-remote <a href="http://homescreen.gaiamobile.org:8424">http://homescreen.gaiamobile.org:8424</a></p></li>
-<li><p>開新分頁<code>about:config</code>，把<code>browser.offline-apps.notify</code>設成false</p></li>
+
+<ol>
+<li>安裝gaia</li>
+</ol>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>mkdir b2g
+</span><span class='line'>cd b2g
+</span><span class='line'>git clone git://github.com/andreasgal/gaia.git
+</span><span class='line'>git clone git://github.com/jrburke/gaia-devserver.git
+</span><span class='line'>cd gaia
+</span><span class='line'>GAIA_DOMAIN=gaiamobile.org:8424 make
+</span><span class='line'>cd ..
+</span><span class='line'>node gaia-devserver/devserver.js docRoot=gaia/apps</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>啟動Firefox Nightly</li>
+</ol>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/Applications/FirefoxNightly.app/Contents/MacOS/firefox -profile /Users/alive/b2g/gaia/profile --no-remote http://homescreen.gaiamobile.org:8424</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>開新分頁<code>about:config</code>，把<code>browser.offline-apps.notify</code>設成false</li>
 <li>加入一個新的Boolean設定值名為<code>dom.w3c_touch_events.enabled</code>設成true</li>
 <li>完成了！
 <img src="https://lh6.googleusercontent.com/-an0dqr9lhAM/T6Qjwhk5emI/AAAAAAAAC5k/6-4SRu5Wv7Q/s1162/%E8%9E%A2%E5%B9%95%E5%BF%AB%E7%85%A7+2012-05-05+%E4%B8%8A%E5%8D%882.44.59.png"></li>
-</ul>
+</ol>
 
 </div>
 

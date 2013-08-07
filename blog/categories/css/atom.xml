@@ -4,7 +4,7 @@
   <title><![CDATA[Category: css, | Ascheriit]]></title>
   <link href="http://alivedise.github.io/blog/categories/css/atom.xml" rel="self"/>
   <link href="http://alivedise.github.io/"/>
-  <updated>2013-08-07T11:19:55+08:00</updated>
+  <updated>2013-08-07T11:20:26+08:00</updated>
   <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -41,9 +41,7 @@ I thought it was ambiguous and strange if we ran into a situation that there&rsq
 
 <p>A basic transition life cycle of a window could be:</p>
 
-<p>{% blockquote %}
-(initial) &ndash;> closed &ndash;> opening &ndash;> opened &mdash;&mdash;&mdash;> closing &ndash;> opening &mdash;&mdash;&mdash;> &hellip;.
-{% endblockquote %}</p>
+<p><blockquote><p>(initial) &ndash;> closed &ndash;> opening &ndash;> opened &mdash;&mdash;&mdash;> closing &ndash;> opening &mdash;&mdash;&mdash;> &hellip;.</p></blockquote></p>
 
 <p>Now we have 4 states, the next is what&rsquo;s the trigger to states switching?</p>
 
@@ -64,7 +62,7 @@ the second event would be ignored.
 
 
 <p>So far, the state machine for transition we have:
-{% img <a href="http://i.imgur.com/MmBj2pY.jpg">http://i.imgur.com/MmBj2pY.jpg</a> %}</p>
+<img class="<a" src="href="http://i.imgur.com/MmBj2pY.jpg">http://i.imgur.com/MmBj2pY.jpg</a>"></p>
 
 <p>Now the problem is, how to represent this machine in javascript?</p>
 

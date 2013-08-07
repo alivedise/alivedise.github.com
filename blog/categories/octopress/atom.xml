@@ -4,7 +4,7 @@
   <title><![CDATA[Category: octopress | Ascheriit]]></title>
   <link href="http://alivedise.github.io/blog/categories/octopress/atom.xml" rel="self"/>
   <link href="http://alivedise.github.io/"/>
-  <updated>2013-08-07T11:19:55+08:00</updated>
+  <updated>2013-08-07T11:20:26+08:00</updated>
   <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -75,10 +75,10 @@ git pull</p>
     <link href="http://alivedise.github.io/blog/2012/02/07/image-tag-test-on-cats/"/>
     <updated>2012-02-07T10:07:00+08:00</updated>
     <id>http://alivedise.github.io/blog/2012/02/07/image-tag-test-on-cats</id>
-    <content type="html"><![CDATA[<p>{% img <a href="https://p.twimg.com/Ak_HuCoCQAAY7cd.jpg:large">https://p.twimg.com/Ak_HuCoCQAAY7cd.jpg:large</a> %}
-{% img <a href="https://p.twimg.com/Ak_H-6VCQAAqQ8s.jpg:large">https://p.twimg.com/Ak_H-6VCQAAqQ8s.jpg:large</a> %}
-{% img <a href="https://p.twimg.com/Ak9KYgzCIAAr5DM.jpg:large">https://p.twimg.com/Ak9KYgzCIAAr5DM.jpg:large</a> %}
-{% img <a href="https://p.twimg.com/Ak4qFNnCMAE9fA-.jpg:large">https://p.twimg.com/Ak4qFNnCMAE9fA-.jpg:large</a> %}</p>
+    <content type="html"><![CDATA[<p><img class="<a" src="href="https://p.twimg.com/Ak_HuCoCQAAY7cd.jpg:large">https://p.twimg.com/Ak_HuCoCQAAY7cd.jpg:large</a>">
+<img class="<a" src="href="https://p.twimg.com/Ak_H-6VCQAAqQ8s.jpg:large">https://p.twimg.com/Ak_H-6VCQAAqQ8s.jpg:large</a>">
+<img class="<a" src="href="https://p.twimg.com/Ak9KYgzCIAAr5DM.jpg:large">https://p.twimg.com/Ak9KYgzCIAAr5DM.jpg:large</a>">
+<img class="<a" src="href="https://p.twimg.com/Ak4qFNnCMAE9fA-.jpg:large">https://p.twimg.com/Ak4qFNnCMAE9fA-.jpg:large</a>"></p>
 ]]></content>
   </entry>
   

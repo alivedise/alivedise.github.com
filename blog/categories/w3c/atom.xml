@@ -4,7 +4,7 @@
   <title><![CDATA[Category: w3c | Ascheriit]]></title>
   <link href="http://alivedise.github.io/blog/categories/w3c/atom.xml" rel="self"/>
   <link href="http://alivedise.github.io/"/>
-  <updated>2013-08-07T11:19:55+08:00</updated>
+  <updated>2013-08-07T11:20:26+08:00</updated>
   <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -31,7 +31,7 @@ IE跟Chrome是正常的。</p>
 
 <h2>jsfiddle</h2>
 
-<p>{% jsfiddle CUAh9 result,html %}</p>
+<p><iframe style="width: 100%; height: 300px" src="http://jsfiddle.net/CUAh9/embedded/result,html/light/"></iframe></p>
 ]]></content>
   </entry>
   

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: fxos | Ascheriit]]></title>
   <link href="http://alivedise.github.io/blog/categories/fxos/atom.xml" rel="self"/>
   <link href="http://alivedise.github.io/"/>
-  <updated>2013-08-07T11:19:55+08:00</updated>
+  <updated>2013-08-07T11:20:26+08:00</updated>
   <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -20,7 +20,7 @@
     <id>http://alivedise.github.io/blog/2013/08/06/coscup-2013</id>
     <content type="html"><![CDATA[<p>I gave a presentation about how we implement the audio competing in FxOS in COSCUP.</p>
 
-<p>{% speakerdeck fbfe96a0e1390130ff014239028c3727 %}</p>
+<p><script async="true" class="speakerdeck-embed" data-id="fbfe96a0e1390130ff014239028c3727" src="//speakerdeck.com/assets/embed.js"> </script></p>
 ]]></content>
   </entry>
   
@@ -101,7 +101,7 @@ the life cycle of activity callee is based on app A instead of app B.</p>
     <link href="http://alivedise.github.io/blog/2013/07/16/audio-competing-in-fxos/"/>
     <updated>2013-07-16T19:16:00+08:00</updated>
     <id>http://alivedise.github.io/blog/2013/07/16/audio-competing-in-fxos</id>
-    <content type="html"><![CDATA[<p>{% img <a href="https://blog.mozilla.org/press/files/2012/09/FXOS_Music_Grid.jpg">https://blog.mozilla.org/press/files/2012/09/FXOS_Music_Grid.jpg</a> %}</p>
+    <content type="html"><![CDATA[<p><img class="<a" src="href="https://blog.mozilla.org/press/files/2012/09/FXOS_Music_Grid.jpg">https://blog.mozilla.org/press/files/2012/09/FXOS_Music_Grid.jpg</a>"></p>
 
 <p>If you want to have you own media playing app to be able to run at background,
 and/or has the ability to interrupt other playing audio, please view this article for what to do.</p>
@@ -173,9 +173,7 @@ and the page/app is the current displayed one.</li>
 
 <p>Please keep in mind you need relevant channel permission.</p>
 
-<p>{% blockquote %}
-Note: It&rsquo;s <code>mozaudiochannel</code> instead of <code>mozaudiopchanneltype</code> here.
-{% endblockquote %}</p>
+<p><blockquote><p>Note: It&rsquo;s <code>mozaudiochannel</code> instead of <code>mozaudiopchanneltype</code> here.</p></blockquote></p>
 
 <h2>[Dynamically] Javascript</h2>
 
