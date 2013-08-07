@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: html5 | Ascheriit]]></title>
+  <link href="http://alivedise.github.com/blog/categories/html5/atom.xml" rel="self"/>
+  <link href="http://alivedise.github.com/"/>
+  <updated>2013-07-23T18:10:26+02:00</updated>
+  <id>http://alivedise.github.com/</id>
+  <author>
+    <name><![CDATA[Alive Kuo]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[[gaia] HTML5 Window Shade]]></title>
+    <link href="http://alivedise.github.com/blog/2012/07/05/gaia-window-shade/"/>
+    <updated>2012-07-05T13:58:00+02:00</updated>
+    <id>http://alivedise.github.com/blog/2012/07/05/gaia-window-shade</id>
+    <content type="html"><![CDATA[<h1>Window Shade</h1>
+
+<p>我手上的Samsung Galaxy S3的作業系統是Android 4.0.4。</p>
+
+<p>當我收到facebook/google+/...等程式通知的時候，最上面那條bar會出現對應的圖示。</p>
+
+<p>這時候可以透過將bar「滑下來」的動作拉出一個UI，裡面會有</p>
+
+<ol>
+<li>快速設定</li>
+<li>通知項目詳細列表</li>
+</ol>
+
+
+<p><img src="http://i.imgur.com/nU76i.png"></p>
+
+<p>這個UX，Google把它稱為<b>Window shade</b></p>
+
+<p>神奇的地方在於當你在拉下或拉上面板的同時，
+快速設定與通知項目是會先「掉下來」到底端，
+到了項目的頂端出現之後才會黏在頂部。
+（相信我你沒有特別注意這件事情，而且用久了會覺得理所當然）</p>
+
+<h1>GAIA也有notification panel</h1>
+
+<p>Firefox OS的UI - <a href="http://github.com/mozilla-central/gaia">GAIA</a>裡面也有定義功能列以及通知面板這件事，
+這個功能正在開發中。</p>
+
+<p>有一天我們收到某個contributor提交的pull request：</p>
+
+<p><a href="https://github.com/mozilla-b2g/gaia/pull/1898">Gaia pull request#1898</a>
+節錄重要的修改如下：</p>
+
+<p>``` javascript
+  onTouchMove: function ut_onTouchMove(touch) {</p>
+
+<pre><code>var screenHeight = this.overlay.getBoundingClientRect().height,
+    gripBarHeight = this.gripBar.getBoundingClientRect().height,
+    dy = -(this.startY - touch.pageY),
+    newHeight;
+if (this.shown)
+  dy += screenHeight;
+dy = Math.min(screenHeight, dy);
+
+if (dy &gt; gripBarHeight) {
+  var quickSettingsHeight = this.quickSettings.getBoundingClientRect().height;
+
+  if (dy &lt; quickSettingsHeight + gripBarHeight) {
+    newHeight = screenHeight - quickSettingsHeight - gripBarHeight;
+  } else {
+    newHeight = screenHeight - dy;
+  }
+  this.quickSettings.style.MozTransition = '';
+  this.quickSettings.style.MozTransform = 'translateY(' + newHeight + 'px)';
+}
+
+var style = this.overlay.style;
+style.MozTransition = '';
+style.MozTransform = 'translateY(' + dy + 'px)';
+</code></pre>
+
+<p>  },
+  //....skiped...
+  show: function ut_show(dy) {</p>
+
+<pre><code>var alreadyShown = this.shown,
+    trayStyle = this.overlay.style,
+    quickSettingsStyle = this.quickSettings.style;
+
+trayStyle.MozTransition = '-moz-transform 0.2s linear';
+trayStyle.MozTransform = 'translateY(100%)';
+
+quickSettingsStyle.MozTransition = '-moz-transform 0.2s linear';
+quickSettingsStyle.MozTransform = 'translateY(0px)';
+
+this.shown = true;
+this.screen.classList.add('utility-tray');
+
+if (!alreadyShown) {
+  var evt = document.createEvent('CustomEvent');
+  evt.initCustomEvent('utilitytrayshow', true, true, null);
+  window.dispatchEvent(evt);
+}
+</code></pre>
+
+<p>  }
+```</p>
+
+<p>原作者提到他做這件事是要讓<code>quick-setting</code>更快的出現。
+這段code也已經被merge了。</p>
+
+<h1>不過就在昨天同事發現了一個關於功能列的issue</h1>
+
+<p>於是我開始看發生了什麼事。然後上面那兩個function耗費了我一個下午....XD</p>
+
+<p>@colinfrei其實做了一件非常有趣但是很難從code裡面看出端倪的事情。
+甚至也很難用語言來描述，不過我想試著說明發生了什麼事，怎麼做到的。</p>
+
+<p>簡單的說，他利用兩個「不同」區塊的CSS3的Transition「同步化」來實現剛剛所提的Window Shade的行為。</p>
+
+<h2>CSS: Transition</h2>
+
+<p><a href="https://developer.mozilla.org/en/CSS/transition">參閱MDN: transition</a></p>
+
+<h2>CSS: Transform</h2>
+
+<p><a href="https://developer.mozilla.org/en/CSS/transform">參閱MDN: transform</a></p>
+
+<h1>真相其實是：</h1>
+
+<ol>
+<li><code>utility-tray</code>是一個絕對定位的<code>div</code>，平常位置定在螢幕上方<code>-moz-calc(100% - UTILITY_TRAY_HEIGHT)</code>。</li>
+<li><p>當你開始Touch的時候，根據你的移動距離計算<code>translateY</code>，使它產生位移</p>
+
+<p> 你可以把<code>-moz-transform: translateY(px)</code>當成是<code>top: px</code>在CSS3的新招。
+ 它提供了更快速的rendering -- 當你想利用<code>-moz-transition: -moz-transform</code>來做位移動畫的時候。
+ 這件事情可以另外寫一篇文章來說（挖洞的意味）。</p></li>
+<li><p>當你放開拉bar的時候而且如果已經超過「要讓通知面板掉下來的合法距離」：</p>
+
+<ul>
+<li>設定一個<code>MozTransition</code>給<code>utility-tray-overlay</code></li>
+<li>再設定一個<code>MozTransition</code>給<code>quick-setting</code></li>
+</ul>
+</li>
+</ol>
+
+
+<p>4.讓<code>utility-tray</code>整個以某個定速掉下來到螢幕底端 + 讓<code>quick-setting</code>以同樣的定速往上移動到<code>utility-tray</code>的開端</p>
+
+<p>  = 於是就造成了<code>quick-setting</code>似乎黏在通知列下方不動但整個面板是往下掉的假象！</p>
+
+<h1>the story continues</h1>
+
+<p>不過可惜的是似乎沒有考慮到當通知面板要滑上去的時候，</p>
+
+<p>「有物件的部份也應該留在頂端直到被拉bar撞到一起彈上去」這件事</p>
+
+<p>於是我也仿造這個作法另外送了一個pull request</p>
+
+<p><a href="https://github.com/mozilla-b2g/gaia/pull/2181">GAIA pull request#2181</a>
+``` javascript</p>
+
+<pre><code>  case 'transitionend':
+    if (!this.shown) {
+      this.screen.classList.remove('utility-tray');
+
+      var overlayStyle = this.overlay;
+      var firstShownStyle = this.firstShowStyle;
+      firstShownStyle.MozTransition = '';
+
+      if (this.phase2hide) {
+        firstShownStyle.MozTransition = '-moz-transform 0.2s linear';
+        firstShownStyle.MozTransform =
+          'translateY(' + this.firstShownPosition + 'px)';
+        overlayStyle.MozTransition = '-moz-transform 0.2s linear';
+        overlayStyle.MozTransform = 'translateY(0)';
+
+        // Check the transition event is triggered at firstShown.
+        // If so, turn off the flag which represent for
+        // 'The overlay has already reached the bottom of quick-setting'
+        if (evt.target == this.firstShown)
+          this.phase2hide = false;
+      } else {
+        // Reset position of this.firstShown
+        this.firstShown.style.MozTransition = '';
+        this.firstShown.style.MozTransform = 'translateY(0)';
+      }
+    }
+    break;
+</code></pre>
+
+<p>```</p>
+
+<p>利用<code>transitionend</code> event callback，透過連續兩次的<code>Transition</code>來：</p>
+
+<ol>
+<li>讓<code>utility-tray</code>先定速往上移動/讓<code>quick-setting</code>定速往下移動到底端。</li>
+<li>等到<code>utility-tray</code>的transition結束時，會收到<code>transitionend</code>的事件。
+ 這時候再讓<code>utility-tray</code>進行第二次transition...而目的地就是螢幕頂端。
+ 同時<code>quick-setting</code>就不再動作了，讓它跟著<code>utility-tray</code>一起被往上卷走。</li>
+</ol>
+
+
+<h2>transitionend</h2>
+
+<p><a href="https://developer.mozilla.org/zh_tw/CSS_%E8%BD%89%E5%A0%B4#.E5.81.B5.E6.B8.AC_transition_.E7.9A.84.E5.AE.8C.E6.88.90">參閱MDN: transitionend</a></p>
+
+<h1>the end?</h1>
+
+<p>其實UX還沒有定義這個行為，所以pull request本身沒有被接受。
+不過...I did learn something from these codes:)</p>
+]]></content>
+  </entry>
+  
+</feed>

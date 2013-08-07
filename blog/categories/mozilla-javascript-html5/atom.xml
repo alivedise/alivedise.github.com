@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: mozilla,javascript,html5 | Ascheriit]]></title>
+  <link href="http://alivedise.github.com/blog/categories/mozilla-javascript-html5/atom.xml" rel="self"/>
+  <link href="http://alivedise.github.com/"/>
+  <updated>2013-07-23T18:10:26+02:00</updated>
+  <id>http://alivedise.github.com/</id>
+  <author>
+    <name><![CDATA[Alive Kuo]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Web activity]]></title>
+    <link href="http://alivedise.github.com/blog/2012/09/04/web-activity/"/>
+    <updated>2012-09-04T15:45:00+02:00</updated>
+    <id>http://alivedise.github.com/blog/2012/09/04/web-activity</id>
+    <content type="html"><![CDATA[<p>Web activity是由Mozilla設計並開發，用來使web app之間共享資源的框架。
+在Firefox OS中已經存在Platform/UI上的實作，並且有一些內建的主要Web app已經利用Web activity來達成跨應用程式溝通的目的。
+（如：Gallery使用它來讓其他程式從它挑選圖片，也用同一技術來實現圖片分享到不同應用）</p>
+
+<p>以下介紹如何使用這個新穎的技術。</p>
+
+<h3>Request</h3>
+
+<p>假設今天E-mail應用程式需要從圖片集中挑選圖片來寄送，
+那麼它必須新增一個Activity物件如下：</p>
+
+<p>``` js
+  var a = new MozActivity({</p>
+
+<pre><code>name: 'browse',
+data: {
+  type: 'image/png',
+  url: '...'
+}
+</code></pre>
+
+<p>  });
+```
+type欄位是用來當filter用的
+在data中的其他欄位可以傳你想要的資料給接收方。</p>
+
+<p>當收到資料後，處理回呼函數的方式：
+``` js
+  a.onsuccess = function on_success() {</p>
+
+<pre><code>var image = a.result;
+</code></pre>
+
+<p>  };
+  a.onerror = function on_error() {</p>
+
+<pre><code>console.warn('error when picking!');
+</code></pre>
+
+<p>  }
+```</p>
+
+<h3>Reciever</h3>
+
+<p>接受某個Activity的App必須在Manifest.webapp中宣告：
+``` js
+"activities": {
+   "pick": {</p>
+
+<pre><code> "filters": {
+   type: ["image/png", "image/gif"],
+ },
+ "disposition": "window"
+</code></pre>
+
+<p>   }
+ }
+<code>
+並且在自己的javascript檔中寫好當Activity產生時的處理函式
+</code> js
+navigator.setMozMessageHandler('activity', function(a) {
+  var image = getImageToReturn();
+  if (!image) {</p>
+
+<pre><code>a.postError("NoImage");
+return;
+</code></pre>
+
+<p>  }
+  a.postResult({ type: "image/png", url: image });
+});
+```</p>
+
+<h4>data/type的用法</h4>
+
+<p>如聯絡人程式可以接受同一個叫做pick的Activity，
+但是電子郵件程式需要的是'email'這類資料，
+而電話程式需要的是'號碼'這類資料，
+對於這兩類資料需要呈現的UI與最後傳回去的資料當然會是不一樣的。</p>
+
+<p>解決方法就是利用不同的data type來區分同種activity的不同需求：
+``` js
+  // Email app
+  var a = new MozActivity({</p>
+
+<pre><code>  name: 'pick',
+  data: {
+    type: 'web-content/email'
+  }
+</code></pre>
+
+<p>  });
+<code>
+</code> js
+  // Dialer app
+  var a = new MozActivity({</p>
+
+<pre><code>  name: 'pick',
+  data: {
+    type: 'web-content/numbers'
+  }
+</code></pre>
+
+<p>  });
+<code>
+在聯絡人程式中
+</code> js
+navigator.setMozMessageHandler('activity', function(a) {
+  switch(a.source.data.type) {</p>
+
+<pre><code>case 'webcontacts/numbers':
+  // ...
+  break;
+case 'webcontacts/email':
+  // ...
+  break;
+</code></pre>
+
+<p>  }
+});
+```
+如此一來就可以分開處理UI變化及後續回傳資料的部分。</p>
+
+<h3>多於一個可以處理的Reciever?</h3>
+
+<p>比如圖片應用程式可以分享的對象有兩個以上的時候，
+Firefox OS的系統UI便會自動列出可用的應用程式清單，如圖：
+<img src="http://i.imgur.com/V2rgq.jpg">
+<img src="http://i.imgur.com/xcgBK.png">
+<img src="http://i.imgur.com/UpaOC.png"></p>
+
+<h3>結論</h3>
+
+<p>Web activity是一個實驗中的新功能，雖然還有一些地方未盡完善，
+但是看著它從spec到platform implementation到UI implementation，
+就好像親身參與了網路/網頁進化的過程一樣。</p>
+]]></content>
+  </entry>
+  
+</feed>

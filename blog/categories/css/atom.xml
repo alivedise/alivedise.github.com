@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: css | Ascheriit]]></title>
+  <link href="http://alivedise.github.com/blog/categories/css/atom.xml" rel="self"/>
+  <link href="http://alivedise.github.com/"/>
+  <updated>2013-07-23T18:10:26+02:00</updated>
+  <id>http://alivedise.github.com/</id>
+  <author>
+    <name><![CDATA[Alive Kuo]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[[Window Management] Transition state machine]]></title>
+    <link href="http://alivedise.github.com/blog/2013/07/05/transition-state-machine/"/>
+    <updated>2013-07-05T14:53:00+02:00</updated>
+    <id>http://alivedise.github.com/blog/2013/07/05/transition-state-machine</id>
+    <content type="html"><![CDATA[<p>The article is inspired by Tim's <a href="http://blog.timc.idv.tw/posts/css-classes-state-machine-puzzle/">CSS Classes State Machine Puzzle</a>.</p>
+
+<p>We had some frustrations all the times, on animating a window correctly.</p>
+
+<p>Recently I try to dedicate on solving the puzzle.
+But at first I need to apologize for my poor knowledge and thought about css transitions using class names.</p>
+
+<p>In the past I usually thought it was stupid to use class list to control the style.
+I thought it was ambiguous and strange if we ran into a situation that there're more than one classes of same type put on one element. And an element full of different class names for different purposes may conflict. Recently I see <a href="https://github.com/h5bp/Effeckt.css">Effeckt</a> and know this is the trend: a simple class name stands for a kind of animation.</p>
+
+<p>The real problem is that we should never put wrong class on the DOM element, in javascript. So this now turns to be a pure javascript puzzle.</p>
+
+<p>We know, that, in certain moment, the app window is always in a specific state A, not B nor C. So what's the problem? It's how could we switch the state correctly.</p>
+
+<p>Let's create a real state machine in javascript!</p>
+
+<p>So far it doesn't take times for us to figure out that a window should have 4 basic transition state: <code>closed</code>, <code>opening</code>, <code>opened</code>, <code>closing</code>.</p>
+
+<p>A basic transition life cycle of a window could be:</p>
+
+<p><blockquote><p>(initial) -> closed -> opening -> opened ------> closing -> opening ------> ....</p></blockquote></p>
+
+<p>Now we have 4 states, the next is what's the trigger to states switching?</p>
+
+<p>In finite state machine, what triggers state change is named for <a href="https://en.wikipedia.org/wiki/Finite-state_machine">'event'</a>.</p>
+
+<p>We know that at least we have 2 events: 'open' and 'close'.</p>
+
+<ul>
+<li>'open' would trigger <code>closed</code> switches to <code>opening</code></li>
+<li>'close' would trigger <code>opened</code> switches to <code>closing</code></li>
+<li>If we sends 'open' event into the state machine continously,
+the second event would be ignored.
+(Exactly it depends on what policy we choose. For example, we could devide 'opening' state into 'opening-part-1' and 'opening-part-2' states. And implement the async state change. But if we need s two-state opening, it sounds like a CSS design problem to me. Let's discuss this later if necessary.)</li>
+<li>In order to gurantee the transition does really end and thus being independent from the 'animationend' event(The event here is HTML DOM Event), we need to add a timer between 'opening' and 'opened' state. Also between 'closing' and 'closed' state.</li>
+<li>Let's call the new event 'timeout', the timing we set the timer is right after the transitioning from 'closed' to 'opening', and from 'opened' to 'closing' successfully occurs.</li>
+<li>For some use case we may want to cancel the transition. The 'cancel' event is only valid in 'opening' and 'closing' state.</li>
+</ul>
+
+
+<p>So far, the state machine for transition we have:
+<img src="http://i.imgur.com/MmBj2pY.jpg"></p>
+
+<p>Now the problem is, how to represent this machine in javascript?</p>
+
+<p>My anwser is put every transition relevant functions/attributes in another mixin object, which would be mixed into appWindow.prototype:</p>
+
+<p>``` js
+(function(window) {
+  'use strict';</p>
+
+<p>  function capitalize(string)
+  {</p>
+
+<pre><code>  return string.charAt(0).toUpperCase() + string.slice(1);
+</code></pre>
+
+<p>  };</p>
+
+<p>  /<em>*
+   * This object declares all transition event enum:
+   *
+   * * OPEN
+   * * CLOSE
+   * * FINISH
+   * * END
+   * * CANCEL
+   *
+   * @static
+   * @namespace TransitionEvent
+   * @type {Object}
+   </em>/
+  var EVT = {</p>
+
+<pre><code>OPEN: 0,
+CLOSE: 1,
+FINISH: 2,
+END: 3,
+CANCEL: 4
+</code></pre>
+
+<p>  };</p>
+
+<p>  var _EVTARRAY = ['OPEN', 'CLOSE', 'FINISH', 'END', 'CANCEL'];</p>
+
+<p>  /<em>*
+   * Describe the transition state table.
+   *
+   * @example
+   * var toState = transitionTable[currentState][event];
+   *
+   * The value "null" indicates that the transition won't happen.
+   *
+   * @type {Object}
+   </em>/
+  var transitionTable = {</p>
+
+<pre><code>          /* OPEN|CLOSE|FINISH|END|CANCEL */
+'closed':  ['opening', null, null, null, null],
+'opened':  [null, 'closing', null, null, null],
+'closing': ['opened', null, 'closed', 'closed', 'opened'],
+'opening': [null, 'closed', 'opened', 'opened', 'closed']
+</code></pre>
+
+<p>  };</p>
+
+<p>  /<strong>
+   * This provides methods and attributes used for transition state handling. It's not meant to
+   * be used directly.
+   *
+   * The finite state machine of transition is working as(being from normal state):
+   *
+   * * <code>closed</code>  ---<em>event</em> </strong>OPEN<strong> ----------------> <code>opening</code>
+   * * <code>opening</code> ---<em>event</em> </strong>END/FINISH/CANCEL<strong> ---> <code>opened</code>
+   * * <code>opened</code>  ---<em>event</em> </strong>CLOSE<strong> ---------------> <code>closing</code>
+   * * <code>closing</code> ---<em>event</em> </strong>END/FINISH/CANCEL<strong> ---> <code>closed</code>
+   *
+   * If you want to reuse this mixin in your object, you need to define these attributes: <code>this.element</code>
+   *
+   * And these method: <code>this.setVisible()</code> <code>this.publish()</code>
+   *
+   * The following callback functions are executed only when the transition state are successfully switched:
+   * <code>_onOpen</code>
+   * <code>_onClose</code>
+   * <code>_onEnd</code>
+   * <code>_onFinish</code>
+   * <code>_onCancel</code>
+   * <code>_leaveOpened</code>
+   * <code>_enterOpened</code>
+   * <code>_leaveClosed</code>
+   * <code>_enterClosed</code>
+   * <code>_leaveClosing</code>
+   * <code>_enterClosing</code>
+   * <code>_leaveOpening</code>
+   * <code>_enterOpening</code>
+   *
+   * Every callback here is for internal usage and would be executed only once.
+   *
+   * However you could utilize inner event in other functions.
+   *
+   *
+   * @mixin WindowTransition
+   */
+  /</strong>
+   * @event AppWindow#<em>onTransitionOpen
+   * @private
+   * @memberof AppWindow
+   */
+  /**
+   * @event AppWindow#</em>onTransitionClose
+   * @private
+   * @memberof AppWindow
+   <em>/
+  /**
+   * @event AppWindow#_onTransitionEnd
+   * @private
+   * @memberof AppWindow
+   </em>/
+  /<strong>
+   * @event AppWindow#_onTransitionFinish
+   * @private
+   * @memberof AppWindow
+   */
+  /</strong>
+   * @event AppWindow#_onTransitionCancel
+   * @private
+   * @memberof AppWindow
+   */</p>
+
+<p>  var WindowTransition = {</p>
+
+<pre><code>TRANSITION_EVENT: EVT,
+
+/**
+ * _transitionState indicates current transition state of appWindow.
+ *
+ * @memberOf WindowTransition
+ * @default
+ * @type {String}
+ */
+_transitionState: 'closed',
+
+/**
+ * Record the previous transition state.
+ *
+ * **Only updated if the state changes successfully.**
+ * 
+ * @type {String|null}
+ * @memberOf WindowTransition
+ */
+_previousTransitionState: null,
+
+/**
+ * Handle the transition event.
+ * @memberOf WindowTransition
+ */
+_transitionHandler: function aw__transitionHandler() {
+  this._cancelTransition();
+  this._processTransitionEvent(EVT.FINISH);
+},
+
+_cancelTransition: function aw__cancelTransition() {
+  this.element.className.split(/\s+/).forEach(function(className) {
+    if (className.indexOf('transition-') &gt;= 0) {
+      this.element.classList.remove(className);
+    }
+  }, this);
+},
+
+_enterOpening: function aw__enterOpening(from, to, evt) {
+  /**
+   * @todo set this._unloaded
+   */
+
+  this.resize(null, null, true);
+  if (this._unloaded) {
+    //this.element.style.backgroundImage = 'url(' + this._splash + ')';
+  }
+
+  // Turn of visibility once we're entering opening state.
+  this.setVisible(true);
+
+  // Make sure the transition is terminated.
+  this._openingTransitionTimer = window.setTimeout(function() {
+    if (this._previousTransitionState &amp;&amp;
+        this._previousTransitionState == from &amp;&amp;
+        this._transitionState == to) {
+      this._processTransitionEvent(EVT.END);
+    }
+  }.bind(this), this._transitionTimeout*1.2);
+
+  /**
+   * @event AppWindow#appwillopen
+   * @memberof AppWindow
+   */
+  if (from !== 'opened') {
+    // Only publish |willopen| event when previous state is "closed".
+    this.publish('willopen');
+  }
+  this.element.classList.add('transition-opening');
+  this.element.classList.add(this._transition['open']);
+},
+
+_enterClosing: function aw__enterClosing(from, to, evt) {
+  // Make sure the transition is terminated.
+  this._closingTransitionTimer = window.setTimeout(function() {
+    if (this._previousTransitionState &amp;&amp;
+        this._previousTransitionState == from &amp;&amp;
+        this._transitionState == to) {
+      this._processTransitionEvent(EVT.END);
+    }
+  }.bind(this), this._transitionTimeout*1.2);
+
+  /**
+   * @event AppWindow#appwillclose
+   * @memberof AppWindow
+   */
+
+  if (from !== 'opened') {
+    // Only publish |willclose| event when previous state is "opened".
+    this.publish('willclose');
+  }
+  this.element.classList.add('transition-closing');
+  this.element.classList.add(this._transition['close']);
+},
+
+_processTransitionEvent: function aw__processTransitionEvent(evt) {
+  var to = transitionTable[this._transitionState][evt];
+
+  if (to === null) {
+    return;
+  }
+
+  var from = this._transitionState;
+
+  this.leaveState(from, to, evt);
+  this.onEvent(from, to, evt);
+  this.enterState(from, to, evt);
+
+  this._previousTransitionState = from;
+  this._transitionState = to;
+},
+
+enterState: function aw_enterState(from, to, evt) {
+  var funcName = '_enter' + capitalize(to.toLowerCase());
+  if (typeof(this[funcName]) == 'function') {
+    setTimeout(function(){
+      this[funcName](from, to, evt);
+    }.bind(this), 0);
+  } else if (this[funcName] &amp;&amp; Array.isArray(this[funcName])) {
+    this[funcName].forEach(function(func) {
+      setTimeout(function(){
+        func(from, to, evt);
+      }.bind(this), 0);
+    }, this);
+  }
+},
+
+leaveState: function aw_leaveState(from, to, evt) {
+  var funcName = '_leave' + capitalize(from.toLowerCase());
+  if (typeof(this[funcName]) == 'function') {
+    setTimeout(function(){
+      this[funcName](from, to, evt);
+    }.bind(this), 0);
+  } else if (this[funcName] &amp;&amp; Array.isArray(this[funcName])) {
+    this[funcName].forEach(function(func) {
+      setTimeout(function(){
+        func(from, to, evt);
+      }.bind(this), 0);
+    }, this);
+  }
+},
+
+onEvent: function aw_onEvent(from, to, evt) {
+  var funcName = '_onTransition' + capitalize(_EVTARRAY[evt].toLowerCase());
+  this._invoke(funcName);
+},
+
+_enterOpened: function aw__enterOpened(from, to, evt) {
+  this._cancelTransition();
+  if (this._openingTransitionTimer) {
+    window.clearTimeout(this._openingTransitionTimer);
+    this._openingTransitionTimer = null;
+  }
+  this.element.classList.add('active');
+  /**
+   * @event AppWindow#appopen
+   * @memberOf AppWindow
+   */
+
+  if (from == 'opening') {
+    // Only publish |open| event when previous state is "opening".
+    this.publish('open');
+  }
+},
+
+_enterClosed: function aw__enterClosed(from, to, evt) {
+  this._cancelTransition();
+  if (this._closingTransitionTimer) {
+    window.clearTimeout(this._closingTransitionTimer);
+    this._closingTransitionTimer = null;
+  }
+  this.element.classList.remove('active');
+  this.setVisible(false);
+
+  /**
+   * @event AppWindow#appclose
+   * @memberof AppWindow
+   */
+  if (from == 'closing') {
+    // Only publish |close| event when previous state is "closing".
+    this.publish('close');
+  }
+},
+
+/**
+ * Set the transition way of opening or closing transition.
+ * @param  {String} type       'open' or 'close'
+ * @param  {String} transition The CSS rule name about window transition.
+ * @memberOf WindowTransition
+ */
+_setTransition: function aw__setTransition(type, transition) {
+  if (type != 'open' &amp;&amp; type != 'close')
+    return;
+
+  this._transition[type] = transition;
+}
+</code></pre>
+
+<p>  };</p>
+
+<p>  AppWindow.addMixin(WindowTransition);
+}(this));
+```</p>
+
+<h5>The state machine's usage and notes</h5>
+
+<ol>
+<li>A single app window instance would send 'open' and 'close' event due to user action:
+<code>
+transitionStateMachine.<em>processEvent('open');
+transitionStateMachine.</em>processEvent('close');
+</code>
+Note, app window doesn't need to know current state of the state machine.</li>
+<li>The state machine itself is the one who creates/removes the timer which triggers timeout event. I am also thinking about moving this out of the state machine and do this in another mixin, only have the callback functions provided by the state machine. But I am not sure.</li>
+<li>The state machine has some callback for others(other state machine!) listed below:
+
+<ul>
+<li>Enter a state successfully.</li>
+<li>Leave a state successfully.</li>
+<li>When an event triggers state switch successfully.
+In all these callback we would get the previous state and current state, and the event who triggers them.</li>
+</ul>
+</li>
+<li>The CSS class for real UI closing animation is added in <code><em>enterClosing</code> and removed in <code></em>enterClosed</code>. Or else we could do that in <code><em>leaveOpened</code> and <code></em>leaveClosing</code>. I have no strong opinion here.
+Maybe we could define the level of the callback into three here, according to the callback order.</li>
+<li>The CSS class for real UI opening animation is added in <code><em>enterOpening</code> and removed in <code></em>enterOpened</code>.</li>
+<li>We could also move out (4) and (5) to another mixin to purify the state machine.</li>
+</ol>
+
+
+<p>Finally, back to the problems addressed in Tim's article:</p>
+
+<ul>
+<li>Do we need intermediate state?
+
+<ul>
+<li>I don't think so, at least for now. If we really need to goto next state when we successfully from state A to state B, we could call <code>_processEvent</code> again in the inner callback of the state machine. This doesn't violate the policy that only state machine ifself could decide its next state.</li>
+<li>If the intermediate state needs to acquire other type of state -- just fetch the current state of the other state machine. Or, if we need, register an one-time callback if the current state doesn't meet our requirement.</li>
+</ul>
+</li>
+<li>How about state conflict between two apps?
+
+<ul>
+<li>That won't happen if we deal with the state changes correctly and independently in each app's scope. I hope so.</li>
+</ul>
+</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

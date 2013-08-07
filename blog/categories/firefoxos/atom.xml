@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: firefoxos | Ascheriit]]></title>
+  <link href="http://alivedise.github.com/blog/categories/firefoxos/atom.xml" rel="self"/>
+  <link href="http://alivedise.github.com/"/>
+  <updated>2013-07-23T18:10:26+02:00</updated>
+  <id>http://alivedise.github.com/</id>
+  <author>
+    <name><![CDATA[Alive Kuo]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[HTML5 Page visibility on Fx OS]]></title>
+    <link href="http://alivedise.github.com/blog/2013/07/05/page-visibility-on-firefox-os/"/>
+    <updated>2013-07-05T04:23:00+02:00</updated>
+    <id>http://alivedise.github.com/blog/2013/07/05/page-visibility-on-firefox-os</id>
+    <content type="html"><![CDATA[<p>在桌面版本的網頁開發中，我們可以透過 HTML5 的 page visibility API 來知道目前的網頁是否為使用者焦點，或者目前不可為使用者所見，來達成某些目的：如停止 UI 更新，資料交換...等，範例程式如下：</p>
+
+<p>``` js
+function handleVisibilityChange() {
+  if (document.hidden) {
+  // Pause UI update
+  } else {
+  // Begin UI update
+  }
+}</p>
+
+<p>document.addEventListener("visibilitychange",
+  handleVisibilityChange, false);
+```</p>
+
+<p>我們將這個 API 帶到 Firefox OS 中，並賦予了它更深一層的意義：</p>
+
+<p><blockquote><p>應用程式判斷自己在前景/背景的依據，類似 android 的 onPause/onResume<br/>系統底層 Low Memory Killer 的參數之一：背景應用程式在可用記憶體過低時會優先被 kill<br/>在電力消耗變成一個必須優先考量要點的手持裝置上，透過進入背景時停止更新 UI 對電力節約有很大幅度的幫助。<br/>然而，在手機系統上，並不像在桌面瀏覽器一樣單純的是透過頁面切換 (onPageShow/onPageHide) 來決定要不要對某個 web page/app 做前景背景切換，而是要根據系統 UI hierarchy 以及當前介面中層級較高的其他元件的狀態來維持 visibility 的協調性。</p></blockquote></p>
+
+<p>聽起來很抽象嗎？先來張系統模組介面架構圖：
+<img src="http://i.imgur.com/ypJSsQg.jpg">
+Gaia System Architecture Diagram (source from https://docs.google.com/drawings/d/18DnhTgQBK3M0KBeLGJkWW1hfiYBB6GgTmfdbUnT2SLs/edit?usp=sharing)</p>
+
+<p>簡單的說，手機系統介面在特定狀態下會將目前已經是前景的 app 設定為背景狀態，其優先層級如下：</p>
+
+<ol>
+<li>Screen off (螢幕關閉)</li>
+<li>Call screen (電話中介面)</li>
+<li>Lockscreen on (手機鎖定介面啟動)</li>
+<li>Inline activities (app內嵌 web activities 作用中)</li>
+<li>App transition end (app 切換結束)</li>
+<li>Back to home (回到 homescreen)</li>
+</ol>
+
+
+<p>而這些事件又可能會同時發生而產生互相影響，如：inline activity 作用時電話打進來，多重 inline activities 中第一次產生的 activity frame 會被第二次的 activity frame 蓋掉...等。</p>
+
+<p>這些決策發生在哪呢？與桌面瀏覽器不同，決定這一切的是發生在 Gaia，也就是 Firefox OS 的 UI 層：換句話說，是以 JavaScript 撰寫的噢。而實現的方式是系統中各個模組對各個底層 moz-*  API 的 callback 重新包覆並以 custom event 的形式通知其他模組，最後集中給 system app 中的 Window Manager 來做統一管理。</p>
+
+<p>這樣做最大的原因是：只有 Gaia 本身最了解與 UI 相關的一切，而既然 Gecko 將 API expose 出來，只要你對 API 夠熟悉，想要自己用 JavaScript/HTML 實現一個瀏覽器是可能的。</p>
+
+<p>這部份我們可以用一個實例說明：
+「裝置從進入閒置狀態，到使用者按下電源鍵，之後解開鎖定螢幕 (LockScreen)」對 visibility 影響的過程：</p>
+
+<h5>Screen is off by idle timeout:</h5>
+
+<ul>
+<li>(Gaia) [Screen Manager] mozPower.screenEnabled = false</li>
+<li>(Gaia) [Screen Manager] send custom 'screenchange' event</li>
+<li>(Gaia) [Lockscreen] get 'screenchange' event, check the settings of "lockscreen.enabled" and dispatch custom 'lock' event</li>
+<li>(Gaia) [Window Manager] get 'lock' event, and then set visibility = false for current app(focused one).</li>
+<li>(Gonk) [/sys/power] See mozPower.screenEnabled is modified and send 'sizemodechange' to simulate the content window is minimized.</li>
+<li>(Gecko) [shell] Get 'sizemodechange' event, set visibility = false for the whole system app</li>
+</ul>
+
+
+<h5>Turn on screen:</h5>
+
+<ul>
+<li>(Gecko) Get keypress event of sleep-button, and then send mozChromeEvent to gaia</li>
+<li>(Gaia) [Hardware Button Manager] Get mozChromeEvent with type = "sleep-button-press", wrap the event to 'wake' event</li>
+<li>(Gaia) [Screen Manager] mozPower.screenEnabled = true</li>
+<li>(Gecko) [shell] Get 'sizemodechange' event, set visibility = true for the whole system app
+[NOTE] the current app is still invisible now, but the system app is visible.</li>
+</ul>
+
+
+<h5>Unlock the lockscreen:</h5>
+
+<ul>
+<li>(Gaia) [Lockscreen] Send custom 'unlock' event.</li>
+<li>(Gaia) [Widow Manager] Get 'unlock' event and turn on the active app's visibility.</li>
+</ul>
+
+
+<p>對 App 開發者來說，其實你只要適當地註冊 visibilitychange event handler 去分別處理前景與背景的任務，而維持 visibility state 的正確性與一致性則是作業系統的責任，這也是開發 website/web application 與 web-based OS 之間最大的不同吧：必須同時考慮到過去（已經存在的網頁）/現在（我們正在開發中的內建app）/未來（即將到來的 FirefoxOS app）。</p>
+
+<p>P.S. This is posted at moztech first. See <a href="http://tech.mozilla.com.tw/posts/2020/visibility-api-on-firefox-os-%E5%BE%9E%E6%87%89%E7%94%A8%E7%A8%8B%E5%BC%8F%E5%89%8D%E8%83%8C%E6%99%AF%E6%8E%A7%E5%88%B6%E7%9C%8B-os-%E5%AF%A6%E4%BD%9C">here</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[gaia] HTML5 Window Shade]]></title>
+    <link href="http://alivedise.github.com/blog/2012/07/05/gaia-window-shade/"/>
+    <updated>2012-07-05T13:58:00+02:00</updated>
+    <id>http://alivedise.github.com/blog/2012/07/05/gaia-window-shade</id>
+    <content type="html"><![CDATA[<h1>Window Shade</h1>
+
+<p>我手上的Samsung Galaxy S3的作業系統是Android 4.0.4。</p>
+
+<p>當我收到facebook/google+/...等程式通知的時候，最上面那條bar會出現對應的圖示。</p>
+
+<p>這時候可以透過將bar「滑下來」的動作拉出一個UI，裡面會有</p>
+
+<ol>
+<li>快速設定</li>
+<li>通知項目詳細列表</li>
+</ol>
+
+
+<p><img src="http://i.imgur.com/nU76i.png"></p>
+
+<p>這個UX，Google把它稱為<b>Window shade</b></p>
+
+<p>神奇的地方在於當你在拉下或拉上面板的同時，
+快速設定與通知項目是會先「掉下來」到底端，
+到了項目的頂端出現之後才會黏在頂部。
+（相信我你沒有特別注意這件事情，而且用久了會覺得理所當然）</p>
+
+<h1>GAIA也有notification panel</h1>
+
+<p>Firefox OS的UI - <a href="http://github.com/mozilla-central/gaia">GAIA</a>裡面也有定義功能列以及通知面板這件事，
+這個功能正在開發中。</p>
+
+<p>有一天我們收到某個contributor提交的pull request：</p>
+
+<p><a href="https://github.com/mozilla-b2g/gaia/pull/1898">Gaia pull request#1898</a>
+節錄重要的修改如下：</p>
+
+<p>``` javascript
+  onTouchMove: function ut_onTouchMove(touch) {</p>
+
+<pre><code>var screenHeight = this.overlay.getBoundingClientRect().height,
+    gripBarHeight = this.gripBar.getBoundingClientRect().height,
+    dy = -(this.startY - touch.pageY),
+    newHeight;
+if (this.shown)
+  dy += screenHeight;
+dy = Math.min(screenHeight, dy);
+
+if (dy &gt; gripBarHeight) {
+  var quickSettingsHeight = this.quickSettings.getBoundingClientRect().height;
+
+  if (dy &lt; quickSettingsHeight + gripBarHeight) {
+    newHeight = screenHeight - quickSettingsHeight - gripBarHeight;
+  } else {
+    newHeight = screenHeight - dy;
+  }
+  this.quickSettings.style.MozTransition = '';
+  this.quickSettings.style.MozTransform = 'translateY(' + newHeight + 'px)';
+}
+
+var style = this.overlay.style;
+style.MozTransition = '';
+style.MozTransform = 'translateY(' + dy + 'px)';
+</code></pre>
+
+<p>  },
+  //....skiped...
+  show: function ut_show(dy) {</p>
+
+<pre><code>var alreadyShown = this.shown,
+    trayStyle = this.overlay.style,
+    quickSettingsStyle = this.quickSettings.style;
+
+trayStyle.MozTransition = '-moz-transform 0.2s linear';
+trayStyle.MozTransform = 'translateY(100%)';
+
+quickSettingsStyle.MozTransition = '-moz-transform 0.2s linear';
+quickSettingsStyle.MozTransform = 'translateY(0px)';
+
+this.shown = true;
+this.screen.classList.add('utility-tray');
+
+if (!alreadyShown) {
+  var evt = document.createEvent('CustomEvent');
+  evt.initCustomEvent('utilitytrayshow', true, true, null);
+  window.dispatchEvent(evt);
+}
+</code></pre>
+
+<p>  }
+```</p>
+
+<p>原作者提到他做這件事是要讓<code>quick-setting</code>更快的出現。
+這段code也已經被merge了。</p>
+
+<h1>不過就在昨天同事發現了一個關於功能列的issue</h1>
+
+<p>於是我開始看發生了什麼事。然後上面那兩個function耗費了我一個下午....XD</p>
+
+<p>@colinfrei其實做了一件非常有趣但是很難從code裡面看出端倪的事情。
+甚至也很難用語言來描述，不過我想試著說明發生了什麼事，怎麼做到的。</p>
+
+<p>簡單的說，他利用兩個「不同」區塊的CSS3的Transition「同步化」來實現剛剛所提的Window Shade的行為。</p>
+
+<h2>CSS: Transition</h2>
+
+<p><a href="https://developer.mozilla.org/en/CSS/transition">參閱MDN: transition</a></p>
+
+<h2>CSS: Transform</h2>
+
+<p><a href="https://developer.mozilla.org/en/CSS/transform">參閱MDN: transform</a></p>
+
+<h1>真相其實是：</h1>
+
+<ol>
+<li><code>utility-tray</code>是一個絕對定位的<code>div</code>，平常位置定在螢幕上方<code>-moz-calc(100% - UTILITY_TRAY_HEIGHT)</code>。</li>
+<li><p>當你開始Touch的時候，根據你的移動距離計算<code>translateY</code>，使它產生位移</p>
+
+<p> 你可以把<code>-moz-transform: translateY(px)</code>當成是<code>top: px</code>在CSS3的新招。
+ 它提供了更快速的rendering -- 當你想利用<code>-moz-transition: -moz-transform</code>來做位移動畫的時候。
+ 這件事情可以另外寫一篇文章來說（挖洞的意味）。</p></li>
+<li><p>當你放開拉bar的時候而且如果已經超過「要讓通知面板掉下來的合法距離」：</p>
+
+<ul>
+<li>設定一個<code>MozTransition</code>給<code>utility-tray-overlay</code></li>
+<li>再設定一個<code>MozTransition</code>給<code>quick-setting</code></li>
+</ul>
+</li>
+</ol>
+
+
+<p>4.讓<code>utility-tray</code>整個以某個定速掉下來到螢幕底端 + 讓<code>quick-setting</code>以同樣的定速往上移動到<code>utility-tray</code>的開端</p>
+
+<p>  = 於是就造成了<code>quick-setting</code>似乎黏在通知列下方不動但整個面板是往下掉的假象！</p>
+
+<h1>the story continues</h1>
+
+<p>不過可惜的是似乎沒有考慮到當通知面板要滑上去的時候，</p>
+
+<p>「有物件的部份也應該留在頂端直到被拉bar撞到一起彈上去」這件事</p>
+
+<p>於是我也仿造這個作法另外送了一個pull request</p>
+
+<p><a href="https://github.com/mozilla-b2g/gaia/pull/2181">GAIA pull request#2181</a>
+``` javascript</p>
+
+<pre><code>  case 'transitionend':
+    if (!this.shown) {
+      this.screen.classList.remove('utility-tray');
+
+      var overlayStyle = this.overlay;
+      var firstShownStyle = this.firstShowStyle;
+      firstShownStyle.MozTransition = '';
+
+      if (this.phase2hide) {
+        firstShownStyle.MozTransition = '-moz-transform 0.2s linear';
+        firstShownStyle.MozTransform =
+          'translateY(' + this.firstShownPosition + 'px)';
+        overlayStyle.MozTransition = '-moz-transform 0.2s linear';
+        overlayStyle.MozTransform = 'translateY(0)';
+
+        // Check the transition event is triggered at firstShown.
+        // If so, turn off the flag which represent for
+        // 'The overlay has already reached the bottom of quick-setting'
+        if (evt.target == this.firstShown)
+          this.phase2hide = false;
+      } else {
+        // Reset position of this.firstShown
+        this.firstShown.style.MozTransition = '';
+        this.firstShown.style.MozTransform = 'translateY(0)';
+      }
+    }
+    break;
+</code></pre>
+
+<p>```</p>
+
+<p>利用<code>transitionend</code> event callback，透過連續兩次的<code>Transition</code>來：</p>
+
+<ol>
+<li>讓<code>utility-tray</code>先定速往上移動/讓<code>quick-setting</code>定速往下移動到底端。</li>
+<li>等到<code>utility-tray</code>的transition結束時，會收到<code>transitionend</code>的事件。
+ 這時候再讓<code>utility-tray</code>進行第二次transition...而目的地就是螢幕頂端。
+ 同時<code>quick-setting</code>就不再動作了，讓它跟著<code>utility-tray</code>一起被往上卷走。</li>
+</ol>
+
+
+<h2>transitionend</h2>
+
+<p><a href="https://developer.mozilla.org/zh_tw/CSS_%E8%BD%89%E5%A0%B4#.E5.81.B5.E6.B8.AC_transition_.E7.9A.84.E5.AE.8C.E6.88.90">參閱MDN: transitionend</a></p>
+
+<h1>the end?</h1>
+
+<p>其實UX還沒有定義這個行為，所以pull request本身沒有被接受。
+不過...I did learn something from these codes:)</p>
+]]></content>
+  </entry>
+  
+</feed>

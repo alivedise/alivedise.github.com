@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: jQuery | Ascheriit]]></title>
+  <link href="http://alivedise.github.com/blog/categories/jquery/atom.xml" rel="self"/>
+  <link href="http://alivedise.github.com/"/>
+  <updated>2013-07-23T18:10:26+02:00</updated>
+  <id>http://alivedise.github.com/</id>
+  <author>
+    <name><![CDATA[Alive Kuo]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[[ff13-2] chromie - Time labyrinth breaker]]></title>
+    <link href="http://alivedise.github.com/blog/2012/02/29/chromie/"/>
+    <updated>2012-02-29T14:29:00+01:00</updated>
+    <id>http://alivedise.github.com/blog/2012/02/29/chromie</id>
+    <content type="html"><![CDATA[<h3>簡介</h3>
+
+<ul>
+<li>ff13-2裡面有個時鐘小遊戲，<a href="http://www.youtube.com/watch?v=ngJyJDLkRh0&amp;feature=related">影片參考</a>。</li>
+<li>說穿了就是一個排列組合遊戲，比起其他小遊戲這個難度高很多，所以網路上有一些人寫了程式專門解這個小遊戲。其實有很多解答版本，但是都不太好用，UI也...。乾脆自己寫一個！</li>
+<li>有參考某個flash實做，不過我用純html5+js實現。js核心是jquery1.7.1，框架是javascriptMVC。</li>
+</ul>
+
+
+<h3>命名</h3>
+
+<h4>Chromie = 克羅米</h4>
+
+<p>克羅米是魔獸世界WoW中擁有時間穿梭能力的種族-青銅龍族中的一員。
+<a href="http://www.wowwiki.com/Chromie">克羅米@wow wiki</a></p>
+
+<h3>實做</h3>
+
+<ol>
+<li>尋徑遞迴演算法
+核心片段
+``` js
+ divergence: function(current, attractor_fields, paths, dir){
+
+<pre><code> var self = this;
+ var value = attractor_fields[current];
+ if(value == null) 
+ {
+     return false;
+ }
+ //paths.push(attractor_fields[current].toString()+'['+(current+1)+']'+dir);
+ paths.push(current);
+ attractor_fields[current] = null;
+ if(paths.length == attractor_fields.length)
+ {
+     this.renderSolution(paths);
+     this.renderHistroy(paths);
+     if(this.element.find('#steinsgate span').length &gt; 0)
+         this.element.find('#steinsgate').html('');
+     this.element.find('#steinsgate').append(paths.toString()+'&lt;br/&gt;');
+     return true;
+ }
+ var path_fork1 = paths.slice();
+ var path_fork2 = paths.slice();
+ var af1 = attractor_fields.slice();
+ var af2 = attractor_fields.slice();
+ return this.divergence((attractor_fields.length+current+value)%attractor_fields.length, af1, path_fork1, '+'+value) || this.divergence((attractor_fields.length+current-value)%attractor_fields.length, af2, path_fork2, '-'+value);    
+</code></pre>
+
+<p> }
+```</p></li>
+<li>Canvas繪圖
+就是查API而已，利用了mozilla的線上開發手冊<a href="https://developer.mozilla.org/zh-TW/">mdn</a></li>
+</ol>
+
+
+<h3>截圖及操作</h3>
+
+<p>1~6數字輸入刻度，0刪除前一個。
+<img src="http://i.imgur.com/MSugN.png"></p>
+
+<h3>Github demo page</h3>
+
+<p><a href="http://alivedise.github.com/chromie">chromie</a></p>
+]]></content>
+  </entry>
+  
+</feed>

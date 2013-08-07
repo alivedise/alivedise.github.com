@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: fxos | Ascheriit]]></title>
+  <link href="http://alivedise.github.com/blog/categories/fxos/atom.xml" rel="self"/>
+  <link href="http://alivedise.github.com/"/>
+  <updated>2013-07-23T18:10:26+02:00</updated>
+  <id>http://alivedise.github.com/</id>
+  <author>
+    <name><![CDATA[Alive Kuo]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[[FxOS] Audio Competing Policies]]></title>
+    <link href="http://alivedise.github.com/blog/2013/07/19/audio-competing-again/"/>
+    <updated>2013-07-19T18:43:00+02:00</updated>
+    <id>http://alivedise.github.com/blog/2013/07/19/audio-competing-again</id>
+    <content type="html"><![CDATA[<p>I mentioned current audio competing policies in preivous "Background play" article.</p>
+
+<p>This article is trying to decribe it more precisely.</p>
+
+<h2>Preface</h2>
+
+<p>All these API and policies are coming from these similar requirements:</p>
+
+<p><blockquote><p>"As an user I want the music is automatically muted when call incoming."<br/>"As an user I want the music is able to play at background."<br/>"As an user I want the music to stop the background playing content."</p></blockquote></p>
+
+<p>As you may know this doesn't exist on desktop browser (yet).</p>
+
+<h2>Initial proposal: Multiple audio stream.</h2>
+
+<p><script async="true" class="speakerdeck-embed" data-id="e77e4870d5d70130ea8666ea2df61d46" src="//speakerdeck.com/assets/embed.js"> </script></p>
+
+<p>The initial proposal is, control everything from UI side.</p>
+
+<p>Gaia knows which app is foreground and which app is background,</p>
+
+<p>so what we want is just:</p>
+
+<ul>
+<li>Ability to mute the whole page/app.</li>
+<li>Be able to know which page/app is playing audio.</li>
+<li>Use permission model to distinguish the priority.</li>
+</ul>
+
+
+<h2>Current policy: the UX logic is living in platform</h2>
+
+<ul>
+<li>Foreground app could always be playable.</li>
+<li>Only content or higher channel could play at background.</li>
+<li>Only active app is able to play when screen is off.</li>
+<li>Higher channel would interrupt lower channel.</li>
+</ul>
+
+
+<h2>Future policy: ?</h2>
+
+<ul>
+<li>Basic competing unit is a page but not an app.</li>
+<li>Separate competing and background play.</li>
+<li>Control from UI side, again.</li>
+<li>Video: Exactly....video doesn't need channel.</li>
+<li><a href="http://bugzil.la/835101">New audio channel API is ongoing.</a>
+
+<ul>
+<li>To resolve background play problem with normal channel.</li>
+<li>Ability to control the mozbrowser iframe to play or pause.</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>Learned</h2>
+
+<ul>
+<li>We should consider existing web pages/apps as well as new API.</li>
+<li>Shall we dance with user experience?
+
+<ul>
+<li>UX is the king, but logic is another thing.</li>
+</ul>
+</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[FxOS] Plan: Window Management Module Decoupling]]></title>
+    <link href="http://alivedise.github.com/blog/2013/07/18/window-manager-decoupling/"/>
+    <updated>2013-07-18T17:33:00+02:00</updated>
+    <id>http://alivedise.github.com/blog/2013/07/18/window-manager-decoupling</id>
+    <content type="html"><![CDATA[<p><img src="http://i.imgur.com/T0pyFFc.jpg"></p>
+
+<p>Following are the plan about why and how to split current Gaia:System:Window Manager.</p>
+
+<h2>Sources/Links</h2>
+
+<ul>
+<li><a href="https://github.com/mozilla-b2g/gaia/blob/master/apps/system/js/window_manager.js">Window Manager source</a></li>
+<li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=845251">Window Manager testable meta bug</a></li>
+</ul>
+
+
+<h2>Current main functions in Window Manager</h2>
+
+<ul>
+<li>App Window Management</li>
+<li>Crash Management</li>
+<li>Clear browser data</li>
+<li>Wrapper Window Management</li>
+<li>Inline Activity Management</li>
+<li>Homescreen Management</li>
+<li>MozBrowser Element Generation</li>
+<li>Orientation Management</li>
+<li>Visibility Management</li>
+<li>Resize Management</li>
+<li>App Screenshots Management [deprecated]</li>
+<li>System Message Handler</li>
+<li>Open app transition</li>
+<li>Close app transition</li>
+<li>System Message Handler</li>
+<li>FTU Management [deprecated! Become standalone FTU Launcher already!]</li>
+</ul>
+
+
+<p>So which could be pulled out to reduce the heavy weight?</p>
+
+<h3>Inline Activity Management</h3>
+
+<p>Inline Activity Management should belong to the activity caller.</p>
+
+<p>If app A opens a page(open.html) of app B as an inline activity,
+the life cycle of activity callee is based on app A instead of app B.</p>
+
+<p>Thus, if app A is killed or closed, the activity opened by app A should be killed.</p>
+
+<p>But if app B(index.html) is killed, activity B(open.html) shouldn't be affected.</p>
+
+<h3>Resize Management</h3>
+
+<p>Resize is another duty of the app window instance itself.</p>
+
+<p>If we're moving the activity into the app window, we could</p>
+
+<ol>
+<li>Recursively call current activity callee's resize function until the last callee is found.</li>
+<li>Resize all activity callee on top of current app window.</li>
+</ol>
+
+
+<p>in the app window's resize function.</p>
+
+<h3>Visibility Management</h3>
+
+<p>App window would have 2 kind of "child-like" window instance:</p>
+
+<ul>
+<li><code>var childWindow = window.open</code></li>
+<li><code>new MozActivity</code></li>
+</ul>
+
+
+<p>Currently we don't send of the caller correctly to background on these two cases.</p>
+
+<p>The reasons are:</p>
+
+<ol>
+<li>Memory concern. Part of our memory management model relies on the page visibility state. Backgrounded app has higher possibility to be killed. We shall review and refine this soon. See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=892371">https://bugzilla.mozilla.org/show_bug.cgi?id=892371</a>.</li>
+<li>Backgrounded app is totally invisible instead of keeping the cached image frame. See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=825174">https://bugzilla.mozilla.org/show_bug.cgi?id=825174</a></li>
+</ol>
+
+
+<h3>Oreintation Management</h3>
+
+<p>App could specify the native orientation from manifest's orientation field.
+So from this point it is an instance specific value.</p>
+
+<p>What's tricky here is:</p>
+
+<ol>
+<li>Orientation indeed isn't app specific API. Any app at any time could call <code>lockOrientation</code> of 'screen' object. Thus it would affect the other apps.</li>
+<li>What we should do is preventing app from locking/unlocking orientation when they're background.</li>
+<li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=840147">Orientation behavior is bind to app transtion UX.</a></li>
+<li>We will discuss this more detailly in app window design.</li>
+</ol>
+
+
+<h3>Homescreen Management</h3>
+
+<p>Window Manager is the one who manipulates hardware or software home button event.</p>
+
+<p>We should leave this part in Window Manager but let Homescreen Window manages itself.</p>
+
+<p>To manage itself means that:</p>
+
+<ul>
+<li>Generate the mozbrowser iframe by itself.</li>
+<li>Fetch homescreen manifest by the manifestURL storing at settings on its own.</li>
+<li>Revive itself when it's killed in background. (Different behavior than other apps.)</li>
+</ul>
+
+
+<p>So it's worthy to have an specific app window singleton for homescreen app.</p>
+
+<h3>Wrapper Management</h3>
+
+<p>This is another special type of app window.
+It's opened via homescreen; it stands for the app who has no manifestURL but a pure web page.</p>
+
+<p>We should have a new WrapperWindow class inherited from AppWindow class.</p>
+
+<h3>mozbrowser iframe generation</h3>
+
+<p>All kind of window needs one mozbrowser iframe with different attributes fed to.</p>
+
+<p>The element should be generated in <code>BrowserFrame</code> in configuration pattern.</p>
+
+<h3>Open/Close transition</h3>
+
+<p>This is the most important part of a window UI.</p>
+
+<p>There're many things relying on the transition state to take progress.</p>
+
+<p>We're discussing it in previous article, and would review this implementation soon.</p>
+
+<h3>System Message Handler</h3>
+
+<p>Now system message is used for opening the target app if it's not opened.
+There're two cases: activity and non-activity.</p>
+
+<p>This should be left in Window Manager.</p>
+
+<h3>Crash management</h3>
+
+<ul>
+<li>For crash of app window, let it decides what it wants to do when it sees crash event.</li>
+<li>For crash of opened window or activivity, let its caller decides what to do.</li>
+</ul>
+
+
+<h3>Clear browser data</h3>
+
+<p>Totally safe enough to move to another module.
+Irrevalant to manage windows.</p>
+
+<h3>Screenshot Management</h3>
+
+<p>Since the screenshot now is only touched by app window and cards view,
+let app window expose its screenshot to cards view.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[Fx OS] Background media play]]></title>
+    <link href="http://alivedise.github.com/blog/2013/07/16/audio-competing-in-fxos/"/>
+    <updated>2013-07-16T19:16:00+02:00</updated>
+    <id>http://alivedise.github.com/blog/2013/07/16/audio-competing-in-fxos</id>
+    <content type="html"><![CDATA[<p><img src="https://blog.mozilla.org/press/files/2012/09/FXOS_Music_Grid.jpg"></p>
+
+<p>If you want to have you own media playing app to be able to run at background,
+and/or has the ability to interrupt other playing audio, please view this article for what to do.</p>
+
+<h2>Audio Channel Permission</h2>
+
+<p>You need to specify this permission in the manifest of your app.</p>
+
+<p>And yes, this means we don't allow a web page without the manifest to play at background.</p>
+
+<p><code>js
+"permissions": {
+  "audio-channel-content": {}
+}
+</code></p>
+
+<p>The <code>content</code> represents the name of the audio channel.</p>
+
+<p>Note: Video's permission also uses the same <code>audio-channel-content</code>.</p>
+
+<h3>Audio Channel Types</h3>
+
+<p>We have five audio channels currently:</p>
+
+<ul>
+<li><code>normal</code>: Default channel of any media element, including video.</li>
+<li><code>content</code>: Especailly stands for content like music.</li>
+<li><code>notification</code>: Include desktop-notification sounds</li>
+<li><code>ringer</code>: Incoming call ringer</li>
+<li><code>alarm</code>: Alarm has a specific requirement to interrupt any other channel above.</li>
+<li><code>telephony</code>: Voice.</li>
+</ul>
+
+
+<h4>Volume Settings</h4>
+
+<ul>
+<li>Normal and content channel are sharing the same volume settings.</li>
+<li>Notification and ringer are another set.</li>
+<li>Other has its own settings key.</li>
+</ul>
+
+
+<h3>Audio Competing Rules</h3>
+
+<ol>
+<li>We're interrupting the lower channel when higher channel occurs.</li>
+<li>If the same channel are playing and using content channel,
+the one who gets visibility (go to foreground) would be the winner.</li>
+<li>The foreground page/app is always playable. However the channel type decides it could interrupt background playing content or not.</li>
+<li>The background page/app is playable if and only if the background is causing by screen off,
+and the page/app is the current displayed one.</li>
+</ol>
+
+
+<p>I would explain the rules more in another article ;)</p>
+
+<h2>[Statically] HTML Media Element</h2>
+
+<p>You could assign audio channel type to the media elements in HTML.</p>
+
+<p><code>html
+&lt;audio mozaudiochannel="content"&gt;&lt;/audio&gt;
+&lt;video mozaudiochannel="content"&gt;&lt;/video&gt;
+</code></p>
+
+<p>Please keep in mind you need relevant channel permission.</p>
+
+<p><blockquote><p>Note: It's <code>mozaudiochannel</code> instead of <code>mozaudiopchanneltype</code> here.</p></blockquote></p>
+
+<h2>[Dynamically] Javascript</h2>
+
+<p>Sometimes we need to dynamically generate the player element:</p>
+
+<p>```js
+var audio = new Audio();
+audio.mozAudioChannelType = 'content';</p>
+
+<p>// Set audio channel type before setting src to avoid decoder confuses.
+audio.src = 'xxx.ogg';
+```</p>
+
+<p>Change the channel of the audio to another type is not allowed.</p>
+
+<p>You should create another audio/video instance if you want to be played in another channel.</p>
+
+<h2>(OPTIONAL) If you want to know you're interrupted by higher channel</h2>
+
+<p>Add mozinterruptbegin/mozinterruptend event handler if you need to do something with interruptions.</p>
+
+<p>```js
+  var player = document.getElementById('audio#my-player');</p>
+
+<p>  // ...
+  // The event is fired on the media element.
+  player.addEventListener('mozinterruptbegin', function onInterrupted() {//do sth....});
+  player.addEventListener('mozinterruptend', function onResumed() {// do sth....});
+```</p>
+
+<h2>Notices</h2>
+
+<ul>
+<li>Even if your are developing a HTML5 video playing app,
+and we all know that video shouldn't be played at background due to strange UX,
+you should also consider to set content channel because video is expected to interrupt the current background playing media.</li>
+</ul>
+
+
+<h2>Reference</h2>
+
+<ul>
+<li><a href="https://wiki.mozilla.org/WebAPI/AudioChannels">Mozilla WIKI: Audio Channel</a></li>
+<li><a href="https://groups.google.com/forum/?fromgroups=#!topic/mozilla.dev.gaia/HyAlHdFdX68">B2G Maillist</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>
