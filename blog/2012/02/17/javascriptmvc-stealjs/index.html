@@ -148,6 +148,9 @@ posted in
 
 <p> &lt;/script></p>
 
+<!--more-->
+
+
 <p>Then, start loading things and using them like:</p>
 
 <pre><code> steal('myapp/tabs.js',
@@ -162,39 +165,69 @@ posted in
 
 <p>Make sure your widgets load their dependencies too:</p>
 
-<pre><code> // myapp/tabs.js
- steal('jquery', function(){
-   $.fn.tabs = function(){
-    ...
-   }
- })
-</code></pre>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'> <span class="c1">// myapp/tabs.js</span>
+</span><span class='line'> <span class="nx">steal</span><span class="p">(</span><span class="s1">&#39;jquery&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>   <span class="nx">$</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">tabs</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>    <span class="p">...</span>
+</span><span class='line'>   <span class="p">}</span>
+</span><span class='line'> <span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <h2>Examples:</h2>
 
-<pre><code> // Loads ROOT/jquery/controller/controller.js
- steal('jquery/controller')
- steal('jquery/controller/controller.js')
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'> <span class="c1">// Loads ROOT/jquery/controller/controller.js</span>
+</span><span class='line'> <span class="nx">steal</span><span class="p">(</span><span class="s1">&#39;jquery/controller&#39;</span><span class="p">)</span>
+</span><span class='line'> <span class="nx">steal</span><span class="p">(</span><span class="s1">&#39;jquery/controller/controller.js&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'> <span class="c1">// Loads coffee script type and a coffee file relative to</span>
+</span><span class='line'> <span class="c1">// the current file</span>
+</span><span class='line'> <span class="nx">steal</span><span class="p">(</span><span class="s1">&#39;steal/coffee&#39;</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="s1">&#39;./mycoffee.coffee&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'> <span class="c1">// Load 2 files and dependencies in parallel and</span>
+</span><span class='line'> <span class="c1">// callback when both have completed</span>
+</span><span class='line'> <span class="nx">steal</span><span class="p">(</span><span class="s1">&#39;jquery/controller&#39;</span><span class="p">,</span><span class="s1">&#39;jquery/model&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>   <span class="c1">// $.Controller and $.Model are available</span>
+</span><span class='line'> <span class="p">})</span>
+</span><span class='line'>
+</span><span class='line'> <span class="c1">// Loads a coffee script with a non-standard extension (cf)</span>
+</span><span class='line'> <span class="c1">// relative to the current page and instructs the build</span>
+</span><span class='line'> <span class="c1">// system to not package it (but it will still be loaded).</span>
+</span><span class='line'> <span class="nx">steal</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">src</span><span class="o">:</span> <span class="s2">&quot;./foo.cf&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">packaged</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;coffee&quot;</span>
+</span><span class='line'>  <span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
 
- // Loads coffee script type and a coffee file relative to
- // the current file
- steal('steal/coffee').then('./mycoffee.coffee')
-
- // Load 2 files and dependencies in parallel and
- // callback when both have completed
- steal('jquery/controller','jquery/model', function(){
-   // $.Controller and $.Model are available
- })
-
- // Loads a coffee script with a non-standard extension (cf)
- // relative to the current page and instructs the build
- // system to not package it (but it will still be loaded).
- steal({
-    src: "./foo.cf",
-    packaged: false,
-    type: "coffee"
-  })
-</code></pre>
 
 <p>The following is a longer walkthrough of how to install
  and use steal:</p>
