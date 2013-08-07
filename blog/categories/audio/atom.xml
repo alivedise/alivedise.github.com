@@ -4,7 +4,7 @@
   <title><![CDATA[Category: audio | Ascheriit]]></title>
   <link href="http://alivedise.github.io/blog/categories/audio/atom.xml" rel="self"/>
   <link href="http://alivedise.github.io/"/>
-  <updated>2013-08-07T09:56:17+08:00</updated>
+  <updated>2013-08-07T10:33:59+08:00</updated>
   <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -22,6 +22,9 @@
 
 <p>If you want to have you own media playing app to be able to run at background,
 and/or has the ability to interrupt other playing audio, please view this article for what to do.</p>
+
+<!--more-->
+
 
 <h2>Audio Channel Permission</h2>
 

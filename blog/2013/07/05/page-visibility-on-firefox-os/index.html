@@ -179,6 +179,11 @@ posted in
 
 <p>我們將這個 API 帶到 Firefox OS 中，並賦予了它更深一層的意義：</p>
 
+<!--more-->
+
+
+
+
 <blockquote><p>應用程式判斷自己在前景/背景的依據，類似 android 的 onPause/onResume<br/>系統底層 Low Memory Killer 的參數之一：背景應用程式在可用記憶體過低時會優先被 kill<br/>在電力消耗變成一個必須優先考量要點的手持裝置上，透過進入背景時停止更新 UI 對電力節約有很大幅度的幫助。<br/>然而，在手機系統上，並不像在桌面瀏覽器一樣單純的是透過頁面切換 (onPageShow/onPageHide) 來決定要不要對某個 web page/app 做前景背景切換，而是要根據系統 UI hierarchy 以及當前介面中層級較高的其他元件的狀態來維持 visibility 的協調性。</p></blockquote>
 
 
@@ -349,11 +354,12 @@ posted in
   </div>
   <div class="span4">
     
-<h2>twitter</h2>
-<a href="https://twitter.com/alivedise" class="twitter-follow-button" data-show-count="true" data-lang="en">Follow @alivedise</a>
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-<div class="tweet" data-twitter-user="alivedise">
-</div>
+<h2>recent public projects</h2>
+<dl id="gh_repos" class="dl-horizontal" data-github-user="alivedise" data-github-repo-count="5" data-github-skip-forks="true">
+  <dd class="loading">Status updating...</dd>
+</dl>
+<script src="/javascripts/github.js" type="text/javascript"> </script>
+<script src="/javascripts/libs/jXHR.js" type="text/javascript"> </script>
 
 
   </div>

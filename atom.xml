@@ -4,7 +4,7 @@
   <title><![CDATA[Ascheriit]]></title>
   <link href="http://alivedise.github.io/atom.xml" rel="self"/>
   <link href="http://alivedise.github.io/"/>
-  <updated>2013-08-07T09:56:17+08:00</updated>
+  <updated>2013-08-07T10:33:59+08:00</updated>
   <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -63,6 +63,9 @@
 
 <p>So which could be pulled out to reduce the heavy weight?</p>
 
+<!--more-->
+
+
 <h3>Inline Activity Management &ndash;> App Window</h3>
 
 <p>Inline Activity Management should belong to the activity caller.</p>
@@ -105,6 +108,9 @@ the life cycle of activity callee is based on app A instead of app B.</p>
 
 <p>If you want to have you own media playing app to be able to run at background,
 and/or has the ability to interrupt other playing audio, please view this article for what to do.</p>
+
+<!--more-->
+
 
 <h2>Audio Channel Permission</h2>
 
@@ -256,6 +262,9 @@ you should also consider to set content channel because video is expected to int
 </ol>
 
 
+<!--more-->
+
+
 <h4>Proposal: Core modules and side modules</h4>
 
 <p>We could figure out what&rsquo;s definitely necessary in an operating system and what&rsquo;s not.
@@ -349,6 +358,9 @@ The first thing come to my mind is <code>window.parent.postMessage</code></p>
 
 <p>Recently I try to dedicate on solving the puzzle.
 But at first I need to apologize for my poor knowledge and thought about css transitions using class names.</p>
+
+<!--more-->
+
 
 <p>In the past I usually thought it was stupid to use class list to control the style.
 I thought it was ambiguous and strange if we ran into a situation that there&rsquo;re more than one classes of same type put on one element. And an element full of different class names for different purposes may conflict. Recently I see <a href="https://github.com/h5bp/Effeckt.css">Effeckt</a> and know this is the trend: a simple class name stands for a kind of animation.</p>
@@ -1099,6 +1111,11 @@ Maybe we could define the level of the callback into three here, according to th
 
 <p>我們將這個 API 帶到 Firefox OS 中，並賦予了它更深一層的意義：</p>
 
+<!--more-->
+
+
+
+
 <blockquote><p>應用程式判斷自己在前景/背景的依據，類似 android 的 onPause/onResume<br/>系統底層 Low Memory Killer 的參數之一：背景應用程式在可用記憶體過低時會優先被 kill<br/>在電力消耗變成一個必須優先考量要點的手持裝置上，透過進入背景時停止更新 UI 對電力節約有很大幅度的幫助。<br/>然而，在手機系統上，並不像在桌面瀏覽器一樣單純的是透過頁面切換 (onPageShow/onPageHide) 來決定要不要對某個 web page/app 做前景背景切換，而是要根據系統 UI hierarchy 以及當前介面中層級較高的其他元件的狀態來維持 visibility 的協調性。</p></blockquote>
 
 
@@ -1191,6 +1208,9 @@ Gaia System Architecture Diagram (source from <a href="https://docs.google.com/d
 </ul>
 
 
+<!--more-->
+
+
 <h3>Canvas</h3>
 
 <h4>MountainView</h4>
@@ -1270,6 +1290,9 @@ Gaia System Architecture Diagram (source from <a href="https://docs.google.com/d
 
 <p>後來還是決定用client端javascript application的形式做，
 至少IE9可以支援Canvas。</p>
+
+<!--more-->
+
 
 <h4>Canvas templating</h4>
 
@@ -1459,6 +1482,9 @@ Then system app would take care of the remaing stuff.</p>
 <li>Init homescreen app</li>
 <li>Etc.</li>
 </ul>
+
+
+<!--more-->
 
 
 <h3>Window Manager</h3>

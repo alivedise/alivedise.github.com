@@ -4,7 +4,7 @@
   <title><![CDATA[Category: css, | Ascheriit]]></title>
   <link href="http://alivedise.github.io/blog/categories/css/atom.xml" rel="self"/>
   <link href="http://alivedise.github.io/"/>
-  <updated>2013-08-07T09:56:17+08:00</updated>
+  <updated>2013-08-07T10:33:59+08:00</updated>
   <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -24,6 +24,9 @@
 
 <p>Recently I try to dedicate on solving the puzzle.
 But at first I need to apologize for my poor knowledge and thought about css transitions using class names.</p>
+
+<!--more-->
+
 
 <p>In the past I usually thought it was stupid to use class list to control the style.
 I thought it was ambiguous and strange if we ran into a situation that there&rsquo;re more than one classes of same type put on one element. And an element full of different class names for different purposes may conflict. Recently I see <a href="https://github.com/h5bp/Effeckt.css">Effeckt</a> and know this is the trend: a simple class name stands for a kind of animation.</p>
