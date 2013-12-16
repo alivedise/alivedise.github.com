@@ -4,7 +4,7 @@
   <title><![CDATA[Ascheriit]]></title>
   <link href="http://alivedise.github.io/atom.xml" rel="self"/>
   <link href="http://alivedise.github.io/"/>
-  <updated>2013-08-07T11:26:37+08:00</updated>
+  <updated>2013-12-16T10:33:04+08:00</updated>
   <id>http://alivedise.github.io/</id>
   <author>
     <name><![CDATA[Alive Kuo]]></name>
@@ -12,6 +12,20 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Migrated to logdown]]></title>
+    <link href="http://alivedise.github.io/blog/2013/12/16/logdown/"/>
+    <updated>2013-12-16T10:30:00+08:00</updated>
+    <id>http://alivedise.github.io/blog/2013/12/16/logdown</id>
+    <content type="html"><![CDATA[<p>Octopress 雖然很棒但是每次換環境都要重弄實在太麻煩了，
+所以我偷偷的轉移到 logdown 一段時間了。</p>
+
+<p><a href="http://alivedise.logdown.com">http://alivedise.logdown.com</a></p>
+
+<p>Welcome to visit!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[[COSCUP 2013] Audio competing in FxOS]]></title>
@@ -2723,38 +2737,6 @@ JMVC除了MVC還提供其他的case solution，而Backbone只專注在MVC身上�
 <ol>
 <li>有人問第4段的那張手寫日期表是什麼？最後一個下班者拿走公司鑰匙的簽名。被我懶得寫跳過的平常日期是：沒回家。假日來公司：不會記。</li>
 </ol>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[JavascriptMVC on Slideshare]]></title>
-    <link href="http://alivedise.github.io/blog/2012/05/24/javascriptmvc-slideshare/"/>
-    <updated>2012-05-24T14:58:00+08:00</updated>
-    <id>http://alivedise.github.io/blog/2012/05/24/javascriptmvc-slideshare</id>
-    <content type="html"><![CDATA[<p>陸續看到兩個介紹Backbone的投影片&mdash;JSDC上的<a href="https://speakerdeck.com/u/jaceju/p/refactoring-with-backbonejs">Refactor with Backbone.js</a>，以及在slideshare看到的<a href="http://www.slideshare.net/molily/javascript-application-architecture-with-backbonejs">Javasciprt Application Architecture with Backbone.js</a>，一時手癢就想自己也來做一個介紹JavascriptMVC的投影片丟到Slideshare。</p>
-
-<p>目前Slideshare上跟JavascriptMVC有關的投影片有：</p>
-
-<ul>
-<li>Using JavascriptMVC
-<script async="true" class="speakerdeck-embed" data-id="4ee4ade96058ee0050007d3d" src="http://alivedise.github.io//speakerdeck.com/assets/embed.js"> </script></li>
-<li>Event oriented architecture and client side applications
-<script async="true" class="speakerdeck-embed" data-id="29c5118012220130193c22000a9d05ac" src="http://alivedise.github.io//speakerdeck.com/assets/embed.js"> </script></li>
-<li>Organizing Code with JavascriptMVC
-<script async="true" class="speakerdeck-embed" data-id="4e97ec08711977005400d42f" src="http://alivedise.github.io//speakerdeck.com/assets/embed.js"> </script></li>
-<li>CanJS
-<script async="true" class="speakerdeck-embed" data-id="b0b6728084a8013077c512313d091c2d" src="http://alivedise.github.io//speakerdeck.com/assets/embed.js"> </script></li>
-</ul>
-
-
-<p>比起Backbone實在差太多了&hellip;而且有些還是過時的資訊。</p>
-
-<p>姑且先整理一下之前的Javascript簡介投影片丟上去，下個目標預計是寫一個完整的建置範例，不過目前還沒有想到主題。</p>
-
-<script async="true" class="speakerdeck-embed" data-id="242bb2b0e13d01308ea566e8cb786a27" src="http://alivedise.github.io//speakerdeck.com/assets/embed.js"> </script>
-
-
 
 ]]></content>
   </entry>
